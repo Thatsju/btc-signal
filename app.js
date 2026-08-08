@@ -333,48 +333,36 @@ function drawBTCChart() {
         return;
     }
 
+    const context = chartCanvas.getContext("2d");
+    const container = chartCanvas.parentElement;
 
-    const context =
-        chartCanvas.getContext("2d");
+    const width = container.clientWidth;
+    const height = container.clientHeight;
 
+    if (width <= 0 || height <= 0) {
+        return;
+    }
 
-    const container =
-        chartCanvas.parentElement;
+    const dpr = window.devicePixelRatio || 1;
 
+    // =================================================
+    // CANVAS
+    // =================================================
 
-    const width =
-        container.clientWidth;
+    chartCanvas.width = width * dpr;
+    chartCanvas.height = height * dpr;
 
+    chartCanvas.style.width = width + "px";
+    chartCanvas.style.height = height + "px";
 
-    const height =
-        container.clientHeight;
-
-
-    const devicePixelRatio =
-        window.devicePixelRatio || 1;
-
-
-    chartCanvas.width =
-        width * devicePixelRatio;
-
-
-    chartCanvas.height =
-        height * devicePixelRatio;
-
-
-    chartCanvas.style.width =
-        width + "px";
-
-
-    chartCanvas.style.height =
-        height + "px";
-
-
-    context.scale(
-        devicePixelRatio,
-        devicePixelRatio
+    context.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
     );
-
 
     context.clearRect(
         0,
@@ -383,117 +371,167 @@ function drawBTCChart() {
         height
     );
 
+    // =================================================
+    // DONNEES : 30 JOURS
+    // =================================================
 
-    // -------------------------------------------------
-    // DERNIERS 7 JOURS
-    // -------------------------------------------------
-
-    const points =
-        btcPrices.slice(-7);
-
+    const points = btcPrices
+        .slice(-30)
+        .filter(point =>
+            Number.isFinite(point.price)
+        );
 
     if (points.length < 2) {
         return;
     }
 
+    const prices = points.map(
+        point => point.price
+    );
 
-    const prices =
-        points.map(
-            point => point.price
-        );
+    // =================================================
+    // ECHELLE
+    // =================================================
 
+    let minPrice = Math.min(...prices);
+    let maxPrice = Math.max(...prices);
 
-    const minPrice =
-        Math.min(...prices);
+    const rawRange =
+        maxPrice - minPrice;
 
+    const margin =
+        rawRange > 0
+            ? rawRange * 0.12
+            : maxPrice * 0.01;
 
-    const maxPrice =
-        Math.max(...prices);
-
+    minPrice -= margin;
+    maxPrice += margin;
 
     const range =
         maxPrice - minPrice || 1;
 
+    // =================================================
+    // MARGES
+    // =================================================
 
-    const paddingLeft = 8;
-    const paddingRight = 8;
-    const paddingTop = 20;
-    const paddingBottom = 25;
-
+    const paddingLeft = 12;
+    const paddingRight = 18;
+    const paddingTop = 18;
+    const paddingBottom = 28;
 
     const chartWidth =
         width -
         paddingLeft -
         paddingRight;
 
-
     const chartHeight =
         height -
         paddingTop -
         paddingBottom;
 
+    // =================================================
+    // COORDONNEES
+    // =================================================
 
-    const coordinates =
-        points.map(
-            (point, index) => {
+    const coordinates = points.map(
+        (point, index) => {
 
-                const x =
-                    paddingLeft +
-                    (
-                        index /
-                        (points.length - 1)
-                    ) *
-                    chartWidth;
+            const x =
+                paddingLeft +
+                (
+                    index /
+                    (points.length - 1)
+                ) *
+                chartWidth;
 
+            const normalized =
+                (
+                    point.price -
+                    minPrice
+                ) / range;
 
-                const y =
-                    paddingTop +
-                    (
-                        1 -
-                        (
-                            (point.price - minPrice) /
-                            range
-                        )
-                    ) *
-                    chartHeight;
+            const y =
+                paddingTop +
+                (
+                    1 - normalized
+                ) *
+                chartHeight;
 
+            return {
+                x: x,
+                y: y,
+                price: point.price,
+                timestamp: point.timestamp
+            };
+        }
+    );
 
-                return {
-                    x,
-                    y,
-                    price: point.price
-                };
-            }
+    // =================================================
+    // GRILLE DISCRETE
+    // =================================================
+
+    context.lineWidth = 1;
+    context.strokeStyle =
+        "rgba(255,255,255,0.06)";
+
+    const gridLines = 4;
+
+    for (
+        let i = 0;
+        i <= gridLines;
+        i++
+    ) {
+
+        const y =
+            paddingTop +
+            (
+                i / gridLines
+            ) *
+            chartHeight;
+
+        context.beginPath();
+
+        context.moveTo(
+            paddingLeft,
+            y
         );
 
+        context.lineTo(
+            width - paddingRight,
+            y
+        );
 
-    // -------------------------------------------------
+        context.stroke();
+    }
+
+    // =================================================
     // ZONE SOUS LA COURBE
-    // -------------------------------------------------
+    // =================================================
 
     const gradient =
         context.createLinearGradient(
             0,
-            0,
+            paddingTop,
             0,
             height
         );
 
-
     gradient.addColorStop(
         0,
-        "rgba(24,216,155,0.25)"
+        "rgba(24,216,155,0.28)"
     );
 
+    gradient.addColorStop(
+        0.55,
+        "rgba(24,216,155,0.10)"
+    );
 
     gradient.addColorStop(
         1,
         "rgba(24,216,155,0)"
     );
 
-
     context.beginPath();
-
 
     coordinates.forEach(
         (point, index) => {
@@ -515,35 +553,36 @@ function drawBTCChart() {
         }
     );
 
+    const lastPoint =
+        coordinates[
+            coordinates.length - 1
+        ];
+
+    const firstPoint =
+        coordinates[0];
 
     context.lineTo(
-        coordinates[coordinates.length - 1].x,
+        lastPoint.x,
         height - paddingBottom
     );
 
-
     context.lineTo(
-        coordinates[0].x,
+        firstPoint.x,
         height - paddingBottom
     );
-
 
     context.closePath();
-
 
     context.fillStyle =
         gradient;
 
-
     context.fill();
 
-
-    // -------------------------------------------------
-    // LIGNE
-    // -------------------------------------------------
+    // =================================================
+    // COURBE PRINCIPALE
+    // =================================================
 
     context.beginPath();
-
 
     coordinates.forEach(
         (point, index) => {
@@ -565,10 +604,8 @@ function drawBTCChart() {
         }
     );
 
-
     context.strokeStyle =
         "#18d89b";
-
 
     context.lineWidth = 3;
 
@@ -578,22 +615,46 @@ function drawBTCChart() {
     context.lineCap =
         "round";
 
+    context.shadowColor =
+        "rgba(24,216,155,0.35)";
+
+    context.shadowBlur = 8;
 
     context.stroke();
 
+    context.shadowBlur = 0;
 
-    // -------------------------------------------------
-    // POINT FINAL
-    // -------------------------------------------------
+    // =================================================
+    // POINT ACTUEL
+    // =================================================
 
     const last =
         coordinates[
             coordinates.length - 1
         ];
 
+    // Halo
 
     context.beginPath();
 
+    context.arc(
+        last.x,
+        last.y,
+        10,
+        0,
+        Math.PI * 2
+    );
+
+    context.strokeStyle =
+        "rgba(24,216,155,0.25)";
+
+    context.lineWidth = 3;
+
+    context.stroke();
+
+    // Point blanc
+
+    context.beginPath();
 
     context.arc(
         last.x,
@@ -603,41 +664,101 @@ function drawBTCChart() {
         Math.PI * 2
     );
 
-
     context.fillStyle =
         "#ffffff";
 
-
     context.fill();
 
+    // =================================================
+    // PRIX ACTUEL
+    // =================================================
 
-    context.beginPath();
+    const currentPriceText =
+        formatPrice(last.price);
 
+    context.font =
+        "bold 12px Arial";
 
-    context.arc(
-        last.x,
-        last.y,
-        9,
-        0,
-        Math.PI * 2
+    context.textAlign =
+        "right";
+
+    context.textBaseline =
+        "middle";
+
+    context.fillStyle =
+        "#18d89b";
+
+    context.fillText(
+        currentPriceText,
+        width - paddingRight,
+        Math.max(
+            paddingTop,
+            Math.min(
+                height - paddingBottom,
+                last.y - 14
+            )
+        )
     );
 
+    // =================================================
+    // DATES
+    // =================================================
 
-    context.strokeStyle =
-        "rgba(24,216,155,.35)";
+    context.font =
+        "10px Arial";
 
+    context.fillStyle =
+        "rgba(255,255,255,0.45)";
 
-    context.lineWidth = 3;
+    context.textBaseline =
+        "top";
 
+    context.textAlign =
+        "left";
 
-    context.stroke();
+    const firstDate =
+        new Date(
+            firstPoint.timestamp
+        );
+
+    const lastDate =
+        new Date(
+            last.timestamp
+        );
+
+    const firstLabel =
+        firstDate.toLocaleDateString(
+            "fr-FR",
+            {
+                day: "2-digit",
+                month: "short"
+            }
+        );
+
+    const lastLabel =
+        lastDate.toLocaleDateString(
+            "fr-FR",
+            {
+                day: "2-digit",
+                month: "short"
+            }
+        );
+
+    context.fillText(
+        firstLabel,
+        paddingLeft,
+        height - 18
+    );
+
+    context.textAlign =
+        "right";
+
+    context.fillText(
+        lastLabel,
+        width - paddingRight,
+        height - 18
+    );
 }
-
-
-// =====================================================
-// CALCUL DES INDICATEURS
-// =====================================================
-
 function calculateIndicators() {
 
     const prices =
