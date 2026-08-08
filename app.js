@@ -904,8 +904,8 @@ if (
 
     piCycleValue =
         (
-            (mm111Value * 2) /
-            mm350Value
+            mm111Value /
+            (mm350Value * 2)
         ) * 100;
 
 } else {
