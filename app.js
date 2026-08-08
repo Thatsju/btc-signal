@@ -702,42 +702,49 @@ function drawBTCChart() {
     );
 
     // =================================================
-    // DATES
-    // =================================================
+// DATES
+// =================================================
 
-    context.font =
-        "10px Arial";
+context.font =
+    "10px Arial";
 
-    context.fillStyle =
-        "rgba(255,255,255,0.45)";
+context.fillStyle =
+    "rgba(255,255,255,0.45)";
 
-    context.textBaseline =
-        "top";
+context.textBaseline =
+    "top";
 
-    context.textAlign =
-        "left";
+context.textAlign =
+    "center";
 
-    const firstDate =
+// Nombre de dates affichées
+const dateCount = 7;
+
+for (
+    let i = 0;
+    i < dateCount;
+    i++
+) {
+
+    const index =
+        Math.round(
+            (
+                i /
+                (dateCount - 1)
+            ) *
+            (points.length - 1)
+        );
+
+    const point =
+        coordinates[index];
+
+    const date =
         new Date(
-            firstPoint.timestamp
+            points[index].timestamp
         );
 
-    const lastDate =
-        new Date(
-            last.timestamp
-        );
-
-    const firstLabel =
-        firstDate.toLocaleDateString(
-            "fr-FR",
-            {
-                day: "2-digit",
-                month: "short"
-            }
-        );
-
-    const lastLabel =
-        lastDate.toLocaleDateString(
+    const label =
+        date.toLocaleDateString(
             "fr-FR",
             {
                 day: "2-digit",
@@ -746,19 +753,11 @@ function drawBTCChart() {
         );
 
     context.fillText(
-        firstLabel,
-        paddingLeft,
+        label,
+        point.x,
         height - 18
     );
-
-    context.textAlign =
-        "right";
-
-    context.fillText(
-        lastLabel,
-        width - paddingRight,
-        height - 18
-    );
+}
 
     // =================================================
     // CURSEUR INTERACTIF
