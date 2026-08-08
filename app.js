@@ -886,40 +886,8 @@ function calculateIndicators() {
             prices,
             350
         );
-// =================================================
-// HISTORIQUE 7 JOURS KPI
-// =================================================
-
-rsiHistory.push(rsiValue);
-mm111History.push(mm111Value);
-mm350History.push(mm350Value);
 
 
-// garder seulement les 7 dernières valeurs
-
-if (rsiHistory.length > 7) {
-    rsiHistory.shift();
-}
-
-if (mm111History.length > 7) {
-    mm111History.shift();
-}
-
-if (mm350History.length > 7) {
-    mm350History.shift();
-}
-    // =================================================
-// MOYENNES REELLES 7 DERNIERS CHARGEMENTS
-// =================================================
-
-const rsiAverage7 =
-    average(rsiHistory);
-
-const mm111Average7 =
-    average(mm111History);
-
-const mm350Average7 =
-    average(mm350History);
 // =================================================
 // CALCUL PI CYCLE - 7 DERNIERS JOURS REELS
 // =================================================
@@ -1054,7 +1022,11 @@ if (
     rsiElement
 ) {
 
-   const rsi7DaysAgo = rsiAverage7;
+   const rsi7DaysAgo =
+    calculateKpiAverage7Days(
+        14,
+        calculateRSI
+    );
 
     if (
         Number.isFinite(rsi7DaysAgo)
@@ -1112,8 +1084,11 @@ if (
     mm111Element
 ) {
 
-   const mm1117DaysAgo = mm111Average7;
-
+const mm1117DaysAgo =
+    calculateKpiAverage7Days(
+        111,
+        calculateMovingAverage
+    );
 
     if (
         Number.isFinite(mm1117DaysAgo)
@@ -1163,7 +1138,7 @@ if (
 
 }
 
-   // =================================================
+  // =================================================
 // AFFICHAGE MM350
 // =================================================
 
@@ -1172,54 +1147,43 @@ if (
     mm350Element
 ) {
 
-   const mm3507DaysAgo = mm350Average7;
+    const mm3507DaysAgo =
+        calculateKpiAverage7Days(
+            350,
+            calculateMovingAverage
+        );
+
+    const variation =
+        (
+            (mm350Value - mm3507DaysAgo) /
+            mm3507DaysAgo
+        ) * 100;
 
 
-    if (
-        Number.isFinite(mm3507DaysAgo)
-    ) {
-
-        const variation =
-            (
-                (mm350Value - mm3507DaysAgo) /
-                mm3507DaysAgo
-            ) * 100;
-
-
-        mm350Element.innerHTML =
-            formatPrice(mm350Value) +
-            " <small>" +
-            (
-                variation >= 0
-                    ? "+" + variation.toFixed(1) + "%"
-                    : variation.toFixed(1) + "%"
-            ) +
-            "</small>";
+    mm350Element.innerHTML =
+        formatPrice(mm350Value) +
+        " <small>" +
+        (
+            variation >= 0
+                ? "+" + variation.toFixed(1) + "%"
+                : variation.toFixed(1) + "%"
+        ) +
+        "</small>";
 
 
-        if (
-            mm350AverageElement
-        ) {
+    // Affichage moyenne 7 jours
+    if (mm350AverageElement) {
 
-            mm350AverageElement.textContent =
-                "Moy. 7j : " +
-                formatPrice(mm3507DaysAgo);
-
-        }
-
-
-    } else {
-
-        mm350Element.textContent =
-            formatPrice(mm350Value);
+        mm350AverageElement.textContent =
+            "Moy. 7j : " +
+            formatPrice(mm3507DaysAgo);
 
     }
 
 
 } else if (mm350Element) {
 
-    mm350Element.textContent =
-        "-";
+    mm350Element.textContent = "-";
 
 }
 
@@ -1584,7 +1548,40 @@ function calculateKpi7DaysAgo(
     );
 
 }
+// =================================================
+// MOYENNE REELLE DES 7 DERNIERS JOURS
+// =================================================
 
+function calculateKpiAverage7Days(period, calculator) {
+
+    let values = [];
+
+    for (let day = 0; day < 7; day++) {
+
+        const endIndex =
+            btcPrices.length - day;
+
+        const history =
+            btcPrices
+                .slice(0, endIndex)
+                .map(item => item.price);
+
+
+        const value =
+            calculator(
+                history,
+                period
+            );
+
+
+        if (Number.isFinite(value)) {
+            values.push(value);
+        }
+
+    }
+
+    return average(values);
+}
 // =====================================================
 // RSI
 // =====================================================
