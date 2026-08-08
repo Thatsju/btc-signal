@@ -1232,14 +1232,11 @@ function calculateKpi7DaysAgo(
 
 
     const oldPrices =
-        btcPrices
-            .slice(
-                0,
-                btcPrices.length - 7
-            )
-            .map(
-                item => item.price
-            );
+    btcPrices
+        .slice(0, -7)
+        .map(
+            item => item.price
+        );
 
 
     return calculator(
