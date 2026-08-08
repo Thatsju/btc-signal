@@ -3,6 +3,7 @@
 // VERSION AVEC HISTORIQUE 400 JOURS
 // SOURCE PRIX : COINBASE
 // FEAR & GREED : ALTERNATIVE.ME
+// RAINBOW : BITCOIN.COM
 // =====================================================
 
 
@@ -165,10 +166,9 @@ async function getBTCData() {
             now - (400 * oneDay);
 
 
-        // Coinbase accepte maximum 300 bougies
-        // par requête.
-        // On fait donc 2 requêtes.
-
+        // =================================================
+        // HISTORIQUE COINBASE
+        // =================================================
 
         const firstStart =
             start400;
@@ -295,7 +295,10 @@ async function getBTCData() {
                 );
 
 
-        // Suppression des doublons
+        // =================================================
+        // SUPPRESSION DES DOUBLONS
+        // =================================================
+
         const unique =
             new Map();
 
@@ -366,22 +369,31 @@ async function getBTCData() {
 
 
         // =================================================
-       // INDICATEURS
-       // =================================================
+        // INDICATEURS
+        // =================================================
 
-    calculateIndicators();
+        calculateIndicators();
 
-// =================================================
-// RAINBOW
-// =================================================
 
-await getRainbowData();
+        // =================================================
+        // RAINBOW
+        // =================================================
 
-// =================================================
-// FEAR & GREED
-// =================================================
+        await getRainbowData();
 
-await getFearGreed();
+
+        // =================================================
+        // FEAR & GREED
+        // =================================================
+
+        await getFearGreed();
+
+
+        // =================================================
+        // AFFICHAGE INDICATEURS
+        // =================================================
+
+        updateIndicators();
 
 
         // =================================================
@@ -419,6 +431,187 @@ await getFearGreed();
 
         }
 
+    }
+}
+
+
+// =====================================================
+// RAINBOW
+// =====================================================
+
+async function getRainbowData() {
+
+    try {
+
+        console.log(
+            "BTC SIGNAL : récupération Rainbow..."
+        );
+
+
+        const response =
+            await fetch(
+                "https://charts.bitcoin.com/api/v1/charts/rainbow",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Rainbow API : " +
+                response.status
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "BTC SIGNAL : Rainbow",
+            data
+        );
+
+
+        // =================================================
+        // RECHERCHE DE LA ZONE ACTUELLE
+        // =================================================
+
+        const zone =
+            data.currentZone ??
+            data.data?.currentZone ??
+            data.zone ??
+            data.data?.zone;
+
+
+        if (!zone) {
+
+            throw new Error(
+                "Zone Rainbow introuvable"
+            );
+        }
+
+
+        rainbowValue =
+            String(zone);
+
+
+        // =================================================
+        // AFFICHAGE RAINBOW
+        // =================================================
+
+        if (rainbowElement) {
+
+            rainbowElement.textContent =
+                rainbowValue;
+        }
+
+
+        // =================================================
+        // ETAT RAINBOW
+        // =================================================
+
+        updateRainbowState();
+
+
+    } catch (error) {
+
+        console.error(
+            "Erreur Rainbow :",
+            error
+        );
+
+
+        rainbowValue =
+            null;
+
+
+        if (rainbowElement) {
+
+            rainbowElement.textContent =
+                "-";
+        }
+
+
+        setIndicator(
+            indicatorRainbow,
+            kpiRainbow,
+            "neutral",
+            "En attente"
+        );
+    }
+}
+
+
+// =====================================================
+// ETAT RAINBOW
+// =====================================================
+
+function updateRainbowState() {
+
+    if (!rainbowValue) {
+        return;
+    }
+
+
+    const zone =
+        rainbowValue.toLowerCase();
+
+
+    // =================================================
+    // ZONES FAVORABLES
+    // =================================================
+
+    if (
+        zone.includes("fire") ||
+        zone.includes("accumulate") ||
+        zone.includes("buy") ||
+        zone.includes("blue") ||
+        zone.includes("green")
+    ) {
+
+        setIndicator(
+            indicatorRainbow,
+            kpiRainbow,
+            "buy",
+            rainbowValue
+        );
+
+
+    // =================================================
+    // ZONES DE VENTE
+    // =================================================
+
+    } else if (
+        zone.includes("fomo") ||
+        zone.includes("sell") ||
+        zone.includes("maximum") ||
+        zone.includes("red")
+    ) {
+
+        setIndicator(
+            indicatorRainbow,
+            kpiRainbow,
+            "sell",
+            rainbowValue
+        );
+
+
+    // =================================================
+    // ZONES NEUTRES
+    // =================================================
+
+    } else {
+
+        setIndicator(
+            indicatorRainbow,
+            kpiRainbow,
+            "neutral",
+            rainbowValue
+        );
     }
 }
 
@@ -547,9 +740,8 @@ function calculateIndicators() {
     }
 
 
-
     // =================================================
-    // AFFICHAGE
+    // AFFICHAGE RSI
     // =================================================
 
     if (Number.isFinite(rsiValue)) {
@@ -564,6 +756,10 @@ function calculateIndicators() {
     }
 
 
+    // =================================================
+    // AFFICHAGE MM111
+    // =================================================
+
     if (Number.isFinite(mm111Value)) {
 
         mm111Element.textContent =
@@ -575,6 +771,10 @@ function calculateIndicators() {
             "-";
     }
 
+
+    // =================================================
+    // AFFICHAGE MM350
+    // =================================================
 
     if (Number.isFinite(mm350Value)) {
 
@@ -588,6 +788,10 @@ function calculateIndicators() {
     }
 
 
+    // =================================================
+    // AFFICHAGE PI CYCLE
+    // =================================================
+
     if (Number.isFinite(piCycleValue)) {
 
         piCycleElement.textContent =
@@ -600,8 +804,10 @@ function calculateIndicators() {
     }
 
 
-    rainbowElement.textContent =
-        "-";
+    // =================================================
+    // IMPORTANT :
+    // PAS DE RESET DU RAINBOW ICI
+    // =================================================
 }
 
 
@@ -1019,12 +1225,10 @@ function updateIndicators() {
     // RAINBOW
     // =================================================
 
-    setIndicator(
-        indicatorRainbow,
-        kpiRainbow,
-        "neutral",
-        "En attente"
-    );
+    // Rainbow est géré directement par :
+    // getRainbowData()
+    // et
+    // updateRainbowState()
 
 
     // =================================================
@@ -1376,6 +1580,7 @@ function updateMainSignal(score) {
         signalStatus.textContent =
             "Favorable à l'achat";
 
+
     } else if (score <= 35) {
 
         signalStatus.classList.add(
@@ -1385,6 +1590,7 @@ function updateMainSignal(score) {
 
         signalStatus.textContent =
             "Favorable à la vente";
+
 
     } else {
 
