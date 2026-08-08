@@ -216,18 +216,36 @@ async function getBTCData() {
         // =================================================
         // URL 1 : 400 JOURS QUOTIDIENS
         // =================================================
+const splitDate =
+    now - (200 * oneDay);
 
-        const url1 =
-            "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
-            "?granularity=86400" +
-            "&start=" +
-            encodeURIComponent(
-                new Date(start400).toISOString()
-            ) +
-            "&end=" +
-            encodeURIComponent(
-                new Date(now).toISOString()
-            );
+
+// Première moitié : -400 jours à -200 jours
+const urlOld =
+    "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
+    "?granularity=86400" +
+    "&start=" +
+    encodeURIComponent(
+        new Date(start400).toISOString()
+    ) +
+    "&end=" +
+    encodeURIComponent(
+        new Date(splitDate).toISOString()
+    );
+
+
+// Deuxième moitié : -200 jours à maintenant
+const urlRecent =
+    "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
+    "?granularity=86400" +
+    "&start=" +
+    encodeURIComponent(
+        new Date(splitDate).toISOString()
+    ) +
+    "&end=" +
+    encodeURIComponent(
+        new Date(now).toISOString()
+    );
 
 
         // =================================================
@@ -251,21 +269,55 @@ async function getBTCData() {
         // APPELS API
         // =================================================
 
-        const [
-            response1,
-            response2
-        ] = await Promise.all([
+       const [
+    responseOld,
+    responseRecent,
+    responseHourly
+] = await Promise.all([
 
-            fetch(url1, {
-                cache: "no-store"
-            }),
+    fetch(urlOld, {
+        cache: "no-store"
+    }),
 
-            fetch(url2, {
-                cache: "no-store"
-            })
+    fetch(urlRecent, {
+        cache: "no-store"
+    }),
 
-        ]);
+    fetch(url2, {
+        cache: "no-store"
+    })
 
+]);
+
+
+if (!responseOld.ok) {
+
+    throw new Error(
+        "Coinbase historique ancien : " +
+        responseOld.status
+    );
+
+}
+
+
+if (!responseRecent.ok) {
+
+    throw new Error(
+        "Coinbase historique récent : " +
+        responseRecent.status
+    );
+
+}
+
+
+if (!responseHourly.ok) {
+
+    throw new Error(
+        "Coinbase horaire : " +
+        responseHourly.status
+    );
+
+}
 
         if (!response1.ok) {
 
@@ -287,11 +339,22 @@ async function getBTCData() {
         }
 
 
-        const data1 =
-            await response1.json();
+      cconst oldData =
+    await responseOld.json();
 
-        const data2 =
-            await response2.json();
+const recentData =
+    await responseRecent.json();
+
+const data2 =
+    await responseHourly.json();
+
+
+// Fusion des 400 jours
+
+const data1 = [
+    ...oldData,
+    ...recentData
+];
 
 
         // =================================================
