@@ -1,591 +1,579 @@
 <!DOCTYPE html>
 
 <html lang="fr">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 ```
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
 <title>BTC SIGNAL</title>
 
-<link rel="stylesheet" href="style.css">
+<link
+    rel="stylesheet"
+    href="style.css"
+>
 ```
 
 </head>
 
 <body>
 
-```
 <main class="app">
 
-    <!-- ========================= -->
-    <!-- HEADER -->
-    <!-- ========================= -->
+```
+<!-- ========================= -->
+<!-- HEADER -->
+<!-- ========================= -->
 
-    <header class="header">
+<header class="header">
 
-        <h1>BTC SIGNAL</h1>
+    <h1>BTC SIGNAL</h1>
 
-        <p>
-            Analyse simple du marché Bitcoin
-        </p>
+    <p>
+        Analyse simple du marché Bitcoin
+    </p>
 
-    </header>
+</header>
 
 
-    <!-- ========================= -->
-    <!-- SIGNAL PRINCIPAL -->
-    <!-- ========================= -->
+<!-- ========================= -->
+<!-- SIGNAL PRINCIPAL -->
+<!-- ========================= -->
 
-    <section class="signal-card">
+<section class="signal-card">
 
-        <h2>Signal Bitcoin</h2>
+    <h2>Signal Bitcoin</h2>
 
-        <div class="signal-gauge">
+    <div class="signal-gauge">
 
-            <div class="gauge-label gauge-buy">
-                ACHAT
+        <div class="gauge-label gauge-buy">
+            ACHAT
+        </div>
+
+        <div class="gauge-track">
+
+            <div class="gauge-gradient"></div>
+
+            <div
+                class="gauge-cursor"
+                id="gauge-cursor">
             </div>
 
-            <div class="gauge-track">
+        </div>
 
-                <div class="gauge-gradient"></div>
+        <div class="gauge-label gauge-sell">
+            VENTE
+        </div>
 
-                <div
-                    class="gauge-cursor"
-                    id="gauge-cursor">
-                </div>
+    </div>
 
-            </div>
 
-            <div class="gauge-label gauge-sell">
-                VENTE
-            </div>
+    <div
+        class="signal-status neutral"
+        id="signal-status">
+
+        Favorable à l'achat / vente
+
+    </div>
+
+
+    <div class="signal-score">
+
+        <strong id="signal-score">
+            50
+        </strong>
+
+        <span>/ 100</span>
+
+    </div>
+
+</section>
+
+
+<!-- ========================= -->
+<!-- PRIX BITCOIN -->
+<!-- ========================= -->
+
+<section class="price-card">
+
+    <h2>Bitcoin</h2>
+
+    <div class="btc-price">
+
+        <strong id="btc-price">
+            Chargement...
+        </strong>
+
+        <span
+            id="btc-change"
+            class="price-change">
+            -
+        </span>
+
+    </div>
+
+
+    <div class="chart-container">
+
+        <canvas id="btc-chart"></canvas>
+
+    </div>
+
+
+    <div class="average-grid">
+
+        <div class="average-card">
+
+            <span>
+                Moyenne 7 jours
+            </span>
+
+            <strong id="average-7">
+                -
+            </strong>
+
+        </div>
+
+
+        <div class="average-card">
+
+            <span>
+                Moyenne 30 jours
+            </span>
+
+            <strong id="average-30">
+                -
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ========================= -->
+<!-- INDICATEURS -->
+<!-- ========================= -->
+
+<section class="indicators-section">
+
+    <h2 class="section-title">
+        Indicateurs du marché
+    </h2>
+
+
+    <div class="market-indicators">
+
+
+        <div
+            class="market-indicator neutral"
+            id="indicator-rsi">
+
+            <span class="indicator-dot"></span>
+
+            <span>RSI :</span>
+
+            <strong>Neutre</strong>
 
         </div>
 
 
         <div
-            class="signal-status neutral"
-            id="signal-status">
+            class="market-indicator neutral"
+            id="indicator-mm111">
 
-            Favorable à l'achat / vente
+            <span class="indicator-dot"></span>
+
+            <span>MM 111 :</span>
+
+            <strong>Neutre</strong>
+
+        </div>
+
+
+        <div
+            class="market-indicator neutral"
+            id="indicator-mm350">
+
+            <span class="indicator-dot"></span>
+
+            <span>MM 350 :</span>
+
+            <strong>Neutre</strong>
 
         </div>
 
 
-        <div class="signal-score">
+        <div
+            class="market-indicator neutral"
+            id="indicator-picycle">
 
-            <strong id="signal-score">
-                50
-            </strong>
+            <span class="indicator-dot"></span>
 
-            <span>/ 100</span>
+            <span>Pi Cycle :</span>
+
+            <strong>Neutre</strong>
 
         </div>
 
-    </section>
+
+        <div
+            class="market-indicator neutral"
+            id="indicator-rainbow">
+
+            <span class="indicator-dot"></span>
+
+            <span>Rainbow :</span>
+
+            <strong>Neutre</strong>
+
+        </div>
 
 
-    <!-- ========================= -->
-    <!-- PRIX BITCOIN -->
-    <!-- ========================= -->
+        <div
+            class="market-indicator neutral"
+            id="indicator-fear">
 
-    <section class="price-card">
+            <span class="indicator-dot"></span>
 
-        <h2>Bitcoin</h2>
+            <span>Fear &amp; Greed :</span>
 
-        <div class="btc-price">
+            <strong>Neutre</strong>
 
-            <strong id="btc-price">
-                Chargement...
-            </strong>
+        </div>
 
-            <span
-                id="btc-change"
-                class="price-change">
-                -
+    </div>
+
+</section>
+
+
+<!-- ========================= -->
+<!-- KPIs -->
+<!-- ========================= -->
+
+<section class="kpis-section">
+
+    <h2 class="section-title">
+        KPIs Bitcoin
+    </h2>
+
+
+    <div class="kpi-grid">
+
+
+        <!-- RSI -->
+
+        <button
+            class="kpi-card neutral"
+            id="kpi-rsi"
+            type="button">
+
+            <span class="kpi-name">
+                RSI
             </span>
 
-        </div>
+            <strong
+                class="kpi-value"
+                id="rsi">
+                -
+            </strong>
 
+            <div class="kpi-details">
 
-        <!-- COURBE 7 JOURS -->
+                <strong>RSI</strong>
 
-        <div class="chart-container">
+                <p>
+                    Mesure la force du mouvement du prix.
+                </p>
 
-            <canvas id="btc-chart"></canvas>
+                <p>
+                    🟢 Sous 30 : achat potentiel
+                </p>
 
-        </div>
+                <p>
+                    🟡 30 à 70 : neutre
+                </p>
 
-
-        <!-- MOYENNES -->
-
-        <div class="average-grid">
-
-            <div class="average-card">
-
-                <span>
-                    Moyenne 7 jours
-                </span>
-
-                <strong id="average-7">
-                    -
-                </strong>
-
-            </div>
-
-
-            <div class="average-card">
-
-                <span>
-                    Moyenne 30 jours
-                </span>
-
-                <strong id="average-30">
-                    -
-                </strong>
+                <p>
+                    🔴 Au-dessus de 70 : vente potentielle
+                </p>
 
             </div>
 
-        </div>
-
-    </section>
+        </button>
 
 
-    <!-- ========================= -->
-    <!-- INDICATEURS -->
-    <!-- ========================= -->
+        <!-- MM111 -->
 
-    <section class="indicators-section">
+        <button
+            class="kpi-card neutral"
+            id="kpi-mm111"
+            type="button">
 
-        <h2 class="section-title">
-            Indicateurs du marché
-        </h2>
+            <span class="kpi-name">
+                MM 111 jours
+            </span>
 
+            <strong
+                class="kpi-value"
+                id="mm111">
+                -
+            </strong>
 
-        <div class="market-indicators">
-
-            <div
-                class="market-indicator neutral"
-                id="indicator-rsi">
-
-                <span class="indicator-dot"></span>
-
-                <span>
-                    RSI :
-                </span>
+            <div class="kpi-details">
 
                 <strong>
-                    Neutre
+                    Moyenne mobile 111 jours
                 </strong>
+
+                <p>
+                    Compare le prix actuel à une moyenne longue.
+                </p>
+
+                <p>
+                    🟢 Sous 90 % de la MM : achat
+                </p>
+
+                <p>
+                    🟡 Entre 90 % et 115 % : neutre
+                </p>
+
+                <p>
+                    🔴 Au-dessus de 115 % : vente
+                </p>
 
             </div>
 
+        </button>
 
-            <div
-                class="market-indicator neutral"
-                id="indicator-mm111">
 
-                <span class="indicator-dot"></span>
+        <!-- MM350 -->
 
-                <span>
-                    MM 111 :
-                </span>
+        <button
+            class="kpi-card neutral"
+            id="kpi-mm350"
+            type="button">
+
+            <span class="kpi-name">
+                MM 350 jours
+            </span>
+
+            <strong
+                class="kpi-value"
+                id="mm350">
+                -
+            </strong>
+
+            <div class="kpi-details">
 
                 <strong>
-                    Neutre
+                    Moyenne mobile 350 jours
                 </strong>
+
+                <p>
+                    Permet d'évaluer la tendance long terme.
+                </p>
+
+                <p>
+                    🟢 Sous 80 % : achat
+                </p>
+
+                <p>
+                    🟡 Entre 80 % et 125 % : neutre
+                </p>
+
+                <p>
+                    🔴 Au-dessus de 125 % : vente
+                </p>
 
             </div>
 
+        </button>
 
-            <div
-                class="market-indicator neutral"
-                id="indicator-mm350">
 
-                <span class="indicator-dot"></span>
+        <!-- PI CYCLE -->
 
-                <span>
-                    MM 350 :
-                </span>
+        <button
+            class="kpi-card neutral"
+            id="kpi-picycle"
+            type="button">
+
+            <span class="kpi-name">
+                Pi Cycle
+            </span>
+
+            <strong
+                class="kpi-value"
+                id="picycle">
+                -
+            </strong>
+
+            <div class="kpi-details">
 
                 <strong>
-                    Neutre
-                </strong>
-
-            </div>
-
-
-            <div
-                class="market-indicator neutral"
-                id="indicator-picycle">
-
-                <span class="indicator-dot"></span>
-
-                <span>
-                    Pi Cycle :
-                </span>
-
-                <strong>
-                    Neutre
-                </strong>
-
-            </div>
-
-
-            <div
-                class="market-indicator neutral"
-                id="indicator-rainbow">
-
-                <span class="indicator-dot"></span>
-
-                <span>
-                    Rainbow :
-                </span>
-
-                <strong>
-                    Neutre
-                </strong>
-
-            </div>
-
-
-            <div
-                class="market-indicator neutral"
-                id="indicator-fear">
-
-                <span class="indicator-dot"></span>
-
-                <span>
-                    Fear &amp; Greed :
-                </span>
-
-                <strong>
-                    Neutre
-                </strong>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ========================= -->
-    <!-- KPIs -->
-    <!-- ========================= -->
-
-    <section class="kpis-section">
-
-        <h2 class="section-title">
-            KPIs Bitcoin
-        </h2>
-
-
-        <div class="kpi-grid">
-
-            <!-- RSI -->
-
-            <button
-                class="kpi-card neutral"
-                id="kpi-rsi">
-
-                <span class="kpi-name">
-                    RSI
-                </span>
-
-                <strong
-                    class="kpi-value"
-                    id="rsi">
-                    -
-                </strong>
-
-                <div class="kpi-details">
-
-                    <strong>
-                        RSI
-                    </strong>
-
-                    <p>
-                        Mesure la force du mouvement du prix.
-                    </p>
-
-                    <p>
-                        🟢 Sous 30 : achat potentiel
-                    </p>
-
-                    <p>
-                        🟡 30 à 70 : neutre
-                    </p>
-
-                    <p>
-                        🔴 Au-dessus de 70 : vente potentielle
-                    </p>
-
-                </div>
-
-            </button>
-
-
-            <!-- MM111 -->
-
-            <button
-                class="kpi-card neutral"
-                id="kpi-mm111">
-
-                <span class="kpi-name">
-                    MM 111 jours
-                </span>
-
-                <strong
-                    class="kpi-value"
-                    id="mm111">
-                    -
-                </strong>
-
-                <div class="kpi-details">
-
-                    <strong>
-                        Moyenne mobile 111 jours
-                    </strong>
-
-                    <p>
-                        Compare le prix actuel à une moyenne longue.
-                    </p>
-
-                    <p>
-                        🟢 Sous 90 % de la MM : achat
-                    </p>
-
-                    <p>
-                        🟡 Entre 90 % et 115 % : neutre
-                    </p>
-
-                    <p>
-                        🔴 Au-dessus de 115 % : vente
-                    </p>
-
-                </div>
-
-            </button>
-
-
-            <!-- MM350 -->
-
-            <button
-                class="kpi-card neutral"
-                id="kpi-mm350">
-
-                <span class="kpi-name">
-                    MM 350 jours
-                </span>
-
-                <strong
-                    class="kpi-value"
-                    id="mm350">
-                    -
-                </strong>
-
-                <div class="kpi-details">
-
-                    <strong>
-                        Moyenne mobile 350 jours
-                    </strong>
-
-                    <p>
-                        Permet d'évaluer la tendance long terme.
-                    </p>
-
-                    <p>
-                        🟢 Sous 80 % : achat
-                    </p>
-
-                    <p>
-                        🟡 Entre 80 % et 125 % : neutre
-                    </p>
-
-                    <p>
-                        🔴 Au-dessus de 125 % : vente
-                    </p>
-
-                </div>
-
-            </button>
-
-
-            <!-- PI CYCLE -->
-
-            <button
-                class="kpi-card neutral"
-                id="kpi-picycle">
-
-                <span class="kpi-name">
                     Pi Cycle
-                </span>
-
-                <strong
-                    class="kpi-value"
-                    id="picycle">
-                    -
                 </strong>
 
-                <div class="kpi-details">
+                <p>
+                    Indicateur destiné à détecter
+                    des zones potentielles de sommet.
+                </p>
 
-                    <strong>
-                        Pi Cycle
-                    </strong>
+                <p>
+                    🟢 Situation favorable
+                </p>
 
-                    <p>
-                        Indicateur destiné à détecter
-                        des zones potentielles de sommet.
-                    </p>
+                <p>
+                    🟡 Surveillance
+                </p>
 
-                    <p>
-                        🟢 Situation favorable
-                    </p>
+                <p>
+                    🔴 Risque de sommet
+                </p>
 
-                    <p>
-                        🟡 Surveillance
-                    </p>
+            </div>
 
-                    <p>
-                        🔴 Risque de sommet
-                    </p>
-
-                </div>
-
-            </button>
+        </button>
 
 
-            <!-- RAINBOW -->
+        <!-- RAINBOW -->
 
-            <button
-                class="kpi-card neutral"
-                id="kpi-rainbow">
+        <button
+            class="kpi-card neutral"
+            id="kpi-rainbow"
+            type="button">
 
-                <span class="kpi-name">
+            <span class="kpi-name">
+                Rainbow Chart
+            </span>
+
+            <strong
+                class="kpi-value"
+                id="rainbow">
+                -
+            </strong>
+
+            <div class="kpi-details">
+
+                <strong>
                     Rainbow Chart
-                </span>
-
-                <strong
-                    class="kpi-value"
-                    id="rainbow">
-                    -
                 </strong>
 
-                <div class="kpi-details">
+                <p>
+                    Positionne le prix dans différentes
+                    zones historiques du cycle Bitcoin.
+                </p>
 
-                    <strong>
-                        Rainbow Chart
-                    </strong>
+                <p>
+                    🟢 Zone favorable
+                </p>
 
-                    <p>
-                        Positionne le prix dans différentes
-                        zones historiques du cycle Bitcoin.
-                    </p>
+                <p>
+                    🟡 Zone neutre
+                </p>
 
-                    <p>
-                        🟢 Zone favorable
-                    </p>
+                <p>
+                    🔴 Zone de risque
+                </p>
 
-                    <p>
-                        🟡 Zone neutre
-                    </p>
+            </div>
 
-                    <p>
-                        🔴 Zone de risque
-                    </p>
-
-                </div>
-
-            </button>
+        </button>
 
 
-            <!-- FEAR & GREED -->
+        <!-- FEAR & GREED -->
 
-            <button
-                class="kpi-card neutral"
-                id="kpi-fear">
+        <button
+            class="kpi-card neutral"
+            id="kpi-fear"
+            type="button">
 
-                <span class="kpi-name">
-                    Fear &amp; Greed
-                </span>
+            <span class="kpi-name">
+                Fear &amp; Greed
+            </span>
 
-                <strong
-                    class="kpi-value"
-                    id="fear-greed">
-                    -
+            <strong
+                class="kpi-value"
+                id="fear-greed">
+                -
+            </strong>
+
+            <div class="kpi-details">
+
+                <strong>
+                    Fear &amp; Greed Index
                 </strong>
 
-                <div class="kpi-details">
+                <p>
+                    Mesure le sentiment général du marché.
+                </p>
 
-                    <strong>
-                        Fear &amp; Greed Index
-                    </strong>
+                <p>
+                    🟢 Peur extrême : opportunité potentielle
+                </p>
 
-                    <p>
-                        Mesure le sentiment général du marché.
-                    </p>
+                <p>
+                    🟡 Zone neutre
+                </p>
 
-                    <p>
-                        🟢 Peur extrême : opportunité potentielle
-                    </p>
+                <p>
+                    🔴 Avidité extrême : risque potentiel
+                </p>
 
-                    <p>
-                        🟡 Zone neutre
-                    </p>
+            </div>
 
-                    <p>
-                        🔴 Avidité extrême : risque potentiel
-                    </p>
-
-                </div>
-
-            </button>
-
-        </div>
-
-    </section>
+        </button>
 
 
-    <!-- ========================= -->
-    <!-- LECTURE -->
-    <!-- ========================= -->
+    </div>
 
-    <section class="reading-card">
+</section>
 
-        <h2>
-            Comment lire BTC SIGNAL
-        </h2>
 
-        <p>
-            Le score combine les six indicateurs
-            utilisés par BTC SIGNAL.
-        </p>
+<!-- ========================= -->
+<!-- LECTURE -->
+<!-- ========================= -->
 
-        <p>
-            🟢 Score élevé :
-            conditions plus favorables.
-        </p>
+<section class="reading-card">
 
-        <p>
-            🟡 Score moyen :
-            marché incertain.
-        </p>
+    <h2>
+        Comment lire BTC SIGNAL
+    </h2>
 
-        <p>
-            🔴 Score faible :
-            risque plus important.
-        </p>
+    <p>
+        Le score combine les six indicateurs
+        utilisés par BTC SIGNAL.
+    </p>
 
-    </section>
+    <p>
+        🟢 Score élevé :
+        conditions plus favorables.
+    </p>
+
+    <p>
+        🟡 Score moyen :
+        marché incertain.
+    </p>
+
+    <p>
+        🔴 Score faible :
+        risque plus important.
+    </p>
+
+</section>
+```
 
 </main>
 
-
 <script src="app.js"></script>
-```
 
 </body>
+
 </html>
