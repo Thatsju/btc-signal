@@ -185,7 +185,6 @@ async function updateLivePrice() {
 
     }
 }
-
 async function getBTCData() {
 
     try {
@@ -197,36 +196,25 @@ async function getBTCData() {
         const now = Date.now();
 
         const oneDay = 86400 * 1000;
+        const oneHour = 3600 * 1000;
+
+        // =================================================
+        // HISTORIQUE KPI : 400 JOURS
+        // =================================================
 
         const start400 =
             now - (400 * oneDay);
 
-
         // =================================================
-        // REQUETE 1 : 200 JOURS
+        // HISTORIQUE COURBE : 7 JOURS HORAIRES
         // =================================================
 
-        const firstStart =
-            start400;
-
-        const firstEnd =
-            start400 + (200 * oneDay);
+        const start7 =
+            now - (7 * 24 * oneHour);
 
 
         // =================================================
-        // REQUETE 2 : 200 JOURS
-        // =================================================
-
-        const secondStart =
-            firstEnd;
-
-        const secondEnd =
-            now;
-
-
-        // =================================================
-        // URL COINBASE - HISTORIQUE 400 JOURS
-        // DONNEES QUOTIDIENNES
+        // URL 1 : 400 JOURS QUOTIDIENS
         // =================================================
 
         const url1 =
@@ -234,24 +222,28 @@ async function getBTCData() {
             "?granularity=86400" +
             "&start=" +
             encodeURIComponent(
-                new Date(firstStart).toISOString()
+                new Date(start400).toISOString()
             ) +
             "&end=" +
             encodeURIComponent(
-                new Date(firstEnd).toISOString()
+                new Date(now).toISOString()
             );
 
 
+        // =================================================
+        // URL 2 : 7 JOURS HORAIRES
+        // =================================================
+
         const url2 =
             "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
-            "?granularity=86400" +
+            "?granularity=3600" +
             "&start=" +
             encodeURIComponent(
-                new Date(secondStart).toISOString()
+                new Date(start7).toISOString()
             ) +
             "&end=" +
             encodeURIComponent(
-                new Date(secondEnd).toISOString()
+                new Date(now).toISOString()
             );
 
 
@@ -278,7 +270,7 @@ async function getBTCData() {
         if (!response1.ok) {
 
             throw new Error(
-                "Coinbase historique 1 : " +
+                "Coinbase historique : " +
                 response1.status
             );
 
@@ -288,7 +280,7 @@ async function getBTCData() {
         if (!response2.ok) {
 
             throw new Error(
-                "Coinbase historique 2 : " +
+                "Coinbase horaire : " +
                 response2.status
             );
 
@@ -302,80 +294,64 @@ async function getBTCData() {
             await response2.json();
 
 
-        const combined = [
-            ...data1,
-            ...data2
-        ];
-
-
-        if (
-            !Array.isArray(combined) ||
-            combined.length === 0
-        ) {
-
-            throw new Error(
-                "Aucune donnée BTC reçue"
-            );
-
-        }
-
-
         // =================================================
-        // COINBASE :
-        //
-        // [timestamp, low, high, open, close, volume]
+        // COMBINAISON
         // =================================================
 
-        btcPrices =
-            combined
-                .map(item => ({
-
-                    timestamp:
-                        Number(item[0]) * 1000,
-
-                    price:
-                        Number(item[4])
-
-                }))
-                .filter(item =>
-
-                    Number.isFinite(
-                        item.timestamp
-                    ) &&
-
-                    Number.isFinite(
-                        item.price
-                    )
-
-                );
-
-
         // =================================================
-        // SUPPRESSION DES DOUBLONS
-        // =================================================
+// DONNEES KPI : 400 JOURS QUOTIDIENS
+// =================================================
 
-        const unique = new Map();
+btcPrices =
+    data1
+        .map(item => ({
+
+            timestamp:
+                Number(item[0]) * 1000,
+
+            price:
+                Number(item[4])
+
+        }))
+        .filter(item =>
+
+            Number.isFinite(item.timestamp) &&
+            Number.isFinite(item.price)
+
+        )
+        .sort(
+            (a, b) =>
+                a.timestamp -
+                b.timestamp
+        );
 
 
-        btcPrices.forEach(item => {
+// =================================================
+// DONNEES COURBE : 7 JOURS HORAIRES
+// =================================================
 
-            unique.set(
-                item.timestamp,
-                item
-            );
+window.hourlyBTC =
+    data2
+        .map(item => ({
 
-        });
+            timestamp:
+                Number(item[0]) * 1000,
 
+            price:
+                Number(item[4])
 
-        btcPrices =
-            Array.from(
-                unique.values()
-            ).sort(
-                (a, b) =>
-                    a.timestamp -
-                    b.timestamp
-            );
+        }))
+        .filter(item =>
 
+            Number.isFinite(item.timestamp) &&
+            Number.isFinite(item.price)
+
+        )
+        .sort(
+            (a, b) =>
+                a.timestamp -
+                b.timestamp
+        );
 
         if (btcPrices.length < 350) {
 
@@ -466,8 +442,23 @@ async function getBTCData() {
         // GRAPHIQUE
         // =================================================
 
-        drawBTCChart();
+const savedPrices = btcPrices;
 
+if (window.hourlyBTC && window.hourlyBTC.length) {
+
+    btcPrices = window.hourlyBTC;
+
+    drawBTCChart();
+
+    btcPrices = savedPrices;
+
+} else {
+
+    drawBTCChart();
+
+}
+
+btcPrices = savedPrices;
 
         console.log(
             "BTC SIGNAL : données récupérées",
