@@ -51,7 +51,7 @@ const rainbowEvolutionElement =
     document.getElementById("rainbow-evolution");
 const piCycleEvolutionElement =
     document.getElementById("picycle-evolution");
-
+const piCycleAverageElement = document.getElementById("picycle-average");
 // =====================================================
 // INDICATEURS
 // =====================================================
@@ -1176,6 +1176,17 @@ if (
 
     piCycleElement.textContent =
         "-";
+
+}
+    if (
+    piCycleAverageElement &&
+    Number.isFinite(piCycleValue)
+) {
+
+    piCycleAverageElement.textContent =
+        "Moy. 7j : " +
+        piCycleValue.toFixed(1) +
+        "%";
 
 }
     // =================================================
