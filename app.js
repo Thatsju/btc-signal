@@ -194,116 +194,56 @@ async function getBTCData() {
             "BTC SIGNAL : récupération des données..."
         );
 
-
         const now = Date.now();
 
-        const oneDay = 86400 * 1000;
+        const oneHour = 3600 * 1000;
 
-        const start400 =
-            now - (400 * oneDay);
-
-
-        // =================================================
-        // REQUETE 1
-        // =================================================
-
-        const firstStart =
-            start400;
-
-        const firstEnd =
-            start400 + (200 * oneDay);
+        const start7 =
+            now - (7 * 24 * oneHour);
 
 
         // =================================================
-        // REQUETE 2
+        // URL COINBASE - 7 JOURS / DONNEES HORAIRES
         // =================================================
 
-        const secondStart =
-            firstEnd;
-
-        const secondEnd =
-            now;
-
-
-        // =================================================
-        // URL COINBASE
-        // =================================================
-
-        const url1 =
+        const url =
             "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
-            "?granularity=86400" +
+            "?granularity=3600" +
             "&start=" +
             encodeURIComponent(
-                new Date(firstStart).toISOString()
+                new Date(start7).toISOString()
             ) +
             "&end=" +
             encodeURIComponent(
-                new Date(firstEnd).toISOString()
-            );
-
-
-        const url2 =
-            "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
-            "?granularity=86400" +
-            "&start=" +
-            encodeURIComponent(
-                new Date(secondStart).toISOString()
-            ) +
-            "&end=" +
-            encodeURIComponent(
-                new Date(secondEnd).toISOString()
+                new Date(now).toISOString()
             );
 
 
         // =================================================
-        // APPELS API
+        // APPEL API
         // =================================================
 
-        const [
-            response1,
-            response2
-        ] = await Promise.all([
-
-            fetch(url1, {
-                cache: "no-store"
-            }),
-
-            fetch(url2, {
-                cache: "no-store"
-            })
-
-        ]);
+        const response =
+            await fetch(
+                url,
+                {
+                    cache: "no-store"
+                }
+            );
 
 
-        if (!response1.ok) {
+        if (!response.ok) {
 
             throw new Error(
-                "Coinbase historique 1 : " +
-                response1.status
+                "Coinbase historique : " +
+                response.status
             );
+
         }
 
 
-        if (!response2.ok) {
-
-            throw new Error(
-                "Coinbase historique 2 : " +
-                response2.status
-            );
-        }
-
-
-        const data1 =
-            await response1.json();
-
-        const data2 =
-            await response2.json();
-
-
-        const combined = [
-            ...data1,
-            ...data2
-        ];
+        const combined =
+            await response.json();
 
 
         if (
@@ -314,6 +254,7 @@ async function getBTCData() {
             throw new Error(
                 "Aucune donnée BTC reçue"
             );
+
         }
 
 
@@ -379,6 +320,7 @@ async function getBTCData() {
             throw new Error(
                 "Historique BTC insuffisant"
             );
+
         }
 
 
@@ -399,7 +341,7 @@ async function getBTCData() {
         average7 =
             average(
                 btcPrices
-                    .slice(-7)
+                    .slice(-168)
                     .map(item => item.price)
             );
 
@@ -489,6 +431,7 @@ async function getBTCData() {
     }
 
 }
+
 
 
 // =====================================================
@@ -2071,7 +2014,7 @@ function drawBTCChart() {
 
     const points =
         btcPrices
-            .slice(-7)
+            .slice(168)
             .filter(point =>
                 Number.isFinite(
                     point.price
