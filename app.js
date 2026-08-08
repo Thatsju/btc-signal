@@ -47,6 +47,8 @@ const mm350AverageElement =
     document.getElementById("mm350-average");
 const fearAverageElement =
     document.getElementById("fear-average");
+const rainbowEvolutionElement =
+    document.getElementById("rainbow-evolution");
 // =====================================================
 // INDICATEURS
 // =====================================================
@@ -687,15 +689,15 @@ function updateRainbowState() {
     const zone =
         rainbowValue.toLowerCase();
 if (
-    rainbowHistory.length >= 2
+    rainbowHistory.length >= 2 &&
+    rainbowEvolutionElement
 ) {
 
-    console.log(
-        "Rainbow évolution 7j :",
-        rainbowHistory[0],
-        "→",
-        rainbowValue
-    );
+    rainbowEvolutionElement.textContent =
+        "Evolution 7j : " +
+        rainbowHistory[0] +
+        " → " +
+        rainbowValue;
 
 }
 
