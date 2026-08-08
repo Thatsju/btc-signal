@@ -1555,7 +1555,7 @@ function setIndicator(
 // =====================================================
 
 function calculateScore() {
-
+console.log("CALCUL SCORE LANCE");
     const scores = [];
 console.log("DEBUG SCORE", {
     rsiValue,
