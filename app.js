@@ -1151,9 +1151,10 @@ if (
 
 }
 
-   // =================================================
+// =================================================
 // AFFICHAGE PI CYCLE
 // =================================================
+
 console.log(
     "DEBUG PI CYCLE",
     {
@@ -1163,11 +1164,11 @@ console.log(
         pi: piCycleValue
     }
 );
+
 if (
     Number.isFinite(piCycleValue) &&
     piCycleElement
 ) {
-
     piCycleElement.textContent =
         piCycleValue.toFixed(1) + "%";
 
