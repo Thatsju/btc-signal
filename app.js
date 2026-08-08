@@ -201,8 +201,7 @@ async function updateLivePrice() {
 updatePriceDisplay();
 
 // recalcul du signal en temps réel
-calculateRealtimeScore();
-
+calculateScore();
     } catch (error) {
 
         console.error(
