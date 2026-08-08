@@ -1324,18 +1324,17 @@ async function getFearGreed() {
 
 
         if (
-            fearAverageElement
-        ) {
+        fearAverageElement
+    ) {
 
-            fearAverageElement.textContent =
-                "Moy. 7j : -";
+        fearAverageElement.textContent =
+            "Moy. 7j : -";
 
-        }
-
-    
+    }
 
 }
 
+}
 
 // =====================================================
 // MOYENNE MOBILE
@@ -3188,21 +3187,20 @@ const range =
 // =====================================================
 // RESIZE
 // =====================================================
-
 window.addEventListener(
     "resize",
     () => {
 
-       if (
-    window.hourlyBTC &&
-    window.hourlyBTC.length
-) {
+        if (
+            window.hourlyBTC &&
+            window.hourlyBTC.length
+        ) {
 
-    drawBTCChart(
-        window.hourlyBTC
-    );
+            drawBTCChart(
+                window.hourlyBTC
+            );
 
-}
+        }
 
     }
 );
