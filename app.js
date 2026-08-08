@@ -54,6 +54,10 @@ const kpiFear = document.getElementById("kpi-fear");
 
 let btcPrices = [];
 
+let chartPoints = [];
+let chartHoverIndex = null;
+let chartEventsInitialized = false;
+
 let currentPrice = null;
 
 let average7 = null;
@@ -466,11 +470,15 @@ function drawBTCChart() {
         }
     );
 
+    // On garde les coordonnées pour la souris
+    chartPoints = coordinates;
+
     // =================================================
-    // GRILLE DISCRETE
+    // GRILLE
     // =================================================
 
     context.lineWidth = 1;
+
     context.strokeStyle =
         "rgba(255,255,255,0.06)";
 
@@ -579,7 +587,7 @@ function drawBTCChart() {
     context.fill();
 
     // =================================================
-    // COURBE PRINCIPALE
+    // COURBE
     // =================================================
 
     context.beginPath();
@@ -625,15 +633,13 @@ function drawBTCChart() {
     context.shadowBlur = 0;
 
     // =================================================
-    // POINT ACTUEL
+    // POINT FINAL
     // =================================================
 
     const last =
         coordinates[
             coordinates.length - 1
         ];
-
-    // Halo
 
     context.beginPath();
 
@@ -651,8 +657,6 @@ function drawBTCChart() {
     context.lineWidth = 3;
 
     context.stroke();
-
-    // Point blanc
 
     context.beginPath();
 
@@ -673,9 +677,6 @@ function drawBTCChart() {
     // PRIX ACTUEL
     // =================================================
 
-    const currentPriceText =
-        formatPrice(last.price);
-
     context.font =
         "bold 12px Arial";
 
@@ -689,7 +690,7 @@ function drawBTCChart() {
         "#18d89b";
 
     context.fillText(
-        currentPriceText,
+        formatPrice(last.price),
         width - paddingRight,
         Math.max(
             paddingTop,
@@ -758,6 +759,202 @@ function drawBTCChart() {
         width - paddingRight,
         height - 18
     );
+
+    // =================================================
+    // CURSEUR INTERACTIF
+    // =================================================
+
+    if (
+        chartHoverIndex !== null &&
+        chartPoints[chartHoverIndex]
+    ) {
+
+        const selected =
+            chartPoints[
+                chartHoverIndex
+            ];
+
+        // -------------------------------------------------
+        // LIGNE VERTICALE
+        // -------------------------------------------------
+
+        context.beginPath();
+
+        context.moveTo(
+            selected.x,
+            paddingTop
+        );
+
+        context.lineTo(
+            selected.x,
+            height - paddingBottom
+        );
+
+        context.strokeStyle =
+            "rgba(255,255,255,0.25)";
+
+        context.lineWidth = 1;
+
+        context.setLineDash([
+            4,
+            4
+        ]);
+
+        context.stroke();
+
+        context.setLineDash([]);
+
+        // -------------------------------------------------
+        // POINT SELECTIONNE
+        // -------------------------------------------------
+
+        context.beginPath();
+
+        context.arc(
+            selected.x,
+            selected.y,
+            7,
+            0,
+            Math.PI * 2
+        );
+
+        context.fillStyle =
+            "#18d89b";
+
+        context.fill();
+
+        context.beginPath();
+
+        context.arc(
+            selected.x,
+            selected.y,
+            3,
+            0,
+            Math.PI * 2
+        );
+
+        context.fillStyle =
+            "#ffffff";
+
+        context.fill();
+
+        // -------------------------------------------------
+        // INFORMATIONS
+        // -------------------------------------------------
+
+        const selectedDate =
+            new Date(
+                selected.timestamp
+            );
+
+        const dateLabel =
+            selectedDate.toLocaleDateString(
+                "fr-FR",
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                }
+            );
+
+        const priceLabel =
+            formatPrice(
+                selected.price
+            );
+
+        // -------------------------------------------------
+        // POSITION DE LA BULLE
+        // -------------------------------------------------
+
+        const boxWidth = 125;
+        const boxHeight = 58;
+
+        let boxX =
+            selected.x + 12;
+
+        let boxY =
+            selected.y - boxHeight - 12;
+
+        if (
+            boxX + boxWidth >
+            width - 5
+        ) {
+
+            boxX =
+                selected.x -
+                boxWidth -
+                12;
+        }
+
+        if (boxY < 5) {
+
+            boxY =
+                selected.y + 12;
+        }
+
+        // -------------------------------------------------
+        // BULLE
+        // -------------------------------------------------
+
+        context.fillStyle =
+            "rgba(10,18,25,0.94)";
+
+        context.strokeStyle =
+            "rgba(24,216,155,0.35)";
+
+        context.lineWidth = 1;
+
+        context.beginPath();
+
+        context.roundRect(
+            boxX,
+            boxY,
+            boxWidth,
+            boxHeight,
+            8
+        );
+
+        context.fill();
+        context.stroke();
+
+        // -------------------------------------------------
+        // DATE
+        // -------------------------------------------------
+
+        context.font =
+            "10px Arial";
+
+        context.fillStyle =
+            "rgba(255,255,255,0.55)";
+
+        context.textAlign =
+            "left";
+
+        context.textBaseline =
+            "top";
+
+        context.fillText(
+            dateLabel,
+            boxX + 10,
+            boxY + 9
+        );
+
+        // -------------------------------------------------
+        // PRIX
+        // -------------------------------------------------
+
+        context.font =
+            "bold 15px Arial";
+
+        context.fillStyle =
+            "#18d89b";
+
+        context.fillText(
+            priceLabel,
+            boxX + 10,
+            boxY + 28
+        );
+    }
 }
 function calculateIndicators() {
 
@@ -1454,12 +1651,96 @@ window.addEventListener(
         }
     }
 );
+// =====================================================
+// INTERACTION COURBE
+// =====================================================
 
+function setupChartInteraction() {
+
+    if (!chartCanvas) {
+        return;
+    }
+
+    if (chartEventsInitialized) {
+        return;
+    }
+
+    chartEventsInitialized = true;
+
+    chartCanvas.style.cursor = "crosshair";
+
+    chartCanvas.addEventListener(
+        "mousemove",
+        function(event) {
+
+            if (!chartPoints.length) {
+                return;
+            }
+
+            const rect =
+                chartCanvas.getBoundingClientRect();
+
+            const mouseX =
+                event.clientX -
+                rect.left;
+
+            let closestIndex = 0;
+
+            let closestDistance =
+                Math.abs(
+                    chartPoints[0].x -
+                    mouseX
+                );
+
+            for (
+                let i = 1;
+                i < chartPoints.length;
+                i++
+            ) {
+
+                const distance =
+                    Math.abs(
+                        chartPoints[i].x -
+                        mouseX
+                    );
+
+                if (
+                    distance <
+                    closestDistance
+                ) {
+
+                    closestDistance =
+                        distance;
+
+                    closestIndex =
+                        i;
+                }
+            }
+
+            chartHoverIndex =
+                closestIndex;
+
+            drawBTCChart();
+        }
+    );
+
+    chartCanvas.addEventListener(
+        "mouseleave",
+        function() {
+
+            chartHoverIndex = null;
+
+            drawBTCChart();
+        }
+    );
+}
 
 // =====================================================
 // LANCEMENT
 // =====================================================
 
 setupKpiCards();
+
+setupChartInteraction();
 
 getBTCData();
