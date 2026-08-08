@@ -1673,21 +1673,19 @@ scores.push({
         let score;
 
 
-        if (piCycleValue >= 95) {
+        if (piCycleValue >= 100) {
 
-            score = 0;
+    score = 0;
 
-        } else if (
-            piCycleValue >= 85
-        ) {
+} else if (piCycleValue <= 70) {
 
-            score = 50;
+    score = 100;
 
-        } else {
+} else {
 
-            score = 100;
+    score = 100 - ((piCycleValue - 70) * 3.33);
 
-        }
+}
 
 
 scores.push({
