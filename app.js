@@ -98,7 +98,10 @@ let rsiHistory = [];
 let mm111History = [];
 let mm350History = [];
 let fearGreedHistory = [];
-let rainbowHistory = [];
+let rainbowHistory =
+    JSON.parse(
+        localStorage.getItem("rainbowHistory")
+    ) || [];
 // =====================================================
 // OUTILS
 // =====================================================
@@ -622,10 +625,7 @@ if (typeof zone === "object" && zone !== null) {
 rainbowHistory.push(
     rainbowValue
 );
-console.log(
-    "RAINBOW HISTORIQUE",
-    rainbowHistory
-);
+
 
 if (
     rainbowHistory.length > 7
@@ -634,6 +634,12 @@ if (
     rainbowHistory.shift();
 
 }
+
+
+localStorage.setItem(
+    "rainbowHistory",
+    JSON.stringify(rainbowHistory)
+);
 
 if (rainbowElement) {
 
