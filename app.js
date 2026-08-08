@@ -79,7 +79,7 @@ function formatPrice(value) {
 
     return new Intl.NumberFormat("fr-FR", {
         style: "currency",
-        currency: "USD",
+        currency: "EUR",
         maximumFractionDigits: 0
     }).format(value);
 }
@@ -149,7 +149,7 @@ async function getBTCData() {
 
         const url =
             "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart" +
-            "?vs_currency=usd" +
+            "?vs_currency=eur" +
             "&days=30" +
             "&interval=daily";
 
