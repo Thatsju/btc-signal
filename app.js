@@ -16,174 +16,126 @@ const average30Element = document.getElementById("average-30");
 
 const chartCanvas = document.getElementById("btc-chart");
 
+const gaugeCursor = document.getElementById("gauge-cursor");
+const signalStatus = document.getElementById("signal-status");
+const signalScoreElement = document.getElementById("signal-score");
+
+
+// KPI
+const rsiElement = document.getElementById("rsi");
+const mm111Element = document.getElementById("mm111");
+const mm350Element = document.getElementById("mm350");
+const piCycleElement = document.getElementById("picycle");
+const rainbowElement = document.getElementById("rainbow");
+const fearGreedElement = document.getElementById("fear-greed");
+
+
+// INDICATEURS
+const indicatorRsi = document.getElementById("indicator-rsi");
+const indicatorMm111 = document.getElementById("indicator-mm111");
+const indicatorMm350 = document.getElementById("indicator-mm350");
+const indicatorPiCycle = document.getElementById("indicator-picycle");
+const indicatorRainbow = document.getElementById("indicator-rainbow");
+const indicatorFear = document.getElementById("indicator-fear");
+
+
+// KPI CARDS
+const kpiRsi = document.getElementById("kpi-rsi");
+const kpiMm111 = document.getElementById("kpi-mm111");
+const kpiMm350 = document.getElementById("kpi-mm350");
+const kpiPiCycle = document.getElementById("kpi-picycle");
+const kpiRainbow = document.getElementById("kpi-rainbow");
+const kpiFear = document.getElementById("kpi-fear");
+
 
 // =====================================================
-// CONFIGURATION
+// VARIABLES
 // =====================================================
 
-const BTC_API =
-    "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart" +
-    "?vs_currency=eur" +
-    "&days=30" +
-    "&interval=daily";
+let btcPrices = [];
+
+let currentPrice = null;
+
+let average7 = null;
+let average30 = null;
+
+let rsiValue = null;
+let mm111Value = null;
+let mm350Value = null;
+let piCycleValue = null;
+let rainbowValue = null;
+let fearGreedValue = null;
 
 
 // =====================================================
-// FORMAT PRIX
+// OUTILS
 // =====================================================
 
 function formatPrice(value) {
 
-    return new Intl.NumberFormat("fr-FR", {
-        style: "currency",
-        currency: "EUR",
-        maximumFractionDigits: 0
-    }).format(value);
-
-}
-
-
-// =====================================================
-// MOYENNE
-// =====================================================
-
-function calculateAverage(values) {
-
-    if (!values.length) {
-        return 0;
+    if (!Number.isFinite(value)) {
+        return "-";
     }
 
-    const total = values.reduce(
-        (sum, value) => sum + value,
-        0
+    return new Intl.NumberFormat("fr-FR", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0
+    }).format(value);
+}
+
+
+function formatNumber(value, decimals = 2) {
+
+    if (!Number.isFinite(value)) {
+        return "-";
+    }
+
+    return value.toFixed(decimals);
+}
+
+
+function average(values) {
+
+    const validValues = values.filter(
+        value => Number.isFinite(value)
     );
 
-    return total / values.length;
+    if (!validValues.length) {
+        return null;
+    }
 
+    return (
+        validValues.reduce(
+            (sum, value) => sum + value,
+            0
+        ) / validValues.length
+    );
 }
 
 
 // =====================================================
-// DESSIN DE LA COURBE
+// COULEUR KPI
 // =====================================================
 
-function drawChart(values) {
+function setState(element, state) {
 
-    if (!chartCanvas || !values.length) {
+    if (!element) {
         return;
     }
 
-    const ctx = chartCanvas.getContext("2d");
-
-    const width = chartCanvas.clientWidth;
-    const height = chartCanvas.clientHeight;
-
-    const dpr = window.devicePixelRatio || 1;
-
-    chartCanvas.width = width * dpr;
-    chartCanvas.height = height * dpr;
-
-    ctx.setTransform(
-        dpr,
-        0,
-        0,
-        dpr,
-        0,
-        0
+    element.classList.remove(
+        "buy",
+        "neutral",
+        "sell"
     );
 
-    ctx.clearRect(
-        0,
-        0,
-        width,
-        height
-    );
-
-
-    // -------------------------------------------------
-    // ECHELLE
-    // -------------------------------------------------
-
-    const min = Math.min(...values);
-    const max = Math.max(...values);
-
-    const range =
-        max - min || 1;
-
-
-    // -------------------------------------------------
-    // MARGES
-    // -------------------------------------------------
-
-    const paddingLeft = 10;
-    const paddingRight = 10;
-    const paddingTop = 15;
-    const paddingBottom = 15;
-
-    const chartWidth =
-        width -
-        paddingLeft -
-        paddingRight;
-
-    const chartHeight =
-        height -
-        paddingTop -
-        paddingBottom;
-
-
-    // -------------------------------------------------
-    // COURBE
-    // -------------------------------------------------
-
-    ctx.beginPath();
-
-    values.forEach(
-        (value, index) => {
-
-            const x =
-                paddingLeft +
-                (
-                    index /
-                    (values.length - 1)
-                ) *
-                chartWidth;
-
-            const y =
-                paddingTop +
-                (
-                    1 -
-                    (
-                        value - min
-                    ) /
-                    range
-                ) *
-                chartHeight;
-
-
-            if (index === 0) {
-
-                ctx.moveTo(x, y);
-
-            } else {
-
-                ctx.lineTo(x, y);
-
-            }
-
-        }
-    );
-
-
-    ctx.strokeStyle = "#18d89b";
-    ctx.lineWidth = 3;
-
-    ctx.stroke();
-
+    element.classList.add(state);
 }
 
 
 // =====================================================
-// RECUPERATION BTC
+// PRIX BTC + HISTORIQUE
 // =====================================================
 
 async function getBTCData() {
@@ -191,26 +143,31 @@ async function getBTCData() {
     try {
 
         console.log(
-            "BTC Signal : récupération des données..."
+            "BTC SIGNAL : récupération des données..."
         );
 
 
-        const response =
-            await fetch(
-                BTC_API,
-                {
-                    cache: "no-store"
-                }
-            );
+        const url =
+            "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart" +
+            "?vs_currency=usd" +
+            "&days=30" +
+            "&interval=daily";
+
+
+        const response = await fetch(
+            url,
+            {
+                cache: "no-store"
+            }
+        );
 
 
         if (!response.ok) {
 
             throw new Error(
-                "API Bitcoin : " +
+                "CoinGecko : " +
                 response.status
             );
-
         }
 
 
@@ -225,80 +182,27 @@ async function getBTCData() {
         ) {
 
             throw new Error(
-                "Aucune donnée Bitcoin reçue"
+                "Aucune donnée BTC reçue"
             );
-
         }
 
 
-        // -------------------------------------------------
-        // PRIX
-        // -------------------------------------------------
-
-        const prices =
+        btcPrices =
             data.prices.map(
-                item => Number(item[1])
+                item => ({
+                    timestamp: item[0],
+                    price: Number(item[1])
+                })
+            ).filter(
+                item =>
+                    Number.isFinite(item.price)
             );
 
 
-        const currentPrice =
-            prices[prices.length - 1];
-
-
-        priceElement.textContent =
-            formatPrice(currentPrice);
-
-
-        // -------------------------------------------------
-        // EVOLUTION 24H
-        // -------------------------------------------------
-
-        if (prices.length >= 2) {
-
-            const previousPrice =
-                prices[prices.length - 2];
-
-            const change =
-                (
-                    (
-                        currentPrice -
-                        previousPrice
-                    ) /
-                    previousPrice
-                ) * 100;
-
-
-            changeElement.textContent =
-                (
-                    change >= 0
-                    ? "+"
-                    : ""
-                ) +
-                change.toFixed(2) +
-                " %";
-
-
-            changeElement.classList.remove(
-                "up",
-                "down"
-            );
-
-
-            if (change >= 0) {
-
-                changeElement.classList.add(
-                    "up"
-                );
-
-            } else {
-
-                changeElement.classList.add(
-                    "down"
-                );
-
-            }
-
-        }
+        currentPrice =
+            btcPrices[
+                btcPrices.length - 1
+            ].price;
 
 
         // -------------------------------------------------
@@ -306,38 +210,43 @@ async function getBTCData() {
         // -------------------------------------------------
 
         const last7 =
-            prices.slice(-7);
+            btcPrices
+                .slice(-7)
+                .map(item => item.price);
 
 
-        const average7 =
-            calculateAverage(last7);
-
-
-        average7Element.textContent =
-            formatPrice(average7);
+        average7 =
+            average(last7);
 
 
         // -------------------------------------------------
         // MOYENNE 30 JOURS
         // -------------------------------------------------
 
-        const average30 =
-            calculateAverage(prices);
+        const last30 =
+            btcPrices
+                .slice(-30)
+                .map(item => item.price);
 
 
-        average30Element.textContent =
-            formatPrice(average30);
+        average30 =
+            average(last30);
 
 
-        // -------------------------------------------------
-        // COURBE
-        // -------------------------------------------------
+        updatePriceDisplay();
 
-        drawChart(last7);
+        drawBTCChart();
+
+        calculateIndicators();
+
+        updateIndicators();
+
+        calculateScore();
 
 
         console.log(
-            "BTC Signal : données Bitcoin chargées"
+            "BTC SIGNAL : données récupérées",
+            btcPrices.length
         );
 
 
@@ -349,36 +258,1053 @@ async function getBTCData() {
         );
 
 
-        priceElement.textContent =
-            "Erreur";
-
-
-        average7Element.textContent =
-            "-";
-
-
-        average30Element.textContent =
-            "-";
-
+        if (priceElement) {
+            priceElement.textContent =
+                "Erreur";
+        }
     }
-
 }
 
 
 // =====================================================
-// KPIs
+// AFFICHAGE PRIX
 // =====================================================
 
-function initKPIButtons() {
+function updatePriceDisplay() {
 
-    const cards =
-        document.querySelectorAll(
-            ".kpi-card"
+    if (!Number.isFinite(currentPrice)) {
+        return;
+    }
+
+
+    priceElement.textContent =
+        formatPrice(currentPrice);
+
+
+    average7Element.textContent =
+        formatPrice(average7);
+
+
+    average30Element.textContent =
+        formatPrice(average30);
+
+
+    // -------------------------------------------------
+    // DIFFERENCE AVEC MOYENNE 7 JOURS
+    // -------------------------------------------------
+
+    if (Number.isFinite(average7)) {
+
+        const percentage =
+            (
+                (currentPrice - average7) /
+                average7
+            ) * 100;
+
+
+        changeElement.textContent =
+            (percentage >= 0 ? "+" : "") +
+            percentage.toFixed(2) +
+            "%";
+
+
+        changeElement.classList.remove(
+            "up",
+            "down"
         );
+
+
+        changeElement.classList.add(
+            percentage >= 0
+                ? "up"
+                : "down"
+        );
+    }
+}
+
+
+// =====================================================
+// COURBE BTC 7 JOURS
+// =====================================================
+
+function drawBTCChart() {
+
+    if (!chartCanvas) {
+        return;
+    }
+
+
+    const context =
+        chartCanvas.getContext("2d");
+
+
+    const container =
+        chartCanvas.parentElement;
+
+
+    const width =
+        container.clientWidth;
+
+
+    const height =
+        container.clientHeight;
+
+
+    const devicePixelRatio =
+        window.devicePixelRatio || 1;
+
+
+    chartCanvas.width =
+        width * devicePixelRatio;
+
+
+    chartCanvas.height =
+        height * devicePixelRatio;
+
+
+    chartCanvas.style.width =
+        width + "px";
+
+
+    chartCanvas.style.height =
+        height + "px";
+
+
+    context.scale(
+        devicePixelRatio,
+        devicePixelRatio
+    );
+
+
+    context.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    // -------------------------------------------------
+    // DERNIERS 7 JOURS
+    // -------------------------------------------------
+
+    const points =
+        btcPrices.slice(-7);
+
+
+    if (points.length < 2) {
+        return;
+    }
+
+
+    const prices =
+        points.map(
+            point => point.price
+        );
+
+
+    const minPrice =
+        Math.min(...prices);
+
+
+    const maxPrice =
+        Math.max(...prices);
+
+
+    const range =
+        maxPrice - minPrice || 1;
+
+
+    const paddingLeft = 8;
+    const paddingRight = 8;
+    const paddingTop = 20;
+    const paddingBottom = 25;
+
+
+    const chartWidth =
+        width -
+        paddingLeft -
+        paddingRight;
+
+
+    const chartHeight =
+        height -
+        paddingTop -
+        paddingBottom;
+
+
+    const coordinates =
+        points.map(
+            (point, index) => {
+
+                const x =
+                    paddingLeft +
+                    (
+                        index /
+                        (points.length - 1)
+                    ) *
+                    chartWidth;
+
+
+                const y =
+                    paddingTop +
+                    (
+                        1 -
+                        (
+                            (point.price - minPrice) /
+                            range
+                        )
+                    ) *
+                    chartHeight;
+
+
+                return {
+                    x,
+                    y,
+                    price: point.price
+                };
+            }
+        );
+
+
+    // -------------------------------------------------
+    // ZONE SOUS LA COURBE
+    // -------------------------------------------------
+
+    const gradient =
+        context.createLinearGradient(
+            0,
+            0,
+            0,
+            height
+        );
+
+
+    gradient.addColorStop(
+        0,
+        "rgba(24,216,155,0.25)"
+    );
+
+
+    gradient.addColorStop(
+        1,
+        "rgba(24,216,155,0)"
+    );
+
+
+    context.beginPath();
+
+
+    coordinates.forEach(
+        (point, index) => {
+
+            if (index === 0) {
+
+                context.moveTo(
+                    point.x,
+                    point.y
+                );
+
+            } else {
+
+                context.lineTo(
+                    point.x,
+                    point.y
+                );
+            }
+        }
+    );
+
+
+    context.lineTo(
+        coordinates[coordinates.length - 1].x,
+        height - paddingBottom
+    );
+
+
+    context.lineTo(
+        coordinates[0].x,
+        height - paddingBottom
+    );
+
+
+    context.closePath();
+
+
+    context.fillStyle =
+        gradient;
+
+
+    context.fill();
+
+
+    // -------------------------------------------------
+    // LIGNE
+    // -------------------------------------------------
+
+    context.beginPath();
+
+
+    coordinates.forEach(
+        (point, index) => {
+
+            if (index === 0) {
+
+                context.moveTo(
+                    point.x,
+                    point.y
+                );
+
+            } else {
+
+                context.lineTo(
+                    point.x,
+                    point.y
+                );
+            }
+        }
+    );
+
+
+    context.strokeStyle =
+        "#18d89b";
+
+
+    context.lineWidth = 3;
+
+    context.lineJoin =
+        "round";
+
+    context.lineCap =
+        "round";
+
+
+    context.stroke();
+
+
+    // -------------------------------------------------
+    // POINT FINAL
+    // -------------------------------------------------
+
+    const last =
+        coordinates[
+            coordinates.length - 1
+        ];
+
+
+    context.beginPath();
+
+
+    context.arc(
+        last.x,
+        last.y,
+        5,
+        0,
+        Math.PI * 2
+    );
+
+
+    context.fillStyle =
+        "#ffffff";
+
+
+    context.fill();
+
+
+    context.beginPath();
+
+
+    context.arc(
+        last.x,
+        last.y,
+        9,
+        0,
+        Math.PI * 2
+    );
+
+
+    context.strokeStyle =
+        "rgba(24,216,155,.35)";
+
+
+    context.lineWidth = 3;
+
+
+    context.stroke();
+}
+
+
+// =====================================================
+// CALCUL DES INDICATEURS
+// =====================================================
+
+function calculateIndicators() {
+
+    const prices =
+        btcPrices.map(
+            item => item.price
+        );
+
+
+    // -------------------------------------------------
+    // RSI
+    // -------------------------------------------------
+
+    rsiValue =
+        calculateRSI(prices, 14);
+
+
+    // -------------------------------------------------
+    // MM111
+    // -------------------------------------------------
+
+    mm111Value =
+        calculateMovingAverage(
+            prices,
+            111
+        );
+
+
+    // -------------------------------------------------
+    // MM350
+    // -------------------------------------------------
+
+    mm350Value =
+        calculateMovingAverage(
+            prices,
+            350
+        );
+
+
+    /*
+     * Pour l'instant, l'historique récupéré
+     * est limité à 30 jours.
+     *
+     * Les MM111 et MM350 ne peuvent donc
+     * pas encore être calculées correctement.
+     *
+     * Elles resteront "-" jusqu'à ce que
+     * nous branchions une source historique
+     * suffisamment longue.
+     */
+
+
+    if (!Number.isFinite(mm111Value)) {
+        mm111Value = null;
+    }
+
+
+    if (!Number.isFinite(mm350Value)) {
+        mm350Value = null;
+    }
+
+
+    // -------------------------------------------------
+    // PI CYCLE
+    // -------------------------------------------------
+
+    /*
+     * Placeholder volontaire.
+     *
+     * Le Pi Cycle nécessite une source historique
+     * adaptée avec les moyennes 111D et 350D x 2.
+     *
+     * Nous ne mettons PAS une fausse donnée.
+     */
+
+    piCycleValue = null;
+
+
+    // -------------------------------------------------
+    // RAINBOW
+    // -------------------------------------------------
+
+    /*
+     * Placeholder volontaire.
+     *
+     * Nous brancherons une source Rainbow fiable
+     * dans une étape séparée.
+     */
+
+    rainbowValue = null;
+
+
+    // -------------------------------------------------
+    // FEAR & GREED
+    // -------------------------------------------------
+
+    /*
+     * Le Fear & Greed sera récupéré séparément.
+     */
+
+    fearGreedValue = null;
+
+
+    // -------------------------------------------------
+    // AFFICHAGE
+    // -------------------------------------------------
+
+    if (Number.isFinite(rsiValue)) {
+
+        rsiElement.textContent =
+            rsiValue.toFixed(1);
+    }
+
+
+    mm111Element.textContent =
+        Number.isFinite(mm111Value)
+            ? formatPrice(mm111Value)
+            : "-";
+
+
+    mm350Element.textContent =
+        Number.isFinite(mm350Value)
+            ? formatPrice(mm350Value)
+            : "-";
+
+
+    piCycleElement.textContent =
+        "-";
+
+
+    rainbowElement.textContent =
+        "-";
+
+
+    fearGreedElement.textContent =
+        "-";
+}
+
+
+// =====================================================
+// MOYENNE MOBILE
+// =====================================================
+
+function calculateMovingAverage(
+    values,
+    period
+) {
+
+    if (
+        !Array.isArray(values) ||
+        values.length < period
+    ) {
+
+        return null;
+    }
+
+
+    const selected =
+        values.slice(-period);
+
+
+    return average(selected);
+}
+
+
+// =====================================================
+// RSI
+// =====================================================
+
+function calculateRSI(
+    prices,
+    period = 14
+) {
+
+    if (
+        !Array.isArray(prices) ||
+        prices.length <= period
+    ) {
+
+        return null;
+    }
+
+
+    let gains = 0;
+    let losses = 0;
+
+
+    for (
+        let i = 1;
+        i <= period;
+        i++
+    ) {
+
+        const difference =
+            prices[i] -
+            prices[i - 1];
+
+
+        if (difference >= 0) {
+
+            gains += difference;
+
+        } else {
+
+            losses += Math.abs(
+                difference
+            );
+        }
+    }
+
+
+    let averageGain =
+        gains / period;
+
+
+    let averageLoss =
+        losses / period;
+
+
+    for (
+        let i = period + 1;
+        i < prices.length;
+        i++
+    ) {
+
+        const difference =
+            prices[i] -
+            prices[i - 1];
+
+
+        const gain =
+            difference > 0
+                ? difference
+                : 0;
+
+
+        const loss =
+            difference < 0
+                ? Math.abs(difference)
+                : 0;
+
+
+        averageGain =
+            (
+                (
+                    averageGain *
+                    (period - 1)
+                ) +
+                gain
+            ) /
+            period;
+
+
+        averageLoss =
+            (
+                (
+                    averageLoss *
+                    (period - 1)
+                ) +
+                loss
+            ) /
+            period;
+    }
+
+
+    if (averageLoss === 0) {
+        return 100;
+    }
+
+
+    const relativeStrength =
+        averageGain /
+        averageLoss;
+
+
+    return (
+        100 -
+        (
+            100 /
+            (1 + relativeStrength)
+        )
+    );
+}
+
+
+// =====================================================
+// ETATS DES INDICATEURS
+// =====================================================
+
+function updateIndicators() {
+
+    // -------------------------------------------------
+    // RSI
+    // -------------------------------------------------
+
+    if (Number.isFinite(rsiValue)) {
+
+        if (rsiValue < 30) {
+
+            setIndicator(
+                indicatorRsi,
+                kpiRsi,
+                "buy",
+                "Achat"
+            );
+
+        } else if (rsiValue > 70) {
+
+            setIndicator(
+                indicatorRsi,
+                kpiRsi,
+                "sell",
+                "Vente"
+            );
+
+        } else {
+
+            setIndicator(
+                indicatorRsi,
+                kpiRsi,
+                "neutral",
+                "Neutre"
+            );
+        }
+    }
+
+
+    // -------------------------------------------------
+    // MM111
+    // -------------------------------------------------
+
+    if (Number.isFinite(mm111Value)) {
+
+        const ratio =
+            currentPrice /
+            mm111Value;
+
+
+        if (ratio < 0.90) {
+
+            setIndicator(
+                indicatorMm111,
+                kpiMm111,
+                "buy",
+                "Achat"
+            );
+
+        } else if (ratio > 1.15) {
+
+            setIndicator(
+                indicatorMm111,
+                kpiMm111,
+                "sell",
+                "Vente"
+            );
+
+        } else {
+
+            setIndicator(
+                indicatorMm111,
+                kpiMm111,
+                "neutral",
+                "Neutre"
+            );
+        }
+    }
+
+
+    // -------------------------------------------------
+    // MM350
+    // -------------------------------------------------
+
+    if (Number.isFinite(mm350Value)) {
+
+        const ratio =
+            currentPrice /
+            mm350Value;
+
+
+        if (ratio < 0.80) {
+
+            setIndicator(
+                indicatorMm350,
+                kpiMm350,
+                "buy",
+                "Achat"
+            );
+
+        } else if (ratio > 1.25) {
+
+            setIndicator(
+                indicatorMm350,
+                kpiMm350,
+                "sell",
+                "Vente"
+            );
+
+        } else {
+
+            setIndicator(
+                indicatorMm350,
+                kpiMm350,
+                "neutral",
+                "Neutre"
+            );
+        }
+    }
+
+
+    // -------------------------------------------------
+    // PI CYCLE
+    // -------------------------------------------------
+
+    setIndicator(
+        indicatorPiCycle,
+        kpiPiCycle,
+        "neutral",
+        "En attente"
+    );
+
+
+    // -------------------------------------------------
+    // RAINBOW
+    // -------------------------------------------------
+
+    setIndicator(
+        indicatorRainbow,
+        kpiRainbow,
+        "neutral",
+        "En attente"
+    );
+
+
+    // -------------------------------------------------
+    // FEAR & GREED
+    // -------------------------------------------------
+
+    setIndicator(
+        indicatorFear,
+        kpiFear,
+        "neutral",
+        "En attente"
+    );
+}
+
+
+// =====================================================
+// APPLICATION ETAT INDICATEUR
+// =====================================================
+
+function setIndicator(
+    indicator,
+    kpi,
+    state,
+    text
+) {
+
+    if (indicator) {
+
+        setState(
+            indicator,
+            state
+        );
+
+
+        const strong =
+            indicator.querySelector(
+                "strong"
+            );
+
+
+        if (strong) {
+            strong.textContent =
+                text;
+        }
+    }
+
+
+    if (kpi) {
+
+        setState(
+            kpi,
+            state
+        );
+    }
+}
+
+
+// =====================================================
+// SCORE PRINCIPAL
+// =====================================================
+
+function calculateScore() {
+
+    /*
+     * IMPORTANT :
+     *
+     * Le score final sera basé sur les
+     * 6 KPIs.
+     *
+     * Pi Cycle aura une priorité particulière
+     * sur MM111 et MM350.
+     *
+     * Pour le moment, seuls les indicateurs
+     * réellement disponibles participent au score.
+     *
+     * On évite donc d'inventer une valeur
+     * pour les indicateurs non branchés.
+     */
+
+
+    const scores = [];
+
+
+    // RSI
+    if (Number.isFinite(rsiValue)) {
+
+        let score;
+
+
+        if (rsiValue < 30) {
+
+            score = 100;
+
+        } else if (rsiValue > 70) {
+
+            score = 0;
+
+        } else {
+
+            score = 50;
+        }
+
+
+        scores.push(score);
+    }
+
+
+    /*
+     * Tant que les autres sources ne sont pas
+     * branchées, le score reste neutre.
+     */
+
+    let finalScore = 50;
+
+
+    if (scores.length > 0) {
+
+        finalScore =
+            average(scores);
+    }
+
+
+    finalScore =
+        Math.round(
+            finalScore
+        );
+
+
+    updateMainSignal(
+        finalScore
+    );
+}
+
+
+// =====================================================
+// SIGNAL PRINCIPAL
+// =====================================================
+
+function updateMainSignal(score) {
+
+    if (!Number.isFinite(score)) {
+        score = 50;
+    }
+
+
+    score =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                score
+            )
+        );
+
+
+    if (signalScoreElement) {
+
+        signalScoreElement.textContent =
+            score;
+    }
+
+
+    if (gaugeCursor) {
+
+        gaugeCursor.style.left =
+            score + "%";
+    }
+
+
+    if (!signalStatus) {
+        return;
+    }
+
+
+    signalStatus.classList.remove(
+        "buy",
+        "neutral",
+        "sell"
+    );
+
+
+    if (score >= 65) {
+
+        signalStatus.classList.add(
+            "buy"
+        );
+
+
+        signalStatus.textContent =
+            "Favorable à l'achat";
+
+    } else if (score <= 35) {
+
+        signalStatus.classList.add(
+            "sell"
+        );
+
+
+        signalStatus.textContent =
+            "Favorable à la vente";
+
+    } else {
+
+        signalStatus.classList.add(
+            "neutral"
+        );
+
+
+        signalStatus.textContent =
+            "Marché neutre";
+    }
+}
+
+
+// =====================================================
+// OUVERTURE DES KPI
+// =====================================================
+
+function setupKpiCards() {
+
+    const cards = [
+        kpiRsi,
+        kpiMm111,
+        kpiMm350,
+        kpiPiCycle,
+        kpiRainbow,
+        kpiFear
+    ];
 
 
     cards.forEach(
         card => {
+
+            if (!card) {
+                return;
+            }
+
 
             card.addEventListener(
                 "click",
@@ -387,30 +1313,32 @@ function initKPIButtons() {
                     card.classList.toggle(
                         "open"
                     );
-
                 }
             );
-
         }
     );
-
 }
+
+
+// =====================================================
+// REDESSIN DE LA COURBE
+// =====================================================
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        if (btcPrices.length) {
+            drawBTCChart();
+        }
+    }
+);
 
 
 // =====================================================
 // LANCEMENT
 // =====================================================
 
-initKPIButtons();
+setupKpiCards();
 
 getBTCData();
-
-
-// =====================================================
-// ACTUALISATION
-// =====================================================
-
-setInterval(
-    getBTCData,
-    60 * 1000
-);
