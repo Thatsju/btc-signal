@@ -33,7 +33,10 @@ const mm350Element = document.getElementById("mm350");
 const piCycleElement = document.getElementById("picycle");
 const rainbowElement = document.getElementById("rainbow");
 const fearGreedElement = document.getElementById("fear-greed");
-
+const rsiTrendElement = document.getElementById("rsi-trend");
+const mm111TrendElement = document.getElementById("mm111-trend");
+const mm350TrendElement = document.getElementById("mm350-trend");
+const fearTrendElement = document.getElementById("fear-trend");
 
 // =====================================================
 // INDICATEURS
@@ -80,7 +83,10 @@ let mm350Value = null;
 let piCycleValue = null;
 let rainbowValue = null;
 let fearGreedValue = null;
-
+let rsiHistory = [];
+let mm111History = [];
+let mm350History = [];
+let fearGreedHistory = [];
 
 // =====================================================
 // OUTILS
@@ -834,7 +840,28 @@ function calculateIndicators() {
             prices,
             350
         );
+// =================================================
+// HISTORIQUE 7 JOURS KPI
+// =================================================
 
+rsiHistory.push(rsiValue);
+mm111History.push(mm111Value);
+mm350History.push(mm350Value);
+
+
+// garder seulement les 7 dernières valeurs
+
+if (rsiHistory.length > 7) {
+    rsiHistory.shift();
+}
+
+if (mm111History.length > 7) {
+    mm111History.shift();
+}
+
+if (mm350History.length > 7) {
+    mm350History.shift();
+}
 
     // =================================================
     // PI CYCLE
@@ -1089,7 +1116,45 @@ function calculateMovingAverage(
     );
 
 }
+// =================================================
+// TENDANCE KPI 7 JOURS
+// =================================================
 
+function calculateKpiTrend(
+    currentValue,
+    history
+) {
+
+    if (
+        !Number.isFinite(currentValue) ||
+        history.length < 2
+    ) {
+        return null;
+    }
+
+
+    const average7 =
+        average(history);
+
+
+    if (!Number.isFinite(average7)) {
+        return null;
+    }
+
+
+    const percentage =
+        (
+            (currentValue - average7) /
+            average7
+        ) * 100;
+
+
+    return {
+        average: average7,
+        percentage: percentage
+    };
+
+}
 
 // =====================================================
 // RSI
