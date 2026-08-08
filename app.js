@@ -1739,10 +1739,10 @@ function updateMainSignal(score) {
 
     if (gaugeCursor) {
 
-        gaugeCursor.style.left =
-            score + "%";
+    gaugeCursor.style.left =
+        (100 - score) + "%";
 
-    }
+}
 
 
     if (!signalStatus) {
