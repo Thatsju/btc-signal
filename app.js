@@ -1,6 +1,10 @@
 // =====================================================
 // BTC SIGNAL - APP.JS
+// VERSION AVEC HISTORIQUE 400 JOURS
+// SOURCE PRIX : COINBASE
+// FEAR & GREED : ALTERNATIVE.ME
 // =====================================================
+
 
 // =====================================================
 // ELEMENTS HTML
@@ -18,7 +22,11 @@ const gaugeCursor = document.getElementById("gauge-cursor");
 const signalStatus = document.getElementById("signal-status");
 const signalScoreElement = document.getElementById("signal-score");
 
+
+// =====================================================
 // KPI
+// =====================================================
+
 const rsiElement = document.getElementById("rsi");
 const mm111Element = document.getElementById("mm111");
 const mm350Element = document.getElementById("mm350");
@@ -26,7 +34,11 @@ const piCycleElement = document.getElementById("picycle");
 const rainbowElement = document.getElementById("rainbow");
 const fearGreedElement = document.getElementById("fear-greed");
 
+
+// =====================================================
 // INDICATEURS
+// =====================================================
+
 const indicatorRsi = document.getElementById("indicator-rsi");
 const indicatorMm111 = document.getElementById("indicator-mm111");
 const indicatorMm350 = document.getElementById("indicator-mm350");
@@ -34,13 +46,18 @@ const indicatorPiCycle = document.getElementById("indicator-picycle");
 const indicatorRainbow = document.getElementById("indicator-rainbow");
 const indicatorFear = document.getElementById("indicator-fear");
 
+
+// =====================================================
 // KPI CARDS
+// =====================================================
+
 const kpiRsi = document.getElementById("kpi-rsi");
 const kpiMm111 = document.getElementById("kpi-mm111");
 const kpiMm350 = document.getElementById("kpi-mm350");
 const kpiPiCycle = document.getElementById("kpi-picycle");
 const kpiRainbow = document.getElementById("kpi-rainbow");
 const kpiFear = document.getElementById("kpi-fear");
+
 
 // =====================================================
 // VARIABLES
@@ -63,7 +80,7 @@ let mm350Value = null;
 let piCycleValue = null;
 let rainbowValue = null;
 let fearGreedValue = null;
-let fearGreedClassification = null;
+
 
 // =====================================================
 // OUTILS
@@ -80,16 +97,6 @@ function formatPrice(value) {
         currency: "EUR",
         maximumFractionDigits: 0
     }).format(value);
-}
-
-
-function formatNumber(value, decimals = 2) {
-
-    if (!Number.isFinite(value)) {
-        return "-";
-    }
-
-    return value.toFixed(decimals);
 }
 
 
@@ -113,7 +120,7 @@ function average(values) {
 
 
 // =====================================================
-// COULEUR KPI
+// ETAT COULEUR
 // =====================================================
 
 function setState(element, state) {
@@ -133,7 +140,8 @@ function setState(element, state) {
 
 
 // =====================================================
-// PRIX BTC + HISTORIQUE
+// RECUPERATION PRIX BTC
+// COINBASE - 400 JOURS
 // =====================================================
 
 async function getBTCData() {
@@ -144,43 +152,115 @@ async function getBTCData() {
             "BTC SIGNAL : récupération des données..."
         );
 
-        // -------------------------------------------------
-        // 400 JOURS
-        // Permet de calculer MM111 et MM350
-        // -------------------------------------------------
 
-        const url =
-            "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart" +
-            "?vs_currency=eur" +
-            "&days=400" +
-            "&interval=daily";
+        const now =
+            Date.now();
 
 
-        const response = await fetch(
-            url,
-            {
+        const oneDay =
+            86400 * 1000;
+
+
+        const start400 =
+            now - (400 * oneDay);
+
+
+        // Coinbase accepte maximum 300 bougies
+        // par requête.
+        // On fait donc 2 requêtes.
+
+
+        const firstStart =
+            start400;
+
+
+        const firstEnd =
+            start400 + (200 * oneDay);
+
+
+        const secondStart =
+            firstEnd;
+
+
+        const secondEnd =
+            now;
+
+
+        const url1 =
+            "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
+            "?granularity=86400" +
+            "&start=" +
+            encodeURIComponent(
+                new Date(firstStart).toISOString()
+            ) +
+            "&end=" +
+            encodeURIComponent(
+                new Date(firstEnd).toISOString()
+            );
+
+
+        const url2 =
+            "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
+            "?granularity=86400" +
+            "&start=" +
+            encodeURIComponent(
+                new Date(secondStart).toISOString()
+            ) +
+            "&end=" +
+            encodeURIComponent(
+                new Date(secondEnd).toISOString()
+            );
+
+
+        const [
+            response1,
+            response2
+        ] = await Promise.all([
+            fetch(url1, {
                 cache: "no-store"
-            }
-        );
+            }),
+            fetch(url2, {
+                cache: "no-store"
+            })
+        ]);
 
 
-        if (!response.ok) {
+        if (!response1.ok) {
 
             throw new Error(
-                "CoinGecko : " +
-                response.status
+                "Coinbase historique 1 : " +
+                response1.status
             );
         }
 
 
-        const data =
-            await response.json();
+        if (!response2.ok) {
+
+            throw new Error(
+                "Coinbase historique 2 : " +
+                response2.status
+            );
+        }
+
+
+        const data1 =
+            await response1.json();
+
+
+        const data2 =
+            await response2.json();
+
+
+        const combined =
+            [
+                ...data1,
+                ...data2
+            ];
 
 
         if (
-            !data.prices ||
-            !Array.isArray(data.prices) ||
-            data.prices.length === 0
+            !Array.isArray(combined) ||
+            combined.length === 0
         ) {
 
             throw new Error(
@@ -189,16 +269,63 @@ async function getBTCData() {
         }
 
 
+        // Coinbase retourne :
+        //
+        // [timestamp, low, high, open, close, volume]
+
+
         btcPrices =
-            data.prices.map(
-                item => ({
-                    timestamp: item[0],
-                    price: Number(item[1])
-                })
-            ).filter(
-                item =>
-                    Number.isFinite(item.price)
+            combined
+                .map(item => ({
+
+                    timestamp:
+                        Number(item[0]) * 1000,
+
+                    price:
+                        Number(item[4])
+
+                }))
+                .filter(item =>
+                    Number.isFinite(
+                        item.timestamp
+                    ) &&
+                    Number.isFinite(
+                        item.price
+                    )
+                );
+
+
+        // Suppression des doublons
+        const unique =
+            new Map();
+
+
+        btcPrices.forEach(item => {
+
+            unique.set(
+                item.timestamp,
+                item
             );
+
+        });
+
+
+        btcPrices =
+            Array.from(
+                unique.values()
+            ).sort(
+                (a, b) =>
+                    a.timestamp -
+                    b.timestamp
+            );
+
+
+        if (btcPrices.length < 30) {
+
+            throw new Error(
+                "Historique BTC insuffisant"
+            );
+        }
 
 
         currentPrice =
@@ -207,9 +334,9 @@ async function getBTCData() {
             ].price;
 
 
-        // -------------------------------------------------
+        // =================================================
         // MOYENNE 7 JOURS
-        // -------------------------------------------------
+        // =================================================
 
         average7 =
             average(
@@ -219,9 +346,9 @@ async function getBTCData() {
             );
 
 
-        // -------------------------------------------------
+        // =================================================
         // MOYENNE 30 JOURS
-        // -------------------------------------------------
+        // =================================================
 
         average30 =
             average(
@@ -231,31 +358,46 @@ async function getBTCData() {
             );
 
 
-        // -------------------------------------------------
-        // CALCUL INDICATEURS
-        // -------------------------------------------------
+        // =================================================
+        // AFFICHAGE
+        // =================================================
+
+        updatePriceDisplay();
+
+
+        // =================================================
+        // INDICATEURS
+        // =================================================
 
         calculateIndicators();
 
 
-        // -------------------------------------------------
+        // =================================================
         // FEAR & GREED
-        // -------------------------------------------------
+        // =================================================
 
         await getFearGreed();
 
 
-        // -------------------------------------------------
-        // AFFICHAGE
-        // -------------------------------------------------
-
-        updatePriceDisplay();
-
-        drawBTCChart();
+        // =================================================
+        // AFFICHAGE INDICATEURS
+        // =================================================
 
         updateIndicators();
 
+
+        // =================================================
+        // SCORE
+        // =================================================
+
         calculateScore();
+
+
+        // =================================================
+        // GRAPHIQUE
+        // =================================================
+
+        drawBTCChart();
 
 
         console.log(
@@ -273,10 +415,212 @@ async function getBTCData() {
 
 
         if (priceElement) {
+
             priceElement.textContent =
                 "Erreur";
+
         }
+
     }
+}
+
+
+// =====================================================
+// AFFICHAGE PRIX
+// =====================================================
+
+function updatePriceDisplay() {
+
+    if (!Number.isFinite(currentPrice)) {
+        return;
+    }
+
+
+    priceElement.textContent =
+        formatPrice(currentPrice);
+
+
+    average7Element.textContent =
+        formatPrice(average7);
+
+
+    average30Element.textContent =
+        formatPrice(average30);
+
+
+    if (Number.isFinite(average7)) {
+
+        const percentage =
+            (
+                (currentPrice - average7) /
+                average7
+            ) * 100;
+
+
+        changeElement.textContent =
+            (percentage >= 0 ? "+" : "") +
+            percentage.toFixed(2) +
+            "%";
+
+
+        changeElement.classList.remove(
+            "up",
+            "down"
+        );
+
+
+        changeElement.classList.add(
+            percentage >= 0
+                ? "up"
+                : "down"
+        );
+    }
+}
+
+
+// =====================================================
+// CALCUL DES INDICATEURS
+// =====================================================
+
+function calculateIndicators() {
+
+    const prices =
+        btcPrices.map(
+            item => item.price
+        );
+
+
+    // =================================================
+    // RSI
+    // =================================================
+
+    rsiValue =
+        calculateRSI(
+            prices,
+            14
+        );
+
+
+    // =================================================
+    // MM111
+    // =================================================
+
+    mm111Value =
+        calculateMovingAverage(
+            prices,
+            111
+        );
+
+
+    // =================================================
+    // MM350
+    // =================================================
+
+    mm350Value =
+        calculateMovingAverage(
+            prices,
+            350
+        );
+
+
+    // =================================================
+    // PI CYCLE
+    // =================================================
+
+    if (
+        Number.isFinite(mm111Value) &&
+        Number.isFinite(mm350Value)
+    ) {
+
+        const piTarget =
+            mm350Value * 2;
+
+
+        piCycleValue =
+            (
+                currentPrice /
+                piTarget
+            ) * 100;
+
+    } else {
+
+        piCycleValue =
+            null;
+    }
+
+
+    // =================================================
+    // RAINBOW
+    // =================================================
+
+    /*
+     * Le Rainbow Chart officiel nécessite
+     * une méthodologie spécifique.
+     *
+     * On ne fabrique donc pas une fausse
+     * valeur.
+     *
+     * Il sera branché séparément.
+     */
+
+    rainbowValue =
+        null;
+
+
+    // =================================================
+    // AFFICHAGE
+    // =================================================
+
+    if (Number.isFinite(rsiValue)) {
+
+        rsiElement.textContent =
+            rsiValue.toFixed(1);
+
+    } else {
+
+        rsiElement.textContent =
+            "-";
+    }
+
+
+    if (Number.isFinite(mm111Value)) {
+
+        mm111Element.textContent =
+            formatPrice(mm111Value);
+
+    } else {
+
+        mm111Element.textContent =
+            "-";
+    }
+
+
+    if (Number.isFinite(mm350Value)) {
+
+        mm350Element.textContent =
+            formatPrice(mm350Value);
+
+    } else {
+
+        mm350Element.textContent =
+            "-";
+    }
+
+
+    if (Number.isFinite(piCycleValue)) {
+
+        piCycleElement.textContent =
+            piCycleValue.toFixed(1) + "%";
+
+    } else {
+
+        piCycleElement.textContent =
+            "-";
+    }
+
+
+    rainbowElement.textContent =
+        "-";
 }
 
 
@@ -327,24 +671,20 @@ async function getFearGreed() {
             );
 
 
-        fearGreedClassification =
-            data.data[0].value_classification ||
-            "Neutre";
-
-
-        if (fearGreedElement) {
+        if (
+            Number.isFinite(
+                fearGreedValue
+            )
+        ) {
 
             fearGreedElement.textContent =
-                fearGreedValue +
-                " / 100";
+                fearGreedValue;
+
+        } else {
+
+            fearGreedElement.textContent =
+                "-";
         }
-
-
-        console.log(
-            "Fear & Greed :",
-            fearGreedValue,
-            fearGreedClassification
-        );
 
 
     } catch (error) {
@@ -355,941 +695,11 @@ async function getFearGreed() {
         );
 
 
-        fearGreedValue = null;
-        fearGreedClassification = null;
+        fearGreedValue =
+            null;
 
 
-        if (fearGreedElement) {
-            fearGreedElement.textContent =
-                "-";
-        }
-    }
-}
-
-
-// =====================================================
-// AFFICHAGE PRIX
-// =====================================================
-
-function updatePriceDisplay() {
-
-    if (!Number.isFinite(currentPrice)) {
-        return;
-    }
-
-
-    priceElement.textContent =
-        formatPrice(currentPrice);
-
-
-    average7Element.textContent =
-        formatPrice(average7);
-
-
-    average30Element.textContent =
-        formatPrice(average30);
-
-
-    // -------------------------------------------------
-    // DIFFERENCE AVEC MOYENNE 7 JOURS
-    // -------------------------------------------------
-
-    if (Number.isFinite(average7)) {
-
-        const percentage =
-            (
-                (currentPrice - average7) /
-                average7
-            ) * 100;
-
-
-        changeElement.textContent =
-            (percentage >= 0 ? "+" : "") +
-            percentage.toFixed(2) +
-            "%";
-
-
-        changeElement.classList.remove(
-            "up",
-            "down"
-        );
-
-
-        changeElement.classList.add(
-            percentage >= 0
-                ? "up"
-                : "down"
-        );
-    }
-}
-
-
-// =====================================================
-// COURBE BTC
-// =====================================================
-
-function drawBTCChart() {
-
-    if (!chartCanvas) {
-        return;
-    }
-
-    const context =
-        chartCanvas.getContext("2d");
-
-    const container =
-        chartCanvas.parentElement;
-
-    const width =
-        container.clientWidth;
-
-    const height =
-        container.clientHeight;
-
-    if (
-        width <= 0 ||
-        height <= 0
-    ) {
-        return;
-    }
-
-    const dpr =
-        window.devicePixelRatio || 1;
-
-
-    // =================================================
-    // CANVAS
-    // =================================================
-
-    chartCanvas.width =
-        width * dpr;
-
-    chartCanvas.height =
-        height * dpr;
-
-    chartCanvas.style.width =
-        width + "px";
-
-    chartCanvas.style.height =
-        height + "px";
-
-
-    context.setTransform(
-        dpr,
-        0,
-        0,
-        dpr,
-        0,
-        0
-    );
-
-
-    context.clearRect(
-        0,
-        0,
-        width,
-        height
-    );
-
-
-    // =================================================
-    // DONNEES : 30 JOURS
-    // =================================================
-
-    const points =
-        btcPrices
-            .slice(-30)
-            .filter(
-                point =>
-                    Number.isFinite(
-                        point.price
-                    )
-            );
-
-
-    if (points.length < 2) {
-        return;
-    }
-
-
-    const prices =
-        points.map(
-            point => point.price
-        );
-
-
-    // =================================================
-    // ECHELLE
-    // =================================================
-
-    let minPrice =
-        Math.min(...prices);
-
-    let maxPrice =
-        Math.max(...prices);
-
-
-    const rawRange =
-        maxPrice -
-        minPrice;
-
-
-    const margin =
-        rawRange > 0
-            ? rawRange * 0.12
-            : maxPrice * 0.01;
-
-
-    minPrice -= margin;
-    maxPrice += margin;
-
-
-    const range =
-        maxPrice -
-        minPrice ||
-        1;
-
-
-    // =================================================
-    // MARGES
-    // =================================================
-
-    const paddingLeft = 12;
-    const paddingRight = 18;
-    const paddingTop = 18;
-    const paddingBottom = 28;
-
-
-    const chartWidth =
-        width -
-        paddingLeft -
-        paddingRight;
-
-
-    const chartHeight =
-        height -
-        paddingTop -
-        paddingBottom;
-
-
-    // =================================================
-    // COORDONNEES
-    // =================================================
-
-    const coordinates =
-        points.map(
-            (point, index) => {
-
-                const x =
-                    paddingLeft +
-                    (
-                        index /
-                        (points.length - 1)
-                    ) *
-                    chartWidth;
-
-
-                const normalized =
-                    (
-                        point.price -
-                        minPrice
-                    ) /
-                    range;
-
-
-                const y =
-                    paddingTop +
-                    (
-                        1 -
-                        normalized
-                    ) *
-                    chartHeight;
-
-
-                return {
-                    x: x,
-                    y: y,
-                    price: point.price,
-                    timestamp: point.timestamp
-                };
-            }
-        );
-
-
-    chartPoints =
-        coordinates;
-
-
-    // =================================================
-    // GRILLE
-    // =================================================
-
-    context.lineWidth = 1;
-
-    context.strokeStyle =
-        "rgba(255,255,255,0.06)";
-
-
-    const gridLines = 4;
-
-
-    for (
-        let i = 0;
-        i <= gridLines;
-        i++
-    ) {
-
-        const y =
-            paddingTop +
-            (
-                i /
-                gridLines
-            ) *
-            chartHeight;
-
-
-        context.beginPath();
-
-        context.moveTo(
-            paddingLeft,
-            y
-        );
-
-        context.lineTo(
-            width -
-            paddingRight,
-            y
-        );
-
-        context.stroke();
-    }
-
-
-    // =================================================
-    // ZONE SOUS LA COURBE
-    // =================================================
-
-    const gradient =
-        context.createLinearGradient(
-            0,
-            paddingTop,
-            0,
-            height
-        );
-
-
-    gradient.addColorStop(
-        0,
-        "rgba(24,216,155,0.28)"
-    );
-
-
-    gradient.addColorStop(
-        0.55,
-        "rgba(24,216,155,0.10)"
-    );
-
-
-    gradient.addColorStop(
-        1,
-        "rgba(24,216,155,0)"
-    );
-
-
-    context.beginPath();
-
-
-    coordinates.forEach(
-        (point, index) => {
-
-            if (index === 0) {
-
-                context.moveTo(
-                    point.x,
-                    point.y
-                );
-
-            } else {
-
-                context.lineTo(
-                    point.x,
-                    point.y
-                );
-            }
-        }
-    );
-
-
-    const lastPoint =
-        coordinates[
-            coordinates.length - 1
-        ];
-
-
-    const firstPoint =
-        coordinates[0];
-
-
-    context.lineTo(
-        lastPoint.x,
-        height - paddingBottom
-    );
-
-
-    context.lineTo(
-        firstPoint.x,
-        height - paddingBottom
-    );
-
-
-    context.closePath();
-
-
-    context.fillStyle =
-        gradient;
-
-    context.fill();
-
-
-    // =================================================
-    // COURBE
-    // =================================================
-
-    context.beginPath();
-
-
-    coordinates.forEach(
-        (point, index) => {
-
-            if (index === 0) {
-
-                context.moveTo(
-                    point.x,
-                    point.y
-                );
-
-            } else {
-
-                context.lineTo(
-                    point.x,
-                    point.y
-                );
-            }
-        }
-    );
-
-
-    context.strokeStyle =
-        "#18d89b";
-
-    context.lineWidth = 3;
-
-    context.lineJoin =
-        "round";
-
-    context.lineCap =
-        "round";
-
-
-    context.shadowColor =
-        "rgba(24,216,155,0.35)";
-
-    context.shadowBlur = 8;
-
-
-    context.stroke();
-
-
-    context.shadowBlur = 0;
-
-
-    // =================================================
-    // POINT FINAL
-    // =================================================
-
-    const last =
-        coordinates[
-            coordinates.length - 1
-        ];
-
-
-    context.beginPath();
-
-
-    context.arc(
-        last.x,
-        last.y,
-        10,
-        0,
-        Math.PI * 2
-    );
-
-
-    context.strokeStyle =
-        "rgba(24,216,155,0.25)";
-
-    context.lineWidth = 3;
-
-    context.stroke();
-
-
-    context.beginPath();
-
-
-    context.arc(
-        last.x,
-        last.y,
-        5,
-        0,
-        Math.PI * 2
-    );
-
-
-    context.fillStyle =
-        "#ffffff";
-
-    context.fill();
-
-
-    // =================================================
-    // PRIX ACTUEL
-    // =================================================
-
-    context.font =
-        "bold 12px Arial";
-
-    context.textAlign =
-        "right";
-
-    context.textBaseline =
-        "middle";
-
-    context.fillStyle =
-        "#18d89b";
-
-
-    context.fillText(
-        formatPrice(last.price),
-        width - paddingRight,
-        Math.max(
-            paddingTop,
-            Math.min(
-                height - paddingBottom,
-                last.y - 14
-            )
-        )
-    );
-
-
-    // =================================================
-    // DATES
-    // =================================================
-
-    context.font =
-        "10px Arial";
-
-    context.fillStyle =
-        "rgba(255,255,255,0.45)";
-
-    context.textBaseline =
-        "top";
-
-    context.textAlign =
-        "center";
-
-
-    const dateCount = 7;
-
-
-    for (
-        let i = 0;
-        i < dateCount;
-        i++
-    ) {
-
-        const index =
-            Math.round(
-                (
-                    i /
-                    (dateCount - 1)
-                ) *
-                (points.length - 1)
-            );
-
-
-        const point =
-            coordinates[index];
-
-
-        const date =
-            new Date(
-                points[index].timestamp
-            );
-
-
-        const label =
-            date.toLocaleDateString(
-                "fr-FR",
-                {
-                    day: "2-digit",
-                    month: "short"
-                }
-            );
-
-
-        context.fillText(
-            label,
-            point.x,
-            height - 18
-        );
-    }
-
-
-    // =================================================
-    // CURSEUR INTERACTIF
-    // =================================================
-
-    if (
-        chartHoverIndex !== null &&
-        chartPoints[chartHoverIndex]
-    ) {
-
-        const selected =
-            chartPoints[
-                chartHoverIndex
-            ];
-
-
-        // -------------------------------------------------
-        // LIGNE VERTICALE
-        // -------------------------------------------------
-
-        context.beginPath();
-
-
-        context.moveTo(
-            selected.x,
-            paddingTop
-        );
-
-
-        context.lineTo(
-            selected.x,
-            height - paddingBottom
-        );
-
-
-        context.strokeStyle =
-            "rgba(255,255,255,0.25)";
-
-
-        context.lineWidth = 1;
-
-
-        context.setLineDash([
-            4,
-            4
-        ]);
-
-
-        context.stroke();
-
-
-        context.setLineDash([]);
-
-
-        // -------------------------------------------------
-        // POINT SELECTIONNE
-        // -------------------------------------------------
-
-        context.beginPath();
-
-
-        context.arc(
-            selected.x,
-            selected.y,
-            7,
-            0,
-            Math.PI * 2
-        );
-
-
-        context.fillStyle =
-            "#18d89b";
-
-        context.fill();
-
-
-        context.beginPath();
-
-
-        context.arc(
-            selected.x,
-            selected.y,
-            3,
-            0,
-            Math.PI * 2
-        );
-
-
-        context.fillStyle =
-            "#ffffff";
-
-        context.fill();
-
-
-        // -------------------------------------------------
-        // INFORMATIONS
-        // -------------------------------------------------
-
-        const selectedDate =
-            new Date(
-                selected.timestamp
-            );
-
-
-        const dateLabel =
-            selectedDate.toLocaleDateString(
-                "fr-FR",
-                {
-                    day: "2-digit",
-                    month: "short",
-                    year: "numeric"
-                }
-            );
-
-
-        const priceLabel =
-            formatPrice(
-                selected.price
-            );
-
-
-        // -------------------------------------------------
-        // BULLE
-        // -------------------------------------------------
-
-        const boxWidth = 125;
-        const boxHeight = 58;
-
-
-        let boxX =
-            selected.x + 12;
-
-
-        let boxY =
-            selected.y -
-            boxHeight -
-            12;
-
-
-        if (
-            boxX + boxWidth >
-            width - 5
-        ) {
-
-            boxX =
-                selected.x -
-                boxWidth -
-                12;
-        }
-
-
-        if (boxY < 5) {
-
-            boxY =
-                selected.y + 12;
-        }
-
-
-        context.fillStyle =
-            "rgba(10,18,25,0.94)";
-
-
-        context.strokeStyle =
-            "rgba(24,216,155,0.35)";
-
-
-        context.lineWidth = 1;
-
-
-        context.beginPath();
-
-
-        context.roundRect(
-            boxX,
-            boxY,
-            boxWidth,
-            boxHeight,
-            8
-        );
-
-
-        context.fill();
-        context.stroke();
-
-
-        // DATE
-
-        context.font =
-            "10px Arial";
-
-
-        context.fillStyle =
-            "rgba(255,255,255,0.55)";
-
-
-        context.textAlign =
-            "left";
-
-
-        context.textBaseline =
-            "top";
-
-
-        context.fillText(
-            dateLabel,
-            boxX + 10,
-            boxY + 9
-        );
-
-
-        // PRIX
-
-        context.font =
-            "bold 15px Arial";
-
-
-        context.fillStyle =
-            "#18d89b";
-
-
-        context.fillText(
-            priceLabel,
-            boxX + 10,
-            boxY + 28
-        );
-    }
-}
-
-
-// =====================================================
-// CALCUL DES INDICATEURS
-// =====================================================
-
-function calculateIndicators() {
-
-    const prices =
-        btcPrices.map(
-            item => item.price
-        );
-
-
-    // -------------------------------------------------
-    // RSI
-    // -------------------------------------------------
-
-    rsiValue =
-        calculateRSI(
-            prices,
-            14
-        );
-
-
-    // -------------------------------------------------
-    // MM111
-    // -------------------------------------------------
-
-    mm111Value =
-        calculateMovingAverage(
-            prices,
-            111
-        );
-
-
-    // -------------------------------------------------
-    // MM350
-    // -------------------------------------------------
-
-    mm350Value =
-        calculateMovingAverage(
-            prices,
-            350
-        );
-
-
-    // -------------------------------------------------
-    // PI CYCLE
-    // -------------------------------------------------
-
-    if (
-        Number.isFinite(mm111Value) &&
-        Number.isFinite(mm350Value)
-    ) {
-
-        piCycleValue =
-            mm350Value * 2;
-
-    } else {
-
-        piCycleValue = null;
-    }
-
-
-    // -------------------------------------------------
-    // RAINBOW
-    // -------------------------------------------------
-
-    // Pas de fausse valeur :
-    // le Rainbow sera branché avec
-    // une source dédiée.
-
-    rainbowValue = null;
-
-
-    // -------------------------------------------------
-    // AFFICHAGE
-    // -------------------------------------------------
-
-    if (rsiElement) {
-
-        rsiElement.textContent =
-            Number.isFinite(rsiValue)
-                ? rsiValue.toFixed(1)
-                : "-";
-    }
-
-
-    if (mm111Element) {
-
-        mm111Element.textContent =
-            Number.isFinite(mm111Value)
-                ? formatPrice(mm111Value)
-                : "-";
-    }
-
-
-    if (mm350Element) {
-
-        mm350Element.textContent =
-            Number.isFinite(mm350Value)
-                ? formatPrice(mm350Value)
-                : "-";
-    }
-
-
-    if (piCycleElement) {
-
-        piCycleElement.textContent =
-            Number.isFinite(piCycleValue)
-                ? formatPrice(piCycleValue)
-                : "-";
-    }
-
-
-    if (rainbowElement) {
-
-        rainbowElement.textContent =
+        fearGreedElement.textContent =
             "-";
     }
 }
@@ -1313,12 +723,8 @@ function calculateMovingAverage(
     }
 
 
-    const selected =
-        values.slice(-period);
-
-
     return average(
-        selected
+        values.slice(-period)
     );
 }
 
@@ -1403,28 +809,23 @@ function calculateRSI(
 
         averageGain =
             (
-                (
-                    averageGain *
-                    (period - 1)
-                ) +
+                averageGain *
+                (period - 1) +
                 gain
-            ) /
-            period;
+            ) / period;
 
 
         averageLoss =
             (
-                (
-                    averageLoss *
-                    (period - 1)
-                ) +
+                averageLoss *
+                (period - 1) +
                 loss
-            ) /
-            period;
+            ) / period;
     }
 
 
     if (averageLoss === 0) {
+
         return 100;
     }
 
@@ -1438,10 +839,7 @@ function calculateRSI(
         100 -
         (
             100 /
-            (
-                1 +
-                relativeStrength
-            )
+            (1 + relativeStrength)
         )
     );
 }
@@ -1453,9 +851,9 @@ function calculateRSI(
 
 function updateIndicators() {
 
-    // -------------------------------------------------
+    // =================================================
     // RSI
-    // -------------------------------------------------
+    // =================================================
 
     if (Number.isFinite(rsiValue)) {
 
@@ -1489,9 +887,9 @@ function updateIndicators() {
     }
 
 
-    // -------------------------------------------------
+    // =================================================
     // MM111
-    // -------------------------------------------------
+    // =================================================
 
     if (Number.isFinite(mm111Value)) {
 
@@ -1527,12 +925,21 @@ function updateIndicators() {
                 "Neutre"
             );
         }
+
+    } else {
+
+        setIndicator(
+            indicatorMm111,
+            kpiMm111,
+            "neutral",
+            "En attente"
+        );
     }
 
 
-    // -------------------------------------------------
+    // =================================================
     // MM350
-    // -------------------------------------------------
+    // =================================================
 
     if (Number.isFinite(mm350Value)) {
 
@@ -1568,34 +975,36 @@ function updateIndicators() {
                 "Neutre"
             );
         }
+
+    } else {
+
+        setIndicator(
+            indicatorMm350,
+            kpiMm350,
+            "neutral",
+            "En attente"
+        );
     }
 
 
-    // -------------------------------------------------
+    // =================================================
     // PI CYCLE
-    // -------------------------------------------------
+    // =================================================
 
     if (
-        Number.isFinite(piCycleValue) &&
-        Number.isFinite(currentPrice)
+        Number.isFinite(piCycleValue)
     ) {
 
-        if (
-            currentPrice >=
-            piCycleValue * 0.98
-        ) {
+        if (piCycleValue >= 95) {
 
             setIndicator(
                 indicatorPiCycle,
                 kpiPiCycle,
                 "sell",
-                "Risque sommet"
+                "Risque de sommet"
             );
 
-        } else if (
-            currentPrice >=
-            piCycleValue * 0.90
-        ) {
+        } else if (piCycleValue >= 85) {
 
             setIndicator(
                 indicatorPiCycle,
@@ -1625,9 +1034,9 @@ function updateIndicators() {
     }
 
 
-    // -------------------------------------------------
+    // =================================================
     // RAINBOW
-    // -------------------------------------------------
+    // =================================================
 
     setIndicator(
         indicatorRainbow,
@@ -1637,11 +1046,15 @@ function updateIndicators() {
     );
 
 
-    // -------------------------------------------------
+    // =================================================
     // FEAR & GREED
-    // -------------------------------------------------
+    // =================================================
 
-    if (Number.isFinite(fearGreedValue)) {
+    if (
+        Number.isFinite(
+            fearGreedValue
+        )
+    ) {
 
         if (
             fearGreedValue <= 25
@@ -1655,36 +1068,14 @@ function updateIndicators() {
             );
 
         } else if (
-            fearGreedValue <= 45
-        ) {
-
-            setIndicator(
-                indicatorFear,
-                kpiFear,
-                "buy",
-                "Peur"
-            );
-
-        } else if (
-            fearGreedValue <= 55
-        ) {
-
-            setIndicator(
-                indicatorFear,
-                kpiFear,
-                "neutral",
-                "Neutre"
-            );
-
-        } else if (
-            fearGreedValue <= 75
+            fearGreedValue >= 75
         ) {
 
             setIndicator(
                 indicatorFear,
                 kpiFear,
                 "sell",
-                "Avidité"
+                "Avidité extrême"
             );
 
         } else {
@@ -1692,8 +1083,8 @@ function updateIndicators() {
             setIndicator(
                 indicatorFear,
                 kpiFear,
-                "sell",
-                "Avidité extrême"
+                "neutral",
+                "Neutre"
             );
         }
 
@@ -1761,9 +1152,9 @@ function calculateScore() {
     const scores = [];
 
 
-    // -------------------------------------------------
+    // =================================================
     // RSI
-    // -------------------------------------------------
+    // =================================================
 
     if (Number.isFinite(rsiValue)) {
 
@@ -1780,35 +1171,19 @@ function calculateScore() {
 
         } else {
 
-            // RSI neutre :
-            // plus proche de 30 = plus favorable
-            // plus proche de 70 = moins favorable
-
-            score =
-                100 -
-                (
-                    (rsiValue - 30) /
-                    40
-                ) *
-                100;
+            score = 50;
         }
 
 
-        scores.push(
-            score
-        );
+        scores.push(score);
     }
 
 
-    // -------------------------------------------------
+    // =================================================
     // MM111
-    // -------------------------------------------------
+    // =================================================
 
-    if (
-        Number.isFinite(
-            mm111Value
-        )
-    ) {
+    if (Number.isFinite(mm111Value)) {
 
         const ratio =
             currentPrice /
@@ -1828,31 +1203,19 @@ function calculateScore() {
 
         } else {
 
-            score =
-                100 -
-                (
-                    (ratio - 0.90) /
-                    0.25
-                ) *
-                100;
+            score = 50;
         }
 
 
-        scores.push(
-            score
-        );
+        scores.push(score);
     }
 
 
-    // -------------------------------------------------
+    // =================================================
     // MM350
-    // -------------------------------------------------
+    // =================================================
 
-    if (
-        Number.isFinite(
-            mm350Value
-        )
-    ) {
+    if (Number.isFinite(mm350Value)) {
 
         const ratio =
             currentPrice /
@@ -1872,25 +1235,17 @@ function calculateScore() {
 
         } else {
 
-            score =
-                100 -
-                (
-                    (ratio - 0.80) /
-                    0.45
-                ) *
-                100;
+            score = 50;
         }
 
 
-        scores.push(
-            score
-        );
+        scores.push(score);
     }
 
 
-    // -------------------------------------------------
+    // =================================================
     // PI CYCLE
-    // -------------------------------------------------
+    // =================================================
 
     if (
         Number.isFinite(
@@ -1898,37 +1253,32 @@ function calculateScore() {
         )
     ) {
 
-        const ratio =
-            currentPrice /
-            piCycleValue;
-
-
         let score;
 
 
-        if (ratio >= 0.98) {
+        if (piCycleValue >= 95) {
 
             score = 0;
 
-        } else if (ratio >= 0.90) {
+        } else if (
+            piCycleValue >= 85
+        ) {
 
-            score = 35;
+            score = 50;
 
         } else {
 
-            score = 75;
+            score = 100;
         }
 
 
-        scores.push(
-            score
-        );
+        scores.push(score);
     }
 
 
-    // -------------------------------------------------
+    // =================================================
     // FEAR & GREED
-    // -------------------------------------------------
+    // =================================================
 
     if (
         Number.isFinite(
@@ -1946,48 +1296,32 @@ function calculateScore() {
             score = 100;
 
         } else if (
-            fearGreedValue <= 45
+            fearGreedValue >= 75
         ) {
 
-            score = 75;
-
-        } else if (
-            fearGreedValue <= 55
-        ) {
-
-            score = 50;
-
-        } else if (
-            fearGreedValue <= 75
-        ) {
-
-            score = 25;
+            score = 0;
 
         } else {
 
-            score = 0;
+            score = 50;
         }
 
 
-        scores.push(
-            score
-        );
+        scores.push(score);
     }
 
 
-    // -------------------------------------------------
+    // =================================================
     // SCORE FINAL
-    // -------------------------------------------------
+    // =================================================
 
     let finalScore = 50;
 
 
-    if (scores.length > 0) {
+    if (scores.length) {
 
         finalScore =
-            average(
-                scores
-            );
+            average(scores);
     }
 
 
@@ -2010,6 +1344,7 @@ function calculateScore() {
 function updateMainSignal(score) {
 
     if (!Number.isFinite(score)) {
+
         score = 50;
     }
 
@@ -2090,12 +1425,14 @@ function updateMainSignal(score) {
 function setupKpiCards() {
 
     const cards = [
+
         kpiRsi,
         kpiMm111,
         kpiMm350,
         kpiPiCycle,
         kpiRainbow,
         kpiFear
+
     ];
 
 
@@ -2114,27 +1451,12 @@ function setupKpiCards() {
                     card.classList.toggle(
                         "open"
                     );
+
                 }
             );
         }
     );
 }
-
-
-// =====================================================
-// REDESSIN COURBE
-// =====================================================
-
-window.addEventListener(
-    "resize",
-    () => {
-
-        if (btcPrices.length) {
-
-            drawBTCChart();
-        }
-    }
-);
 
 
 // =====================================================
@@ -2209,7 +1531,6 @@ function setupChartInteraction() {
                     closestDistance =
                         distance;
 
-
                     closestIndex =
                         i;
                 }
@@ -2237,6 +1558,763 @@ function setupChartInteraction() {
         }
     );
 }
+
+
+// =====================================================
+// GRAPHIQUE
+// =====================================================
+
+function drawBTCChart() {
+
+    if (!chartCanvas) {
+        return;
+    }
+
+
+    const context =
+        chartCanvas.getContext("2d");
+
+
+    const container =
+        chartCanvas.parentElement;
+
+
+    const width =
+        container.clientWidth;
+
+
+    const height =
+        container.clientHeight;
+
+
+    if (
+        width <= 0 ||
+        height <= 0
+    ) {
+
+        return;
+    }
+
+
+    const dpr =
+        window.devicePixelRatio || 1;
+
+
+    chartCanvas.width =
+        width * dpr;
+
+
+    chartCanvas.height =
+        height * dpr;
+
+
+    chartCanvas.style.width =
+        width + "px";
+
+
+    chartCanvas.style.height =
+        height + "px";
+
+
+    context.setTransform(
+        dpr,
+        0,
+        0,
+        dpr,
+        0,
+        0
+    );
+
+
+    context.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+
+    const points =
+        btcPrices
+            .slice(-30)
+            .filter(point =>
+                Number.isFinite(
+                    point.price
+                )
+            );
+
+
+    if (points.length < 2) {
+        return;
+    }
+
+
+    const prices =
+        points.map(
+            point => point.price
+        );
+
+
+    let minPrice =
+        Math.min(...prices);
+
+
+    let maxPrice =
+        Math.max(...prices);
+
+
+    const rawRange =
+        maxPrice -
+        minPrice;
+
+
+    const margin =
+        rawRange > 0
+            ? rawRange * 0.12
+            : maxPrice * 0.01;
+
+
+    minPrice -= margin;
+    maxPrice += margin;
+
+
+    const range =
+        maxPrice -
+        minPrice ||
+        1;
+
+
+    const paddingLeft = 12;
+    const paddingRight = 18;
+    const paddingTop = 18;
+    const paddingBottom = 28;
+
+
+    const chartWidth =
+        width -
+        paddingLeft -
+        paddingRight;
+
+
+    const chartHeight =
+        height -
+        paddingTop -
+        paddingBottom;
+
+
+    const coordinates =
+        points.map(
+            (point, index) => {
+
+                const x =
+                    paddingLeft +
+                    (
+                        index /
+                        (points.length - 1)
+                    ) *
+                    chartWidth;
+
+
+                const normalized =
+                    (
+                        point.price -
+                        minPrice
+                    ) / range;
+
+
+                const y =
+                    paddingTop +
+                    (
+                        1 -
+                        normalized
+                    ) *
+                    chartHeight;
+
+
+                return {
+
+                    x,
+                    y,
+                    price:
+                        point.price,
+
+                    timestamp:
+                        point.timestamp
+                };
+            }
+        );
+
+
+    chartPoints =
+        coordinates;
+
+
+    // =================================================
+    // GRILLE
+    // =================================================
+
+    context.lineWidth = 1;
+
+
+    context.strokeStyle =
+        "rgba(255,255,255,0.06)";
+
+
+    const gridLines = 4;
+
+
+    for (
+        let i = 0;
+        i <= gridLines;
+        i++
+    ) {
+
+        const y =
+            paddingTop +
+            (
+                i /
+                gridLines
+            ) *
+            chartHeight;
+
+
+        context.beginPath();
+
+
+        context.moveTo(
+            paddingLeft,
+            y
+        );
+
+
+        context.lineTo(
+            width - paddingRight,
+            y
+        );
+
+
+        context.stroke();
+    }
+
+
+    // =================================================
+    // ZONE SOUS COURBE
+    // =================================================
+
+    const gradient =
+        context.createLinearGradient(
+            0,
+            paddingTop,
+            0,
+            height
+        );
+
+
+    gradient.addColorStop(
+        0,
+        "rgba(24,216,155,0.28)"
+    );
+
+
+    gradient.addColorStop(
+        0.55,
+        "rgba(24,216,155,0.10)"
+    );
+
+
+    gradient.addColorStop(
+        1,
+        "rgba(24,216,155,0)"
+    );
+
+
+    context.beginPath();
+
+
+    coordinates.forEach(
+        (point, index) => {
+
+            if (index === 0) {
+
+                context.moveTo(
+                    point.x,
+                    point.y
+                );
+
+            } else {
+
+                context.lineTo(
+                    point.x,
+                    point.y
+                );
+            }
+        }
+    );
+
+
+    const lastPoint =
+        coordinates[
+            coordinates.length - 1
+        ];
+
+
+    const firstPoint =
+        coordinates[0];
+
+
+    context.lineTo(
+        lastPoint.x,
+        height - paddingBottom
+    );
+
+
+    context.lineTo(
+        firstPoint.x,
+        height - paddingBottom
+    );
+
+
+    context.closePath();
+
+
+    context.fillStyle =
+        gradient;
+
+
+    context.fill();
+
+
+    // =================================================
+    // COURBE
+    // =================================================
+
+    context.beginPath();
+
+
+    coordinates.forEach(
+        (point, index) => {
+
+            if (index === 0) {
+
+                context.moveTo(
+                    point.x,
+                    point.y
+                );
+
+            } else {
+
+                context.lineTo(
+                    point.x,
+                    point.y
+                );
+            }
+        }
+    );
+
+
+    context.strokeStyle =
+        "#18d89b";
+
+
+    context.lineWidth = 3;
+
+
+    context.lineJoin =
+        "round";
+
+
+    context.lineCap =
+        "round";
+
+
+    context.shadowColor =
+        "rgba(24,216,155,0.35)";
+
+
+    context.shadowBlur = 8;
+
+
+    context.stroke();
+
+
+    context.shadowBlur = 0;
+
+
+    // =================================================
+    // POINT FINAL
+    // =================================================
+
+    const last =
+        coordinates[
+            coordinates.length - 1
+        ];
+
+
+    context.beginPath();
+
+
+    context.arc(
+        last.x,
+        last.y,
+        10,
+        0,
+        Math.PI * 2
+    );
+
+
+    context.strokeStyle =
+        "rgba(24,216,155,0.25)";
+
+
+    context.lineWidth = 3;
+
+
+    context.stroke();
+
+
+    context.beginPath();
+
+
+    context.arc(
+        last.x,
+        last.y,
+        5,
+        0,
+        Math.PI * 2
+    );
+
+
+    context.fillStyle =
+        "#ffffff";
+
+
+    context.fill();
+
+
+    // =================================================
+    // PRIX ACTUEL
+    // =================================================
+
+    context.font =
+        "bold 12px Arial";
+
+
+    context.textAlign =
+        "right";
+
+
+    context.textBaseline =
+        "middle";
+
+
+    context.fillStyle =
+        "#18d89b";
+
+
+    context.fillText(
+        formatPrice(last.price),
+        width - paddingRight,
+        Math.max(
+            paddingTop,
+            Math.min(
+                height - paddingBottom,
+                last.y - 14
+            )
+        )
+    );
+
+
+    // =================================================
+    // DATES
+    // =================================================
+
+    context.font =
+        "10px Arial";
+
+
+    context.fillStyle =
+        "rgba(255,255,255,0.45)";
+
+
+    context.textBaseline =
+        "top";
+
+
+    context.textAlign =
+        "center";
+
+
+    const dateCount = 7;
+
+
+    for (
+        let i = 0;
+        i < dateCount;
+        i++
+    ) {
+
+        const index =
+            Math.round(
+                (
+                    i /
+                    (dateCount - 1)
+                ) *
+                (points.length - 1)
+            );
+
+
+        const point =
+            coordinates[index];
+
+
+        const date =
+            new Date(
+                points[index].timestamp
+            );
+
+
+        const label =
+            date.toLocaleDateString(
+                "fr-FR",
+                {
+                    day: "2-digit",
+                    month: "short"
+                }
+            );
+
+
+        context.fillText(
+            label,
+            point.x,
+            height - 18
+        );
+    }
+
+
+    // =================================================
+    // CURSEUR
+    // =================================================
+
+    if (
+        chartHoverIndex !== null &&
+        chartPoints[chartHoverIndex]
+    ) {
+
+        const selected =
+            chartPoints[
+                chartHoverIndex
+            ];
+
+
+        context.beginPath();
+
+
+        context.moveTo(
+            selected.x,
+            paddingTop
+        );
+
+
+        context.lineTo(
+            selected.x,
+            height - paddingBottom
+        );
+
+
+        context.strokeStyle =
+            "rgba(255,255,255,0.25)";
+
+
+        context.lineWidth = 1;
+
+
+        context.setLineDash([
+            4,
+            4
+        ]);
+
+
+        context.stroke();
+
+
+        context.setLineDash([]);
+
+
+        context.beginPath();
+
+
+        context.arc(
+            selected.x,
+            selected.y,
+            7,
+            0,
+            Math.PI * 2
+        );
+
+
+        context.fillStyle =
+            "#18d89b";
+
+
+        context.fill();
+
+
+        context.beginPath();
+
+
+        context.arc(
+            selected.x,
+            selected.y,
+            3,
+            0,
+            Math.PI * 2
+        );
+
+
+        context.fillStyle =
+            "#ffffff";
+
+
+        context.fill();
+
+
+        const selectedDate =
+            new Date(
+                selected.timestamp
+            );
+
+
+        const dateLabel =
+            selectedDate.toLocaleDateString(
+                "fr-FR",
+                {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                }
+            );
+
+
+        const priceLabel =
+            formatPrice(
+                selected.price
+            );
+
+
+        const boxWidth = 125;
+        const boxHeight = 58;
+
+
+        let boxX =
+            selected.x + 12;
+
+
+        let boxY =
+            selected.y -
+            boxHeight -
+            12;
+
+
+        if (
+            boxX + boxWidth >
+            width - 5
+        ) {
+
+            boxX =
+                selected.x -
+                boxWidth -
+                12;
+        }
+
+
+        if (boxY < 5) {
+
+            boxY =
+                selected.y + 12;
+        }
+
+
+        context.fillStyle =
+            "rgba(10,18,25,0.94)";
+
+
+        context.strokeStyle =
+            "rgba(24,216,155,0.35)";
+
+
+        context.lineWidth = 1;
+
+
+        context.beginPath();
+
+
+        context.roundRect(
+            boxX,
+            boxY,
+            boxWidth,
+            boxHeight,
+            8
+        );
+
+
+        context.fill();
+        context.stroke();
+
+
+        context.font =
+            "10px Arial";
+
+
+        context.fillStyle =
+            "rgba(255,255,255,0.55)";
+
+
+        context.textAlign =
+            "left";
+
+
+        context.textBaseline =
+            "top";
+
+
+        context.fillText(
+            dateLabel,
+            boxX + 10,
+            boxY + 9
+        );
+
+
+        context.font =
+            "bold 15px Arial";
+
+
+        context.fillStyle =
+            "#18d89b";
+
+
+        context.fillText(
+            priceLabel,
+            boxX + 10,
+            boxY + 28
+        );
+    }
+}
+
+
+// =====================================================
+// RESIZE
+// =====================================================
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        if (btcPrices.length) {
+
+            drawBTCChart();
+        }
+    }
+);
 
 
 // =====================================================
