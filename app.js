@@ -1750,23 +1750,19 @@ scores.push({
         let score;
 
 
-        if (
-            fearGreedValue <= 25
-        ) {
+        if (fearGreedValue <= 10) {
 
-            score = 100;
+    score = 100;
 
-        } else if (
-            fearGreedValue >= 75
-        ) {
+} else if (fearGreedValue >= 90) {
 
-            score = 0;
+    score = 0;
 
-        } else {
+} else {
 
-            score = 50;
+    score = 100 - ((fearGreedValue - 10) * 1.25);
 
-        }
+}
 
 
 scores.push({
