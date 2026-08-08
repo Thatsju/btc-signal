@@ -1,41 +1,43 @@
 * {
-  box-sizing: border-box;
-  }
+    box-sizing: border-box;
+}
 
 body {
-margin: 0;
-background: #070c14;
-color: #ffffff;
-font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    background: #070c14;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .app {
-width: min(920px, calc(100% - 32px));
-margin: 0 auto;
-padding: 28px 0 60px;
+    width: min(920px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 28px 0 60px;
 }
+
 
 /* ========================= */
 /* HEADER */
 /* ========================= */
 
 .header {
-text-align: center;
-margin-bottom: 28px;
+    text-align: center;
+    margin-bottom: 28px;
 }
 
 .header h1 {
-margin: 0;
-font-size: 42px;
-font-weight: 800;
-letter-spacing: 1px;
+    margin: 0;
+    font-size: 42px;
+    font-weight: 800;
+    letter-spacing: 1px;
 }
 
 .header p {
-margin: 10px 0 0;
-color: #8fa8c8;
-font-size: 17px;
+    margin: 10px 0 0;
+    color: #8fa8c8;
+    font-size: 17px;
 }
+
 
 /* ========================= */
 /* CARTES PRINCIPALES */
@@ -46,535 +48,509 @@ font-size: 17px;
 .indicators-section,
 .kpis-section,
 .reading-card {
-background: #151d2d;
-border-radius: 24px;
-padding: 28px;
-margin-bottom: 24px;
+    background: #151d2d;
+    border-radius: 24px;
+    padding: 28px;
+    margin-bottom: 24px;
 }
 
 .signal-card h2,
 .price-card h2 {
-margin: 0 0 25px;
-font-size: 28px;
+    margin: 0 0 25px;
+    font-size: 28px;
 }
+
 
 /* ========================= */
 /* JAUGE */
 /* ========================= */
 
 .signal-gauge {
-display: grid;
-grid-template-columns: 70px 1fr 70px;
-align-items: center;
-gap: 15px;
+    display: grid;
+    grid-template-columns: 70px 1fr 70px;
+    align-items: center;
+    gap: 15px;
 }
 
 .gauge-label {
-font-size: 13px;
-font-weight: 800;
-text-align: center;
+    font-size: 13px;
+    font-weight: 800;
+    text-align: center;
 }
 
 .gauge-buy {
-color: #18d89b;
+    color: #18d89b;
 }
 
 .gauge-sell {
-color: #ff5268;
+    color: #ff5268;
 }
 
 .gauge-track {
-height: 28px;
-position: relative;
-border-radius: 999px;
+    height: 28px;
+    position: relative;
+    border-radius: 999px;
 }
 
 .gauge-gradient {
-position: absolute;
-inset: 0;
-border-radius: 999px;
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
 
-```
-background: linear-gradient(
-    to right,
-    #18d89b 0%,
-    #18d89b 30%,
-    #ffd34d 50%,
-    #ff5268 70%,
-    #ff5268 100%
-);
-```
-
+    background: linear-gradient(
+        to right,
+        #18d89b 0%,
+        #18d89b 30%,
+        #ffd34d 50%,
+        #ff5268 70%,
+        #ff5268 100%
+    );
 }
 
 .gauge-cursor {
-position: absolute;
-top: 50%;
-left: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
 
-```
-width: 6px;
-height: 42px;
+    width: 6px;
+    height: 42px;
 
-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 
-background: #ffffff;
+    background: #ffffff;
 
-border-radius: 5px;
+    border-radius: 5px;
 
-box-shadow:
-    0 0 0 3px rgba(255,255,255,.15),
-    0 0 15px rgba(255,255,255,.45);
+    box-shadow:
+        0 0 0 3px rgba(255,255,255,.15),
+        0 0 15px rgba(255,255,255,.45);
 
-transition: left .5s ease;
-```
-
+    transition: left .5s ease;
 }
 
 .signal-status {
-margin-top: 25px;
-padding: 15px;
+    margin-top: 25px;
+    padding: 15px;
 
-```
-border-radius: 14px;
+    border-radius: 14px;
 
-text-align: center;
+    text-align: center;
 
-font-size: 18px;
-font-weight: 800;
-```
-
+    font-size: 18px;
+    font-weight: 800;
 }
 
 .signal-status.buy {
-color: #18d89b;
-background: rgba(24,216,155,.10);
+    color: #18d89b;
+    background: rgba(24,216,155,.10);
 }
 
 .signal-status.neutral {
-color: #ffd34d;
-background: rgba(255,211,77,.10);
+    color: #ffd34d;
+    background: rgba(255,211,77,.10);
 }
 
 .signal-status.sell {
-color: #ff5268;
-background: rgba(255,82,104,.10);
+    color: #ff5268;
+    background: rgba(255,82,104,.10);
 }
 
 .signal-score {
-margin-top: 18px;
-text-align: center;
+    margin-top: 18px;
+    text-align: center;
 }
 
 .signal-score strong {
-font-size: 42px;
+    font-size: 42px;
 }
 
 .signal-score span {
-color: #8fa8c8;
-font-size: 18px;
+    color: #8fa8c8;
+    font-size: 18px;
 }
+
 
 /* ========================= */
 /* PRIX BITCOIN */
 /* ========================= */
 
 .price-card h2 {
-text-align: center;
+    text-align: center;
 }
 
 .btc-price {
-display: flex;
-justify-content: center;
-align-items: baseline;
-gap: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 12px;
 
-```
-margin-bottom: 24px;
-```
-
+    margin-bottom: 24px;
 }
 
 .btc-price strong {
-font-size: 46px;
+    font-size: 46px;
 }
 
 .price-change {
-font-size: 16px;
-font-weight: 700;
+    font-size: 16px;
+    font-weight: 700;
 }
 
 .price-change.up {
-color: #18d89b;
+    color: #18d89b;
 }
 
 .price-change.down {
-color: #ff5268;
+    color: #ff5268;
 }
+
 
 /* ========================= */
 /* GRAPHIQUE */
 /* ========================= */
 
 .chart-container {
-width: 100%;
-height: 260px;
+    width: 100%;
+    height: 260px;
 
-```
-background: #101a29;
+    background: #101a29;
 
-border-radius: 18px;
+    border-radius: 18px;
 
-padding: 15px;
+    padding: 15px;
 
-margin-bottom: 18px;
-```
-
+    margin-bottom: 18px;
 }
 
 #btc-chart {
-width: 100%;
-height: 100%;
-display: block;
+    width: 100%;
+    height: 100%;
+    display: block;
 }
+
 
 /* ========================= */
 /* MOYENNES */
 /* ========================= */
 
 .average-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
 }
 
 .average-card {
-background: #1b2435;
-border-radius: 16px;
-padding: 17px;
+    background: #1b2435;
+    border-radius: 16px;
+    padding: 17px;
 }
 
 .average-card span {
-display: block;
+    display: block;
 
-```
-color: #8fa8c8;
+    color: #8fa8c8;
 
-font-size: 14px;
+    font-size: 14px;
 
-margin-bottom: 8px;
-```
-
+    margin-bottom: 8px;
 }
 
 .average-card strong {
-font-size: 21px;
+    font-size: 21px;
 }
+
 
 /* ========================= */
 /* INDICATEURS */
 /* ========================= */
 
 .section-title {
-margin: 0 0 20px;
+    margin: 0 0 20px;
 
-```
-font-size: 27px;
-```
-
+    font-size: 27px;
 }
 
 .market-indicators {
-display: flex;
-flex-direction: column;
-gap: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .market-indicator {
-display: flex;
-align-items: center;
+    display: flex;
+    align-items: center;
 
-```
-gap: 9px;
+    gap: 9px;
 
-padding: 13px 15px;
+    padding: 13px 15px;
 
-border-radius: 12px;
+    border-radius: 12px;
 
-background: #101a29;
+    background: #101a29;
 
-font-size: 15px;
-```
-
+    font-size: 15px;
 }
 
 .market-indicator strong {
-font-weight: 800;
+    font-weight: 800;
 }
 
 .indicator-dot {
-width: 10px;
-height: 10px;
+    width: 10px;
+    height: 10px;
 
-```
-border-radius: 50%;
+    border-radius: 50%;
 
-flex-shrink: 0;
-```
-
+    flex-shrink: 0;
 }
 
 .market-indicator.buy {
-color: #18d89b;
+    color: #18d89b;
 }
 
 .market-indicator.buy .indicator-dot {
-background: #18d89b;
+    background: #18d89b;
 }
 
 .market-indicator.neutral {
-color: #ffd34d;
+    color: #ffd34d;
 }
 
 .market-indicator.neutral .indicator-dot {
-background: #ffd34d;
+    background: #ffd34d;
 }
 
 .market-indicator.sell {
-color: #ff5268;
+    color: #ff5268;
 }
 
 .market-indicator.sell .indicator-dot {
-background: #ff5268;
+    background: #ff5268;
 }
+
 
 /* ========================= */
 /* KPI */
 /* ========================= */
 
 .kpi-grid {
-display: grid;
-
-```
-grid-template-columns: repeat(3, 1fr);
-
-gap: 16px;
-```
-
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%;
 }
 
 .kpi-card {
-position: relative;
+    position: relative;
 
-```
-min-height: 145px;
+    width: 100%;
+    min-width: 0;
+    min-height: 145px;
 
-padding: 20px;
+    padding: 20px;
 
-border-radius: 18px;
+    border-radius: 18px;
 
-border: 1px solid #2a3950;
+    border: 1px solid #2a3950;
 
-background: #101a29;
+    background: #101a29;
 
-color: #ffffff;
+    color: #ffffff;
 
-text-align: left;
+    text-align: left;
 
-cursor: pointer;
+    cursor: pointer;
 
-font-family: inherit;
+    font-family: inherit;
 
-transition:
-    transform .15s ease,
-    border-color .15s ease;
-```
-
+    transition:
+        transform .15s ease,
+        border-color .15s ease;
 }
 
 .kpi-card:hover {
-transform: translateY(-2px);
+    transform: translateY(-2px);
 }
 
 .kpi-card.buy {
-border-color: #18d89b;
+    border-color: #18d89b;
 }
 
 .kpi-card.neutral {
-border-color: #d5a92e;
+    border-color: #d5a92e;
 }
 
 .kpi-card.sell {
-border-color: #ff5268;
+    border-color: #ff5268;
 }
 
 .kpi-name {
-display: block;
+    display: block;
 
-```
-color: #8fa8c8;
+    color: #8fa8c8;
 
-font-size: 15px;
+    font-size: 15px;
 
-margin-bottom: 14px;
-```
-
+    margin-bottom: 14px;
 }
 
 .kpi-value {
-display: block;
+    display: block;
 
-```
-font-size: 25px;
+    font-size: 25px;
 
-line-height: 1.2;
-```
-
+    line-height: 1.2;
 }
 
 .kpi-card.buy .kpi-value {
-color: #18d89b;
+    color: #18d89b;
 }
 
 .kpi-card.neutral .kpi-value {
-color: #ffd34d;
+    color: #ffd34d;
 }
 
 .kpi-card.sell .kpi-value {
-color: #ff5268;
+    color: #ff5268;
 }
+
 
 /* ========================= */
 /* DETAILS KPI */
 /* ========================= */
 
 .kpi-details {
-display: none;
+    display: none;
 
-```
-margin-top: 18px;
+    margin-top: 18px;
 
-padding-top: 15px;
+    padding-top: 15px;
 
-border-top: 1px solid #2a3950;
+    border-top: 1px solid #2a3950;
 
-color: #b4c2d5;
+    color: #b4c2d5;
 
-line-height: 1.5;
+    line-height: 1.5;
 
-font-size: 13px;
-```
-
+    font-size: 13px;
 }
 
 .kpi-card.open {
-min-height: auto;
+    min-height: auto;
 }
 
 .kpi-card.open .kpi-details {
-display: block;
+    display: block;
 }
 
 .kpi-details strong {
-display: block;
+    display: block;
 
-```
-color: #ffffff;
+    color: #ffffff;
 
-margin-bottom: 10px;
-```
-
+    margin-bottom: 10px;
 }
 
 .kpi-details p {
-margin: 7px 0;
+    margin: 7px 0;
 }
+
 
 /* ========================= */
 /* LECTURE */
 /* ========================= */
 
 .reading-card {
-background: #101a29;
+    background: #101a29;
 }
 
 .reading-card h2 {
-margin-top: 0;
+    margin-top: 0;
 
-```
-font-size: 24px;
-```
-
+    font-size: 24px;
 }
 
 .reading-card p {
-color: #b4c2d5;
+    color: #b4c2d5;
 
-```
-line-height: 1.6;
-```
-
+    line-height: 1.6;
 }
 
+
 /* ========================= */
-/* MOBILE */
+/* TABLETTE */
 /* ========================= */
 
 @media (max-width: 700px) {
 
-```
-.app {
-    width: min(100% - 20px, 920px);
+    .app {
+        width: min(100% - 20px, 920px);
+        padding-top: 20px;
+    }
 
-    padding-top: 20px;
+    .header h1 {
+        font-size: 34px;
+    }
+
+    .signal-card,
+    .price-card,
+    .indicators-section,
+    .kpis-section,
+    .reading-card {
+        padding: 20px;
+    }
+
+    .signal-gauge {
+        grid-template-columns: 55px 1fr 55px;
+        gap: 8px;
+    }
+
+    .gauge-label {
+        font-size: 11px;
+    }
+
+    .btc-price strong {
+        font-size: 38px;
+    }
+
+    .average-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* 2 KPI par ligne */
+
+    .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
 }
 
-.header h1 {
-    font-size: 34px;
-}
 
-.signal-card,
-.price-card,
-.indicators-section,
-.kpis-section,
-.reading-card {
-    padding: 20px;
-}
-
-.signal-gauge {
-    grid-template-columns: 55px 1fr 55px;
-    gap: 8px;
-}
-
-.gauge-label {
-    font-size: 11px;
-}
-
-.btc-price strong {
-    font-size: 38px;
-}
-
-.average-grid {
-    grid-template-columns: 1fr;
-}
-
-.kpi-grid {
-    grid-template-columns: 1fr 1fr;
-}
-```
-
-}
+/* ========================= */
+/* TELEPHONE */
+/* ========================= */
 
 @media (max-width: 480px) {
 
-```
-.kpi-grid {
-    grid-template-columns: 1fr;
-}
+    .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
 
-.signal-gauge {
-    grid-template-columns: 50px 1fr 50px;
-}
-```
+    .kpi-card {
+        min-height: 125px;
+        padding: 15px;
+    }
 
+    .kpi-name {
+        font-size: 13px;
+    }
+
+    .kpi-value {
+        font-size: 21px;
+    }
+
+    .signal-gauge {
+        grid-template-columns: 50px 1fr 50px;
+    }
 }
