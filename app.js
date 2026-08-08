@@ -3,7 +3,6 @@
 // VERSION AVEC HISTORIQUE 400 JOURS
 // SOURCE PRIX : COINBASE
 // FEAR & GREED : ALTERNATIVE.ME
-// RAINBOW : BITCOIN.COM
 // =====================================================
 
 
@@ -154,37 +153,39 @@ async function getBTCData() {
         );
 
 
-        const now =
-            Date.now();
+        const now = Date.now();
 
-
-        const oneDay =
-            86400 * 1000;
-
+        const oneDay = 86400 * 1000;
 
         const start400 =
             now - (400 * oneDay);
 
 
         // =================================================
-        // HISTORIQUE COINBASE
+        // REQUETE 1
         // =================================================
 
         const firstStart =
             start400;
 
-
         const firstEnd =
             start400 + (200 * oneDay);
 
 
+        // =================================================
+        // REQUETE 2
+        // =================================================
+
         const secondStart =
             firstEnd;
-
 
         const secondEnd =
             now;
 
+
+        // =================================================
+        // URL COINBASE
+        // =================================================
 
         const url1 =
             "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
@@ -212,16 +213,23 @@ async function getBTCData() {
             );
 
 
+        // =================================================
+        // APPELS API
+        // =================================================
+
         const [
             response1,
             response2
         ] = await Promise.all([
+
             fetch(url1, {
                 cache: "no-store"
             }),
+
             fetch(url2, {
                 cache: "no-store"
             })
+
         ]);
 
 
@@ -246,16 +254,14 @@ async function getBTCData() {
         const data1 =
             await response1.json();
 
-
         const data2 =
             await response2.json();
 
 
-        const combined =
-            [
-                ...data1,
-                ...data2
-            ];
+        const combined = [
+            ...data1,
+            ...data2
+        ];
 
 
         if (
@@ -269,10 +275,11 @@ async function getBTCData() {
         }
 
 
-        // Coinbase retourne :
+        // =================================================
+        // COINBASE :
         //
         // [timestamp, low, high, open, close, volume]
-
+        // =================================================
 
         btcPrices =
             combined
@@ -286,12 +293,15 @@ async function getBTCData() {
 
                 }))
                 .filter(item =>
+
                     Number.isFinite(
                         item.timestamp
                     ) &&
+
                     Number.isFinite(
                         item.price
                     )
+
                 );
 
 
@@ -299,8 +309,7 @@ async function getBTCData() {
         // SUPPRESSION DES DOUBLONS
         // =================================================
 
-        const unique =
-            new Map();
+        const unique = new Map();
 
 
         btcPrices.forEach(item => {
@@ -330,6 +339,10 @@ async function getBTCData() {
             );
         }
 
+
+        // =================================================
+        // PRIX ACTUEL
+        // =================================================
 
         currentPrice =
             btcPrices[
@@ -362,14 +375,14 @@ async function getBTCData() {
 
 
         // =================================================
-        // AFFICHAGE
+        // AFFICHAGE PRIX
         // =================================================
 
         updatePriceDisplay();
 
 
         // =================================================
-        // INDICATEURS
+        // CALCUL INDICATEURS
         // =================================================
 
         calculateIndicators();
@@ -390,7 +403,7 @@ async function getBTCData() {
 
 
         // =================================================
-        // AFFICHAGE INDICATEURS
+        // AFFICHAGE DES INDICATEURS
         // =================================================
 
         updateIndicators();
@@ -432,21 +445,17 @@ async function getBTCData() {
         }
 
     }
+
 }
 
 
 // =====================================================
-// RAINBOW
+// RAINBOW CHART
 // =====================================================
 
 async function getRainbowData() {
 
     try {
-
-        console.log(
-            "BTC SIGNAL : récupération Rainbow..."
-        );
-
 
         const response =
             await fetch(
@@ -477,7 +486,7 @@ async function getRainbowData() {
 
 
         // =================================================
-        // RECHERCHE DE LA ZONE ACTUELLE
+        // RECHERCHE ZONE ACTUELLE
         // =================================================
 
         const zone =
@@ -499,20 +508,13 @@ async function getRainbowData() {
             String(zone);
 
 
-        // =================================================
-        // AFFICHAGE RAINBOW
-        // =================================================
-
         if (rainbowElement) {
 
             rainbowElement.textContent =
                 rainbowValue;
+
         }
 
-
-        // =================================================
-        // ETAT RAINBOW
-        // =================================================
 
         updateRainbowState();
 
@@ -533,6 +535,7 @@ async function getRainbowData() {
 
             rainbowElement.textContent =
                 "-";
+
         }
 
 
@@ -542,7 +545,9 @@ async function getRainbowData() {
             "neutral",
             "En attente"
         );
+
     }
+
 }
 
 
@@ -562,7 +567,7 @@ function updateRainbowState() {
 
 
     // =================================================
-    // ZONES FAVORABLES
+    // ACHAT
     // =================================================
 
     if (
@@ -582,14 +587,16 @@ function updateRainbowState() {
 
 
     // =================================================
-    // ZONES DE VENTE
+    // VENTE
     // =================================================
 
     } else if (
+
         zone.includes("fomo") ||
         zone.includes("sell") ||
         zone.includes("maximum") ||
         zone.includes("red")
+
     ) {
 
         setIndicator(
@@ -601,7 +608,7 @@ function updateRainbowState() {
 
 
     // =================================================
-    // ZONES NEUTRES
+    // NEUTRE
     // =================================================
 
     } else {
@@ -612,7 +619,9 @@ function updateRainbowState() {
             "neutral",
             rainbowValue
         );
+
     }
+
 }
 
 
@@ -627,19 +636,34 @@ function updatePriceDisplay() {
     }
 
 
-    priceElement.textContent =
-        formatPrice(currentPrice);
+    if (priceElement) {
+
+        priceElement.textContent =
+            formatPrice(currentPrice);
+
+    }
 
 
-    average7Element.textContent =
-        formatPrice(average7);
+    if (average7Element) {
+
+        average7Element.textContent =
+            formatPrice(average7);
+
+    }
 
 
-    average30Element.textContent =
-        formatPrice(average30);
+    if (average30Element) {
+
+        average30Element.textContent =
+            formatPrice(average30);
+
+    }
 
 
-    if (Number.isFinite(average7)) {
+    if (
+        Number.isFinite(average7) &&
+        changeElement
+    ) {
 
         const percentage =
             (
@@ -665,7 +689,9 @@ function updatePriceDisplay() {
                 ? "up"
                 : "down"
         );
+
     }
+
 }
 
 
@@ -737,22 +763,37 @@ function calculateIndicators() {
 
         piCycleValue =
             null;
+
     }
+
+
+    // =================================================
+    // RAINBOW
+    // =================================================
+
+    // Le Rainbow sera récupéré
+    // séparément avec getRainbowData().
+
+    rainbowValue = null;
 
 
     // =================================================
     // AFFICHAGE RSI
     // =================================================
 
-    if (Number.isFinite(rsiValue)) {
+    if (
+        Number.isFinite(rsiValue) &&
+        rsiElement
+    ) {
 
         rsiElement.textContent =
             rsiValue.toFixed(1);
 
-    } else {
+    } else if (rsiElement) {
 
         rsiElement.textContent =
             "-";
+
     }
 
 
@@ -760,15 +801,19 @@ function calculateIndicators() {
     // AFFICHAGE MM111
     // =================================================
 
-    if (Number.isFinite(mm111Value)) {
+    if (
+        Number.isFinite(mm111Value) &&
+        mm111Element
+    ) {
 
         mm111Element.textContent =
             formatPrice(mm111Value);
 
-    } else {
+    } else if (mm111Element) {
 
         mm111Element.textContent =
             "-";
+
     }
 
 
@@ -776,15 +821,19 @@ function calculateIndicators() {
     // AFFICHAGE MM350
     // =================================================
 
-    if (Number.isFinite(mm350Value)) {
+    if (
+        Number.isFinite(mm350Value) &&
+        mm350Element
+    ) {
 
         mm350Element.textContent =
             formatPrice(mm350Value);
 
-    } else {
+    } else if (mm350Element) {
 
         mm350Element.textContent =
             "-";
+
     }
 
 
@@ -792,22 +841,33 @@ function calculateIndicators() {
     // AFFICHAGE PI CYCLE
     // =================================================
 
-    if (Number.isFinite(piCycleValue)) {
+    if (
+        Number.isFinite(piCycleValue) &&
+        piCycleElement
+    ) {
 
         piCycleElement.textContent =
             piCycleValue.toFixed(1) + "%";
 
-    } else {
+    } else if (piCycleElement) {
 
         piCycleElement.textContent =
             "-";
+
     }
 
 
     // =================================================
-    // IMPORTANT :
-    // PAS DE RESET DU RAINBOW ICI
+    // AFFICHAGE RAINBOW
     // =================================================
+
+    if (rainbowElement) {
+
+        rainbowElement.textContent =
+            "-";
+
+    }
+
 }
 
 
@@ -834,6 +894,7 @@ async function getFearGreed() {
                 "Fear & Greed : " +
                 response.status
             );
+
         }
 
 
@@ -849,6 +910,7 @@ async function getFearGreed() {
             throw new Error(
                 "Fear & Greed vide"
             );
+
         }
 
 
@@ -864,13 +926,22 @@ async function getFearGreed() {
             )
         ) {
 
-            fearGreedElement.textContent =
-                fearGreedValue;
+            if (fearGreedElement) {
+
+                fearGreedElement.textContent =
+                    fearGreedValue;
+
+            }
 
         } else {
 
-            fearGreedElement.textContent =
-                "-";
+            if (fearGreedElement) {
+
+                fearGreedElement.textContent =
+                    "-";
+
+            }
+
         }
 
 
@@ -886,9 +957,15 @@ async function getFearGreed() {
             null;
 
 
-        fearGreedElement.textContent =
-            "-";
+        if (fearGreedElement) {
+
+            fearGreedElement.textContent =
+                "-";
+
+        }
+
     }
+
 }
 
 
@@ -907,12 +984,14 @@ function calculateMovingAverage(
     ) {
 
         return null;
+
     }
 
 
     return average(
         values.slice(-period)
     );
+
 }
 
 
@@ -931,12 +1010,17 @@ function calculateRSI(
     ) {
 
         return null;
+
     }
 
 
     let gains = 0;
     let losses = 0;
 
+
+    // =================================================
+    // PREMIERE MOYENNE
+    // =================================================
 
     for (
         let i = 1;
@@ -959,7 +1043,9 @@ function calculateRSI(
                 Math.abs(
                     difference
                 );
+
         }
+
     }
 
 
@@ -970,6 +1056,10 @@ function calculateRSI(
     let averageLoss =
         losses / period;
 
+
+    // =================================================
+    // MOYENNE LISSÉE
+    // =================================================
 
     for (
         let i = period + 1;
@@ -1008,12 +1098,14 @@ function calculateRSI(
                 (period - 1) +
                 loss
             ) / period;
+
     }
 
 
     if (averageLoss === 0) {
 
         return 100;
+
     }
 
 
@@ -1029,6 +1121,7 @@ function calculateRSI(
             (1 + relativeStrength)
         )
     );
+
 }
 
 
@@ -1037,6 +1130,7 @@ function calculateRSI(
 // =====================================================
 
 function updateIndicators() {
+
 
     // =================================================
     // RSI
@@ -1070,7 +1164,9 @@ function updateIndicators() {
                 "neutral",
                 "Neutre"
             );
+
         }
+
     }
 
 
@@ -1111,6 +1207,7 @@ function updateIndicators() {
                 "neutral",
                 "Neutre"
             );
+
         }
 
     } else {
@@ -1121,6 +1218,7 @@ function updateIndicators() {
             "neutral",
             "En attente"
         );
+
     }
 
 
@@ -1161,6 +1259,7 @@ function updateIndicators() {
                 "neutral",
                 "Neutre"
             );
+
         }
 
     } else {
@@ -1171,6 +1270,7 @@ function updateIndicators() {
             "neutral",
             "En attente"
         );
+
     }
 
 
@@ -1208,6 +1308,7 @@ function updateIndicators() {
                 "buy",
                 "Favorable"
             );
+
         }
 
     } else {
@@ -1218,6 +1319,7 @@ function updateIndicators() {
             "neutral",
             "En attente"
         );
+
     }
 
 
@@ -1225,10 +1327,20 @@ function updateIndicators() {
     // RAINBOW
     // =================================================
 
-    // Rainbow est géré directement par :
-    // getRainbowData()
-    // et
-    // updateRainbowState()
+    if (rainbowValue) {
+
+        updateRainbowState();
+
+    } else {
+
+        setIndicator(
+            indicatorRainbow,
+            kpiRainbow,
+            "neutral",
+            "En attente"
+        );
+
+    }
 
 
     // =================================================
@@ -1271,6 +1383,7 @@ function updateIndicators() {
                 "neutral",
                 "Neutre"
             );
+
         }
 
     } else {
@@ -1281,7 +1394,9 @@ function updateIndicators() {
             "neutral",
             "En attente"
         );
+
     }
+
 }
 
 
@@ -1314,7 +1429,9 @@ function setIndicator(
 
             strong.textContent =
                 text;
+
         }
+
     }
 
 
@@ -1324,7 +1441,9 @@ function setIndicator(
             kpi,
             state
         );
+
     }
+
 }
 
 
@@ -1357,10 +1476,12 @@ function calculateScore() {
         } else {
 
             score = 50;
+
         }
 
 
         scores.push(score);
+
     }
 
 
@@ -1389,10 +1510,12 @@ function calculateScore() {
         } else {
 
             score = 50;
+
         }
 
 
         scores.push(score);
+
     }
 
 
@@ -1421,10 +1544,12 @@ function calculateScore() {
         } else {
 
             score = 50;
+
         }
 
 
         scores.push(score);
+
     }
 
 
@@ -1454,10 +1579,52 @@ function calculateScore() {
         } else {
 
             score = 100;
+
         }
 
 
         scores.push(score);
+
+    }
+
+
+    // =================================================
+    // RAINBOW
+    // =================================================
+
+    if (rainbowValue) {
+
+        const zone =
+            rainbowValue.toLowerCase();
+
+
+        let score = 50;
+
+
+        if (
+            zone.includes("fire") ||
+            zone.includes("accumulate") ||
+            zone.includes("buy") ||
+            zone.includes("blue") ||
+            zone.includes("green")
+        ) {
+
+            score = 100;
+
+        } else if (
+            zone.includes("fomo") ||
+            zone.includes("sell") ||
+            zone.includes("maximum") ||
+            zone.includes("red")
+        ) {
+
+            score = 0;
+
+        }
+
+
+        scores.push(score);
+
     }
 
 
@@ -1489,10 +1656,12 @@ function calculateScore() {
         } else {
 
             score = 50;
+
         }
 
 
         scores.push(score);
+
     }
 
 
@@ -1507,6 +1676,7 @@ function calculateScore() {
 
         finalScore =
             average(scores);
+
     }
 
 
@@ -1519,6 +1689,7 @@ function calculateScore() {
     updateMainSignal(
         finalScore
     );
+
 }
 
 
@@ -1531,6 +1702,7 @@ function updateMainSignal(score) {
     if (!Number.isFinite(score)) {
 
         score = 50;
+
     }
 
 
@@ -1548,6 +1720,7 @@ function updateMainSignal(score) {
 
         signalScoreElement.textContent =
             score;
+
     }
 
 
@@ -1555,6 +1728,7 @@ function updateMainSignal(score) {
 
         gaugeCursor.style.left =
             score + "%";
+
     }
 
 
@@ -1601,7 +1775,9 @@ function updateMainSignal(score) {
 
         signalStatus.textContent =
             "Marché neutre";
+
     }
+
 }
 
 
@@ -1641,8 +1817,10 @@ function setupKpiCards() {
 
                 }
             );
+
         }
     );
+
 }
 
 
@@ -1720,7 +1898,9 @@ function setupChartInteraction() {
 
                     closestIndex =
                         i;
+
                 }
+
             }
 
 
@@ -1729,6 +1909,7 @@ function setupChartInteraction() {
 
 
             drawBTCChart();
+
         }
     );
 
@@ -1742,8 +1923,10 @@ function setupChartInteraction() {
 
 
             drawBTCChart();
+
         }
     );
+
 }
 
 
@@ -1766,6 +1949,11 @@ function drawBTCChart() {
         chartCanvas.parentElement;
 
 
+    if (!container) {
+        return;
+    }
+
+
     const width =
         container.clientWidth;
 
@@ -1780,6 +1968,7 @@ function drawBTCChart() {
     ) {
 
         return;
+
     }
 
 
@@ -1820,6 +2009,10 @@ function drawBTCChart() {
         height
     );
 
+
+    // =================================================
+    // DONNEES 30 JOURS
+    // =================================================
 
     const points =
         btcPrices
@@ -1889,6 +2082,10 @@ function drawBTCChart() {
         paddingBottom;
 
 
+    // =================================================
+    // COORDONNEES
+    // =================================================
+
     const coordinates =
         points.map(
             (point, index) => {
@@ -1906,7 +2103,8 @@ function drawBTCChart() {
                     (
                         point.price -
                         minPrice
-                    ) / range;
+                    ) /
+                    range;
 
 
                 const y =
@@ -1927,7 +2125,9 @@ function drawBTCChart() {
 
                     timestamp:
                         point.timestamp
+
                 };
+
             }
         );
 
@@ -1981,6 +2181,7 @@ function drawBTCChart() {
 
 
         context.stroke();
+
     }
 
 
@@ -2034,7 +2235,9 @@ function drawBTCChart() {
                     point.x,
                     point.y
                 );
+
             }
+
         }
     );
 
@@ -2094,7 +2297,9 @@ function drawBTCChart() {
                     point.x,
                     point.y
                 );
+
             }
+
         }
     );
 
@@ -2275,6 +2480,7 @@ function drawBTCChart() {
             point.x,
             height - 18
         );
+
     }
 
 
@@ -2292,6 +2498,10 @@ function drawBTCChart() {
                 chartHoverIndex
             ];
 
+
+        // -------------------------------------------------
+        // LIGNE VERTICALE
+        // -------------------------------------------------
 
         context.beginPath();
 
@@ -2326,6 +2536,10 @@ function drawBTCChart() {
 
         context.setLineDash([]);
 
+
+        // -------------------------------------------------
+        // POINT SELECTIONNE
+        // -------------------------------------------------
 
         context.beginPath();
 
@@ -2365,6 +2579,10 @@ function drawBTCChart() {
         context.fill();
 
 
+        // -------------------------------------------------
+        // DATE
+        // -------------------------------------------------
+
         const selectedDate =
             new Date(
                 selected.timestamp
@@ -2382,11 +2600,19 @@ function drawBTCChart() {
             );
 
 
+        // -------------------------------------------------
+        // PRIX
+        // -------------------------------------------------
+
         const priceLabel =
             formatPrice(
                 selected.price
             );
 
+
+        // -------------------------------------------------
+        // BOX
+        // -------------------------------------------------
 
         const boxWidth = 125;
         const boxHeight = 58;
@@ -2411,6 +2637,7 @@ function drawBTCChart() {
                 selected.x -
                 boxWidth -
                 12;
+
         }
 
 
@@ -2418,6 +2645,7 @@ function drawBTCChart() {
 
             boxY =
                 selected.y + 12;
+
         }
 
 
@@ -2435,18 +2663,38 @@ function drawBTCChart() {
         context.beginPath();
 
 
-        context.roundRect(
-            boxX,
-            boxY,
-            boxWidth,
-            boxHeight,
-            8
-        );
+        if (
+            typeof context.roundRect ===
+            "function"
+        ) {
+
+            context.roundRect(
+                boxX,
+                boxY,
+                boxWidth,
+                boxHeight,
+                8
+            );
+
+        } else {
+
+            context.rect(
+                boxX,
+                boxY,
+                boxWidth,
+                boxHeight
+            );
+
+        }
 
 
         context.fill();
         context.stroke();
 
+
+        // -------------------------------------------------
+        // DATE BOX
+        // -------------------------------------------------
 
         context.font =
             "10px Arial";
@@ -2471,6 +2719,10 @@ function drawBTCChart() {
         );
 
 
+        // -------------------------------------------------
+        // PRIX BOX
+        // -------------------------------------------------
+
         context.font =
             "bold 15px Arial";
 
@@ -2484,7 +2736,9 @@ function drawBTCChart() {
             boxX + 10,
             boxY + 28
         );
+
     }
+
 }
 
 
@@ -2499,7 +2753,9 @@ window.addEventListener(
         if (btcPrices.length) {
 
             drawBTCChart();
+
         }
+
     }
 );
 
