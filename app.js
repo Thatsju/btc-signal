@@ -2069,77 +2069,21 @@ function drawBTCChart() {
 
 
     // =================================================
-    // DONNEES 30 JOURS
-    // =================================================
+// DONNEES 7 JOURS / DONNEES HORAIRES
+// =================================================
 
-    const points =
-        btcPrices
-            .slice(168)
-            .filter(point =>
-                Number.isFinite(
-                    point.price
-                )
-            );
-
-
-    if (points.length < 2) {
-        return;
-    }
-
-
-    const prices =
-        points.map(
-            point => point.price
+const points =
+    btcPrices
+        .slice(-168)
+        .filter(point =>
+            Number.isFinite(
+                point.price
+            )
         );
 
-
-    let minPrice =
-        Math.min(...prices);
-
-
-    let maxPrice =
-        Math.max(...prices);
-
-
-    const rawRange =
-        maxPrice -
-        minPrice;
-
-
-    const margin =
-        rawRange > 0
-            ? rawRange * 0.12
-            : maxPrice * 0.01;
-
-
-    minPrice -= margin;
-    maxPrice += margin;
-
-
-    const range =
-        maxPrice -
-        minPrice ||
-        1;
-
-
-    const paddingLeft = 12;
-    const paddingRight = 18;
-    const paddingTop = 18;
-    const paddingBottom = 28;
-
-
-    const chartWidth =
-        width -
-        paddingLeft -
-        paddingRight;
-
-
-    const chartHeight =
-        height -
-        paddingTop -
-        paddingBottom;
-
-
+if (points.length < 2) {
+    return;
+}
     // =================================================
     // COORDONNEES
     // =================================================
