@@ -196,54 +196,116 @@ async function getBTCData() {
 
         const now = Date.now();
 
-        const oneHour = 3600 * 1000;
+        const oneDay = 86400 * 1000;
 
-        const start7 =
-            now - (7 * 24 * oneHour);
+        const start400 =
+            now - (400 * oneDay);
 
 
         // =================================================
-        // URL COINBASE - 7 JOURS / DONNEES HORAIRES
+        // REQUETE 1 : 200 JOURS
         // =================================================
 
-        const url =
+        const firstStart =
+            start400;
+
+        const firstEnd =
+            start400 + (200 * oneDay);
+
+
+        // =================================================
+        // REQUETE 2 : 200 JOURS
+        // =================================================
+
+        const secondStart =
+            firstEnd;
+
+        const secondEnd =
+            now;
+
+
+        // =================================================
+        // URL COINBASE - HISTORIQUE 400 JOURS
+        // DONNEES QUOTIDIENNES
+        // =================================================
+
+        const url1 =
             "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
-            "?granularity=3600" +
+            "?granularity=86400" +
             "&start=" +
             encodeURIComponent(
-                new Date(start7).toISOString()
+                new Date(firstStart).toISOString()
             ) +
             "&end=" +
             encodeURIComponent(
-                new Date(now).toISOString()
+                new Date(firstEnd).toISOString()
+            );
+
+
+        const url2 =
+            "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
+            "?granularity=86400" +
+            "&start=" +
+            encodeURIComponent(
+                new Date(secondStart).toISOString()
+            ) +
+            "&end=" +
+            encodeURIComponent(
+                new Date(secondEnd).toISOString()
             );
 
 
         // =================================================
-        // APPEL API
+        // APPELS API
         // =================================================
 
-        const response =
-            await fetch(
-                url,
-                {
-                    cache: "no-store"
-                }
-            );
+        const [
+            response1,
+            response2
+        ] = await Promise.all([
+
+            fetch(url1, {
+                cache: "no-store"
+            }),
+
+            fetch(url2, {
+                cache: "no-store"
+            })
+
+        ]);
 
 
-        if (!response.ok) {
+        if (!response1.ok) {
 
             throw new Error(
-                "Coinbase historique : " +
-                response.status
+                "Coinbase historique 1 : " +
+                response1.status
             );
 
         }
 
 
-        const combined =
-            await response.json();
+        if (!response2.ok) {
+
+            throw new Error(
+                "Coinbase historique 2 : " +
+                response2.status
+            );
+
+        }
+
+
+        const data1 =
+            await response1.json();
+
+        const data2 =
+            await response2.json();
+
+
+        const combined = [
+            ...data1,
+            ...data2
+        ];
 
 
         if (
@@ -315,7 +377,7 @@ async function getBTCData() {
             );
 
 
-        if (btcPrices.length < 30) {
+        if (btcPrices.length < 350) {
 
             throw new Error(
                 "Historique BTC insuffisant"
@@ -341,7 +403,7 @@ async function getBTCData() {
         average7 =
             average(
                 btcPrices
-                    .slice(-168)
+                    .slice(-7)
                     .map(item => item.price)
             );
 
@@ -431,8 +493,6 @@ async function getBTCData() {
     }
 
 }
-
-
 
 // =====================================================
 // RAINBOW CHART
