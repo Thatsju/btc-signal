@@ -439,18 +439,19 @@ window.hourlyBTC =
 
 
         // =================================================
-        // GRAPHIQUE
-        // =================================================
+// GRAPHIQUE 7 JOURS HORAIRES
+// =================================================
 
-const savedPrices = btcPrices;
+if (
+    window.hourlyBTC &&
+    window.hourlyBTC.length
+) {
 
-if (window.hourlyBTC && window.hourlyBTC.length) {
+    drawBTCChart(
+        window.hourlyBTC
+    );
 
-    btcPrices = window.hourlyBTC;
-
-    drawBTCChart();
-
-    btcPrices = savedPrices;
+}
 
 } else {
 
@@ -1983,8 +1984,7 @@ function setupChartInteraction() {
 // GRAPHIQUE
 // =====================================================
 
-function drawBTCChart() {
-
+function drawBTCChart(chartData = btcPrices) {
     if (!chartCanvas) {
         return;
     }
@@ -2064,13 +2064,13 @@ function drawBTCChart() {
 // =================================================
 
 const points =
-    btcPrices
-        .slice(-168)
-        .filter(point =>
-            Number.isFinite(
-                point.price
-            )
-        );
+chartData
+.slice(-168)
+.filter(point =>
+Number.isFinite(
+point.price
+)
+);
 
 if (points.length < 2) {
     return;
@@ -2793,11 +2793,16 @@ window.addEventListener(
     "resize",
     () => {
 
-        if (btcPrices.length) {
+       if (
+    window.hourlyBTC &&
+    window.hourlyBTC.length
+) {
 
-            drawBTCChart();
+    drawBTCChart(
+        window.hourlyBTC
+    );
 
-        }
+}
 
     }
 );
