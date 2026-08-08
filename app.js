@@ -174,7 +174,10 @@ async function updateLivePrice() {
 
         currentPrice = livePrice;
 
-        updatePriceDisplay();
+updatePriceDisplay();
+
+// recalcul du signal en temps réel
+calculateRealtimeScore();
 
     } catch (error) {
 
@@ -479,8 +482,15 @@ window.hourlyBTC =
         // =================================================
         // SCORE
         // =================================================
+function calculateRealtimeScore() {
 
-        calculateScore();
+    if (!Number.isFinite(currentPrice)) {
+        return;
+    }
+
+    calculateScore();
+
+}
 
 
         // =================================================
@@ -1573,8 +1583,10 @@ function calculateScore() {
         }
 
 
-        scores.push(score);
-
+scores.push({
+    value: score,
+    weight: 1
+});
     }
 
 
@@ -1607,8 +1619,10 @@ function calculateScore() {
         }
 
 
-        scores.push(score);
-
+scores.push({
+    value: score,
+    weight: 2
+});
     }
 
 
@@ -1641,8 +1655,10 @@ function calculateScore() {
         }
 
 
-        scores.push(score);
-
+scores.push({
+    value: score,
+    weight: 2
+});
     }
 
 
@@ -1676,8 +1692,10 @@ function calculateScore() {
         }
 
 
-        scores.push(score);
-
+scores.push({
+    value: score,
+    weight: 3
+});
     }
 
 
@@ -1716,8 +1734,10 @@ function calculateScore() {
         }
 
 
-        scores.push(score);
-
+scores.push({
+    value: score,
+    weight: 2
+});
     }
 
 
@@ -1753,8 +1773,10 @@ function calculateScore() {
         }
 
 
-        scores.push(score);
-
+scores.push({
+    value: score,
+    weight: 1
+});
     }
 
 
@@ -1765,10 +1787,30 @@ function calculateScore() {
     let finalScore = 50;
 
 
-    if (scores.length) {
+   if (scores.length) {
 
-        finalScore =
-            average(scores);
+    let total = 0;
+    let totalWeight = 0;
+
+
+    scores.forEach(item => {
+
+        total +=
+            item.value *
+            item.weight;
+
+
+        totalWeight +=
+            item.weight;
+
+    });
+
+
+    finalScore =
+        total /
+        totalWeight;
+
+
 
     }
 
