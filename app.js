@@ -49,6 +49,13 @@ const fearAverageElement =
     document.getElementById("fear-average");
 const rainbowEvolutionElement =
     document.getElementById("rainbow-evolution");
+const piCycleEvolutionElement =
+    document.getElementById("picycle-evolution");
+const kpiPiCycle =
+    document.getElementById("kpi-picycle");
+
+const indicatorPiCycle =
+    document.getElementById("indicator-picycle");
 // =====================================================
 // INDICATEURS
 // =====================================================
@@ -102,6 +109,7 @@ let rainbowHistory =
     JSON.parse(
         localStorage.getItem("rainbowHistory")
     ) || [];
+let piCycleHistory = [];
 // =====================================================
 // OUTILS
 // =====================================================
@@ -906,32 +914,46 @@ if (mm350History.length > 7) {
 }
 
     // =================================================
-    // PI CYCLE
-    // =================================================
+// CALCUL PI CYCLE
+// =================================================
+
+if (
+    Number.isFinite(currentPrice) &&
+    Number.isFinite(mm111Value) &&
+    Number.isFinite(mm350Value)
+) {
+
+    const piTarget =
+        mm350Value * 2;
+
+
+    piCycleValue =
+        (
+            currentPrice /
+            piTarget
+        ) * 100;
+
+
+    piCycleHistory.push(
+        piCycleValue
+    );
+
 
     if (
-        Number.isFinite(mm111Value) &&
-        Number.isFinite(mm350Value)
+        piCycleHistory.length > 7
     ) {
 
-        const piTarget =
-            mm350Value * 2;
-
-
-        piCycleValue =
-            (
-                currentPrice /
-                piTarget
-            ) * 100;
-
-    } else {
-
-        piCycleValue =
-            null;
+        piCycleHistory.shift();
 
     }
 
 
+} else {
+
+    piCycleValue =
+        null;
+
+}
     // =================================================
     // RAINBOW
     // =================================================
@@ -1150,6 +1172,50 @@ if (
 
     piCycleElement.textContent =
         "-";
+
+}
+    // =================================================
+// ETAT PI CYCLE
+// =================================================
+
+if (
+    Number.isFinite(piCycleValue)
+) {
+
+    if (
+        piCycleValue >= 90
+    ) {
+
+        setIndicator(
+            indicatorPiCycle,
+            kpiPiCycle,
+            "sell",
+            "Risque de sommet"
+        );
+
+
+    } else if (
+        piCycleValue >= 70
+    ) {
+
+        setIndicator(
+            indicatorPiCycle,
+            kpiPiCycle,
+            "neutral",
+            "Surveillance"
+        );
+
+
+    } else {
+
+        setIndicator(
+            indicatorPiCycle,
+            kpiPiCycle,
+            "buy",
+            "Situation favorable"
+        );
+
+    }
 
 }
 
