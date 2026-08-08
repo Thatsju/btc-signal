@@ -469,27 +469,21 @@ window.hourlyBTC =
         // FEAR & GREED
         // =================================================
 
-        await getFearGreed();
+       await getFearGreed();
 
 
-        // =================================================
-        // AFFICHAGE DES INDICATEURS
-        // =================================================
+// =================================================
+// AFFICHAGE DES INDICATEURS
+// =================================================
 
-        updateIndicators();
+updateIndicators();
 
 
-        // =================================================
-        // SCORE
-        // =================================================
-function calculateRealtimeScore() {
+// =================================================
+// SCORE
+// =================================================
 
-    if (!Number.isFinite(currentPrice)) {
-        return;
-    }
-
-    calculateScore();
-
+calculateScore();
 }
 
 
