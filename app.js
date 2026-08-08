@@ -45,6 +45,8 @@ const mm111AverageElement =
 
 const mm350AverageElement =
     document.getElementById("mm350-average");
+const fearAverageElement =
+    document.getElementById("fear-average");
 // =====================================================
 // INDICATEURS
 // =====================================================
@@ -1181,25 +1183,129 @@ async function getFearGreed() {
             );
 
 
+        // ===============================
+        // HISTORIQUE 7 JOURS
+        // ===============================
+
         if (
-            Number.isFinite(
-                fearGreedValue
-            )
+            Number.isFinite(fearGreedValue)
         ) {
 
-            if (fearGreedElement) {
+            fearGreedHistory.push(
+                fearGreedValue
+            );
 
-                fearGreedElement.textContent =
-                    fearGreedValue;
+
+            if (
+                fearGreedHistory.length > 7
+            ) {
+
+                fearGreedHistory.shift();
 
             }
 
+        }
+
+
+        // ===============================
+        // AFFICHAGE FEAR & GREED
+        // ===============================
+
+        if (
+            Number.isFinite(fearGreedValue)
+        ) {
+
+
+            let variationText = "";
+
+
+            if (
+                fearGreedHistory.length >= 2
+            ) {
+
+                const average7 =
+                    average(
+                        fearGreedHistory
+                    );
+
+
+                if (
+                    Number.isFinite(average7) &&
+                    average7 !== 0
+                ) {
+
+                    const variation =
+                        (
+                            (fearGreedValue - average7) /
+                            average7
+                        ) * 100;
+
+
+                    variationText =
+                        variation >= 0
+                            ? " +" + variation.toFixed(1) + "%"
+                            : " " + variation.toFixed(1) + "%";
+
+                }
+
+            }
+
+
+            if (
+                fearGreedElement
+            ) {
+
+                fearGreedElement.innerHTML =
+                    fearGreedValue +
+                    " <small>" +
+                    variationText +
+                    "</small>";
+
+            }
+
+
+            if (
+                fearAverageElement
+            ) {
+
+                const average7 =
+                    average(
+                        fearGreedHistory
+                    );
+
+
+                if (
+                    Number.isFinite(average7)
+                ) {
+
+                    fearAverageElement.textContent =
+                        "Moy. 7j : " +
+                        average7.toFixed(1);
+
+                }
+
+            }
+
+
         } else {
 
-            if (fearGreedElement) {
+
+            if (
+                fearGreedElement
+            ) {
 
                 fearGreedElement.textContent =
                     "-";
+
+            }
+
+
+            if (
+                fearAverageElement
+            ) {
+
+                fearAverageElement.textContent =
+                    "Moy. 7j : -";
 
             }
 
@@ -1207,6 +1313,7 @@ async function getFearGreed() {
 
 
     } catch (error) {
+
 
         console.error(
             "Erreur Fear & Greed :",
@@ -1218,14 +1325,26 @@ async function getFearGreed() {
             null;
 
 
-        if (fearGreedElement) {
+        if (
+            fearGreedElement
+        ) {
 
             fearGreedElement.textContent =
                 "-";
 
         }
 
-    }
+
+        if (
+            fearAverageElement
+        ) {
+
+            fearAverageElement.textContent =
+                "Moy. 7j : -";
+
+        }
+
+    
 
 }
 
