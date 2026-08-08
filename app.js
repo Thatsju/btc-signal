@@ -37,7 +37,14 @@ const rsiTrendElement = document.getElementById("rsi-trend");
 const mm111TrendElement = document.getElementById("mm111-trend");
 const mm350TrendElement = document.getElementById("mm350-trend");
 const fearTrendElement = document.getElementById("fear-trend");
+const rsiAverageElement =
+    document.getElementById("rsi-average");
 
+const mm111AverageElement =
+    document.getElementById("mm111-average");
+
+const mm350AverageElement =
+    document.getElementById("mm350-average");
 // =====================================================
 // INDICATEURS
 // =====================================================
@@ -901,47 +908,60 @@ if (mm350History.length > 7) {
 
 
     // =================================================
-    // AFFICHAGE RSI
-    // =================================================
+// AFFICHAGE RSI
+// =================================================
+
 if (
     Number.isFinite(rsiValue) &&
     rsiElement
 ) {
 
     const rsi7DaysAgo =
-    calculateKpi7DaysAgo(
-        14,
-        calculateRSI
-    );
+        calculateKpi7DaysAgo(
+            14,
+            calculateRSI
+        );
 
 
-if (
-    Number.isFinite(rsi7DaysAgo)
-) {
+    if (
+        Number.isFinite(rsi7DaysAgo)
+    ) {
 
-    const variation =
-        (
-            (rsiValue - rsi7DaysAgo) /
-            rsi7DaysAgo
-        ) * 100;
+        const variation =
+            (
+                (rsiValue - rsi7DaysAgo) /
+                rsi7DaysAgo
+            ) * 100;
 
 
-    rsiElement.innerHTML =
-        rsiValue.toFixed(1) +
-        " <small>" +
-        (
-            variation >= 0
-                ? "+" + variation.toFixed(1) + "%"
-                : variation.toFixed(1) + "%"
-        ) +
-        "</small>";
+        rsiElement.innerHTML =
+            rsiValue.toFixed(1) +
+            " <small>" +
+            (
+                variation >= 0
+                    ? "+" + variation.toFixed(1) + "%"
+                    : variation.toFixed(1) + "%"
+            ) +
+            "</small>";
 
-} else {
 
-    rsiElement.textContent =
-        rsiValue.toFixed(1);
+        if (
+            rsiAverageElement
+        ) {
 
-}
+            rsiAverageElement.textContent =
+                "Moy. 7j : " +
+                rsi7DaysAgo.toFixed(1);
+
+        }
+
+
+    } else {
+
+        rsiElement.textContent =
+            rsiValue.toFixed(1);
+
+    }
 
 
 } else if (rsiElement) {
@@ -949,10 +969,7 @@ if (
     rsiElement.textContent =
         "-";
 
-
-    }
-
-
+}
     // =================================================
 // AFFICHAGE MM111
 // =================================================
@@ -990,6 +1007,18 @@ if (
             ) +
             "</small>";
 
+
+        if (
+            mm111AverageElement
+        ) {
+
+            mm111AverageElement.textContent =
+                "Moy. 7j : " +
+                formatPrice(mm1117DaysAgo);
+
+        }
+
+
     } else {
 
         mm111Element.textContent =
@@ -1004,7 +1033,6 @@ if (
         "-";
 
 }
-
 
    // =================================================
 // AFFICHAGE MM350
@@ -1042,6 +1070,18 @@ if (
                     : variation.toFixed(1) + "%"
             ) +
             "</small>";
+
+
+        if (
+            mm350AverageElement
+        ) {
+
+            mm350AverageElement.textContent =
+                "Moy. 7j : " +
+                formatPrice(mm3507DaysAgo);
+
+        }
+
 
     } else {
 
