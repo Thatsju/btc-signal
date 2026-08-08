@@ -908,6 +908,18 @@ if (mm111History.length > 7) {
 if (mm350History.length > 7) {
     mm350History.shift();
 }
+    // =================================================
+// MOYENNES REELLES 7 DERNIERS CHARGEMENTS
+// =================================================
+
+const rsiAverage7 =
+    average(rsiHistory);
+
+const mm111Average7 =
+    average(mm111History);
+
+const mm350Average7 =
+    average(mm350History);
 // =================================================
 // CALCUL PI CYCLE - 7 DERNIERS JOURS REELS
 // =================================================
@@ -1042,12 +1054,7 @@ if (
     rsiElement
 ) {
 
-    const rsi7DaysAgo =
-        calculateKpi7DaysAgo(
-            14,
-            calculateRSI
-        );
-
+   const rsi7DaysAgo = rsiAverage7;
 
     if (
         Number.isFinite(rsi7DaysAgo)
@@ -1105,11 +1112,7 @@ if (
     mm111Element
 ) {
 
-    const mm1117DaysAgo =
-        calculateKpi7DaysAgo(
-            111,
-            calculateMovingAverage
-        );
+   const mm1117DaysAgo = mm111Average7;
 
 
     if (
@@ -1169,11 +1172,7 @@ if (
     mm350Element
 ) {
 
-    const mm3507DaysAgo =
-        calculateKpi7DaysAgo(
-            350,
-            calculateMovingAverage
-        );
+   const mm3507DaysAgo = mm350Average7;
 
 
     if (
