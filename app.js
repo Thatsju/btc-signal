@@ -319,27 +319,9 @@ if (!responseHourly.ok) {
 
 }
 
-        if (!response1.ok) {
-
-            throw new Error(
-                "Coinbase historique : " +
-                response1.status
-            );
-
-        }
 
 
-        if (!response2.ok) {
-
-            throw new Error(
-                "Coinbase horaire : " +
-                response2.status
-            );
-
-        }
-
-
-      cconst oldData =
+      const oldData =
     await responseOld.json();
 
 const recentData =
@@ -521,8 +503,6 @@ if (
     drawBTCChart();
 
 }
-
-btcPrices = savedPrices;
 
         console.log(
             "BTC SIGNAL : données récupérées",
