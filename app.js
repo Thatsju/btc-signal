@@ -911,7 +911,7 @@ if (mm350History.length > 7) {
     // =================================================
 // CALCUL PI CYCLE
 // =================================================
-
+let piCycleAverage7 = 0;
 if (
     Number.isFinite(currentPrice) &&
     Number.isFinite(mm111Value) &&
@@ -941,8 +941,11 @@ if (
         piCycleHistory.shift();
 
     }
-
-
+piCycleAverage7 =
+piCycleHistory.reduce(
+(a, b) => a + b,
+0
+) / piCycleHistory.length;
 } else {
 
     piCycleValue =
@@ -1160,17 +1163,19 @@ console.log(
         prix: currentPrice,
         mm111: mm111Value,
         mm350: mm350Value,
-        pi: piCycleValue
+        pi: piCycleValue,
+        moyenne7j: piCycleAverage7
     }
 );
+
 
 if (
     Number.isFinite(piCycleValue) &&
     piCycleElement
 ) {
+
     piCycleElement.textContent =
         piCycleValue.toFixed(1) + "%";
-
 
 } else if (piCycleElement) {
 
@@ -1178,18 +1183,22 @@ if (
         "-";
 
 }
-    if (
+
+
+if (
     piCycleAverageElement &&
-    Number.isFinite(piCycleValue)
+    Number.isFinite(piCycleAverage7)
 ) {
 
     piCycleAverageElement.textContent =
         "Moy. 7j : " +
-        piCycleValue.toFixed(1) +
+        piCycleAverage7.toFixed(1) +
         "%";
 
 }
-    // =================================================
+
+
+// =================================================
 // ETAT PI CYCLE
 // =================================================
 
