@@ -143,6 +143,48 @@ function setState(element, state) {
 // RECUPERATION PRIX BTC
 // COINBASE - 400 JOURS
 // =====================================================
+// =====================================================
+// PRIX BTC EN DIRECT - COINBASE
+// =====================================================
+
+async function updateLivePrice() {
+
+    try {
+
+        const response = await fetch(
+            "https://api.exchange.coinbase.com/products/BTC-EUR/ticker",
+            {
+                cache: "no-store"
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                "Prix BTC : " + response.status
+            );
+        }
+
+        const data = await response.json();
+
+        const livePrice = Number(data.price);
+
+        if (!Number.isFinite(livePrice)) {
+            return;
+        }
+
+        currentPrice = livePrice;
+
+        updatePriceDisplay();
+
+    } catch (error) {
+
+        console.error(
+            "Erreur prix BTC :",
+            error
+        );
+
+    }
+}
 
 async function getBTCData() {
 
@@ -2776,9 +2818,19 @@ window.addEventListener(
 // =====================================================
 // LANCEMENT
 // =====================================================
-
 setupKpiCards();
 
 setupChartInteraction();
 
+// Chargement initial
 getBTCData();
+
+// Prix BTC toutes les 30 secondes
+setInterval(() => {
+    updateLivePrice();
+}, 30000);
+
+// Tous les indicateurs toutes les 30 secondes
+setInterval(() => {
+    getBTCData();
+}, 30000);
