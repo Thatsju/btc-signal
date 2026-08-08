@@ -1639,19 +1639,18 @@ scores.push({
         let score;
 
 
-        if (ratio < 0.80) {
+       if (ratio <= 0.70) {
 
-            score = 100;
+    score = 100;
 
-        } else if (ratio > 1.25) {
+} else if (ratio >= 1.40) {
 
-            score = 0;
+    score = 0;
 
-        } else {
+} else {
 
-            score = 50;
-
-        }
+    score = 100 - ((ratio - 0.70) * 143);
+}
 
 
 scores.push({
