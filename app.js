@@ -1154,7 +1154,15 @@ if (
    // =================================================
 // AFFICHAGE PI CYCLE
 // =================================================
-
+console.log(
+    "DEBUG PI CYCLE",
+    {
+        prix: currentPrice,
+        mm111: mm111Value,
+        mm350: mm350Value,
+        pi: piCycleValue
+    }
+);
 if (
     Number.isFinite(piCycleValue) &&
     piCycleElement
