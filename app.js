@@ -622,7 +622,10 @@ if (typeof zone === "object" && zone !== null) {
 rainbowHistory.push(
     rainbowValue
 );
-
+console.log(
+    "RAINBOW HISTORIQUE",
+    rainbowHistory
+);
 
 if (
     rainbowHistory.length > 7
