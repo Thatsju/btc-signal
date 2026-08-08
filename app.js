@@ -500,7 +500,7 @@ if (
 
 } else {
 
-    drawBTCChart();
+    drawBTCChart(window.hourlyBTC);
 
 }
 
@@ -2001,7 +2001,7 @@ function setupChartInteraction() {
                 closestIndex;
 
 
-            drawBTCChart();
+    drawBTCChart(window.hourlyBTC);
 
         }
     );
@@ -2015,7 +2015,7 @@ function setupChartInteraction() {
                 null;
 
 
-            drawBTCChart();
+    drawBTCChart(window.hourlyBTC);
 
         }
     );
