@@ -496,24 +496,37 @@ async function getRainbowData() {
             data.data?.zone;
 
 
-        if (!zone) {
+       if (!zone) {
 
-            throw new Error(
-                "Zone Rainbow introuvable"
-            );
-        }
-
-
-        rainbowValue =
-            String(zone);
+    throw new Error(
+        "Zone Rainbow introuvable"
+    );
+}
 
 
-        if (rainbowElement) {
+if (typeof zone === "object" && zone !== null) {
 
-            rainbowElement.textContent =
-                rainbowValue;
+    rainbowValue =
+        zone.name ??
+        zone.label ??
+        zone.zone ??
+        zone.title ??
+        JSON.stringify(zone);
 
-        }
+} else {
+
+    rainbowValue =
+        String(zone);
+
+}
+
+
+if (rainbowElement) {
+
+    rainbowElement.textContent =
+        rainbowValue;
+
+}
 
 
         updateRainbowState();
