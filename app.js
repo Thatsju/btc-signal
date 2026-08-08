@@ -1568,20 +1568,19 @@ console.log("DEBUG SCORE", {
         let score;
 
 
-        if (rsiValue < 30) {
+       if (rsiValue <= 20) {
 
-            score = 100;
+    score = 100;
 
-        } else if (rsiValue > 70) {
+} else if (rsiValue >= 80) {
 
-            score = 0;
+    score = 0;
 
-        } else {
+} else {
 
-            score = 50;
+    score = 100 - ((rsiValue - 20) * 1.66);
 
-        }
-
+}
 
 scores.push({
     value: score,
