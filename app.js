@@ -96,7 +96,7 @@ let rsiHistory = [];
 let mm111History = [];
 let mm350History = [];
 let fearGreedHistory = [];
-
+let rainbowHistory = [];
 // =====================================================
 // OUTILS
 // =====================================================
@@ -617,7 +617,18 @@ if (typeof zone === "object" && zone !== null) {
         String(zone);
 
 }
+rainbowHistory.push(
+    rainbowValue
+);
 
+
+if (
+    rainbowHistory.length > 7
+) {
+
+    rainbowHistory.shift();
+
+}
 
 if (rainbowElement) {
 
@@ -675,7 +686,18 @@ function updateRainbowState() {
 
     const zone =
         rainbowValue.toLowerCase();
+if (
+    rainbowHistory.length >= 2
+) {
 
+    console.log(
+        "Rainbow évolution 7j :",
+        rainbowHistory[0],
+        "→",
+        rainbowValue
+    );
+
+}
 
     // =================================================
     // ACHAT
@@ -1100,25 +1122,25 @@ if (
 
 }
 
-    // =================================================
-    // AFFICHAGE PI CYCLE
-    // =================================================
+   // =================================================
+// AFFICHAGE PI CYCLE
+// =================================================
 
-    if (
-        Number.isFinite(piCycleValue) &&
-        piCycleElement
-    ) {
+if (
+    Number.isFinite(piCycleValue) &&
+    piCycleElement
+) {
 
-        piCycleElement.textContent =
-            piCycleValue.toFixed(1) + "%";
+    piCycleElement.textContent =
+        piCycleValue.toFixed(1) + "%";
 
-    } else if (piCycleElement) {
 
-        piCycleElement.textContent =
-            "-";
+} else if (piCycleElement) {
 
-    }
+    piCycleElement.textContent =
+        "-";
 
+}
 
     // =================================================
     // AFFICHAGE RAINBOW
