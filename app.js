@@ -1300,7 +1300,7 @@ async function getFearGreed() {
 
         const response =
             await fetch(
-                "https://api.alternative.me/fng/?limit=1",
+                "https://api.alternative.me/fng/?limit=7",
                 {
                     cache: "no-store"
                 }
@@ -1333,35 +1333,26 @@ async function getFearGreed() {
         }
 
 
-        fearGreedValue =
-            Number(
-                data.data[0].value
-            );
+       // ===============================
+// VALEUR ACTUELLE
+// ===============================
+
+fearGreedValue =
+    Number(
+        data.data[0].value
+    );
 
 
-        // ===============================
-        // HISTORIQUE 7 JOURS
-        // ===============================
+// ===============================
+// HISTORIQUE 7 JOURS REELS
+// ===============================
 
-        if (
-            Number.isFinite(fearGreedValue)
-        ) {
-
-            fearGreedHistory.push(
-                fearGreedValue
-            );
-
-
-            if (
-                fearGreedHistory.length > 7
-            ) {
-
-                fearGreedHistory.shift();
-
-            }
-
-        }
-
+fearGreedHistory =
+    data.data
+        .slice(0, 7)
+        .map(
+            item => Number(item.value)
+        );
 
         // ===============================
         // AFFICHAGE FEAR & GREED
