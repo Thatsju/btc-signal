@@ -954,33 +954,40 @@ if (
 
 
     // =================================================
-    // AFFICHAGE MM111
-    // =================================================
+// AFFICHAGE MM111
+// =================================================
 
-    if (
+if (
     Number.isFinite(mm111Value) &&
     mm111Element
 ) {
 
-    const mm111Trend =
-        calculateKpiTrend(
-            mm111Value,
-            mm111History
+    const mm1117DaysAgo =
+        calculateKpi7DaysAgo(
+            111,
+            calculateMovingAverage
         );
 
 
-    if (mm111Trend) {
+    if (
+        Number.isFinite(mm1117DaysAgo)
+    ) {
 
         const variation =
-            mm111Trend.percentage >= 0
-                ? "+" + mm111Trend.percentage.toFixed(1) + "%"
-                : mm111Trend.percentage.toFixed(1) + "%";
+            (
+                (mm111Value - mm1117DaysAgo) /
+                mm1117DaysAgo
+            ) * 100;
 
 
         mm111Element.innerHTML =
             formatPrice(mm111Value) +
             " <small>" +
-            variation +
+            (
+                variation >= 0
+                    ? "+" + variation.toFixed(1) + "%"
+                    : variation.toFixed(1) + "%"
+            ) +
             "</small>";
 
     } else {
@@ -999,34 +1006,41 @@ if (
 }
 
 
-    // =================================================
-    // AFFICHAGE MM350
-    // =================================================
+   // =================================================
+// AFFICHAGE MM350
+// =================================================
 
-  if (
+if (
     Number.isFinite(mm350Value) &&
     mm350Element
 ) {
 
-    const mm350Trend =
-        calculateKpiTrend(
-            mm350Value,
-            mm350History
+    const mm3507DaysAgo =
+        calculateKpi7DaysAgo(
+            350,
+            calculateMovingAverage
         );
 
 
-    if (mm350Trend) {
+    if (
+        Number.isFinite(mm3507DaysAgo)
+    ) {
 
         const variation =
-            mm350Trend.percentage >= 0
-                ? "+" + mm350Trend.percentage.toFixed(1) + "%"
-                : mm350Trend.percentage.toFixed(1) + "%";
+            (
+                (mm350Value - mm3507DaysAgo) /
+                mm3507DaysAgo
+            ) * 100;
 
 
         mm350Element.innerHTML =
             formatPrice(mm350Value) +
             " <small>" +
-            variation +
+            (
+                variation >= 0
+                    ? "+" + variation.toFixed(1) + "%"
+                    : variation.toFixed(1) + "%"
+            ) +
             "</small>";
 
     } else {
@@ -1043,7 +1057,6 @@ if (
         "-";
 
 }
-
 
     // =================================================
     // AFFICHAGE PI CYCLE
