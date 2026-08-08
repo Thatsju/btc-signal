@@ -1557,7 +1557,14 @@ function setIndicator(
 function calculateScore() {
 
     const scores = [];
-
+console.log("DEBUG SCORE", {
+    rsiValue,
+    mm111Value,
+    mm350Value,
+    piCycleValue,
+    rainbowValue,
+    fearGreedValue
+});
 
     // =================================================
     // RSI
@@ -1820,7 +1827,9 @@ scores.push({
             finalScore
         );
 
-
+console.log("SCORES UTILISES", scores);
+console.log("SCORE FINAL", finalScore);
+    
     updateMainSignal(
         finalScore
     );
