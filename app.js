@@ -1264,28 +1264,16 @@ async function getFearGreed() {
             }
 
 
-            if (
-                fearAverageElement
-            ) {
+           if (
+    fearAverageElement &&
+    fearGreedHistory.length > 0
+) {
 
-                const average7 =
-                    average(
-                        fearGreedHistory
-                    );
+    fearAverageElement.textContent =
+        "Moy. 7j : " +
+        average(fearGreedHistory).toFixed(1);
 
-
-                if (
-                    Number.isFinite(average7)
-                ) {
-
-                    fearAverageElement.textContent =
-                        "Moy. 7j : " +
-                        average7.toFixed(1);
-
-                }
-
-            }
-
+}
 
         } else {
 
