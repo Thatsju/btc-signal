@@ -894,20 +894,19 @@ function calculateIndicators() {
 
 
 // =================================================
-// PI CYCLE PRINCIPAL (INCHANGE)
+// PI CYCLE TOP CLASSIQUE
 // =================================================
 
 if (
-    Number.isFinite(currentPrice) &&
+    Number.isFinite(mm111Value) &&
     Number.isFinite(mm350Value)
 ) {
 
     piCycleValue =
         (
-            currentPrice /
-            (mm350Value * 2)
+            (mm111Value * 2) /
+            mm350Value
         ) * 100;
-
 
 } else {
 
