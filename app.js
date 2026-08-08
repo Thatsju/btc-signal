@@ -936,32 +936,32 @@ if (btcPrices.length >= 350) {
                 .map(item => item.price);
 
 
-        const price =
-            pricesHistory[
-                pricesHistory.length - 1
-            ];
+        const mm111 =
+    calculateMovingAverage(
+        pricesHistory,
+        111
+    );
+
+const mm350 =
+    calculateMovingAverage(
+        pricesHistory,
+        350
+    );
 
 
-        const mm350 =
-            calculateMovingAverage(
-                pricesHistory,
-                350
-            );
+if (
+    Number.isFinite(mm111) &&
+    Number.isFinite(mm350)
+) {
 
+    piHistory.push(
+        (
+            mm111 /
+            (mm350 * 2)
+        ) * 100
+    );
 
-        if (
-            Number.isFinite(price) &&
-            Number.isFinite(mm350)
-        ) {
-
-            piHistory.push(
-                (
-                    price /
-                    (mm350 * 2)
-                ) * 100
-            );
-
-        }
+}
 
     }
 
