@@ -371,6 +371,134 @@ async function getBTCData() {
 
         calculateIndicators();
 
+        // =====================================================
+// RAINBOW CHART
+// =====================================================
+
+async function getRainbowData() {
+
+    try {
+
+        const response = await fetch(
+            "https://charts.bitcoin.com/api/v1/charts/rainbow",
+            {
+                cache: "no-store"
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                "Rainbow API : " + response.status
+            );
+        }
+
+        const data = await response.json();
+
+        console.log(
+            "BTC SIGNAL : Rainbow",
+            data
+        );
+
+        // Recherche de la zone actuelle
+        const zone =
+            data.currentZone ??
+            data.data?.currentZone ??
+            data.zone ??
+            data.data?.zone;
+
+        if (zone) {
+
+            rainbowValue = String(zone);
+
+            if (rainbowElement) {
+                rainbowElement.textContent =
+                    rainbowValue;
+            }
+
+            updateRainbowState();
+
+        } else {
+
+            throw new Error(
+                "Zone Rainbow introuvable"
+            );
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Erreur Rainbow :",
+            error
+        );
+
+        rainbowValue = null;
+
+        if (rainbowElement) {
+            rainbowElement.textContent = "-";
+        }
+
+        setIndicator(
+            indicatorRainbow,
+            kpiRainbow,
+            "neutral",
+            "En attente"
+        );
+    }
+}
+
+
+// =====================================================
+// ETAT RAINBOW
+// =====================================================
+
+function updateRainbowState() {
+
+    if (!rainbowValue) {
+        return;
+    }
+
+    const zone =
+        rainbowValue.toLowerCase();
+
+    if (
+        zone.includes("fire") ||
+        zone.includes("accumulate") ||
+        zone.includes("buy") ||
+        zone.includes("blue") ||
+        zone.includes("green")
+    ) {
+
+        setIndicator(
+            indicatorRainbow,
+            kpiRainbow,
+            "buy",
+            rainbowValue
+        );
+
+    } else if (
+        zone.includes("fomo") ||
+        zone.includes("sell") ||
+        zone.includes("maximum") ||
+        zone.includes("red")
+    ) {
+
+        setIndicator(
+            indicatorRainbow,
+            kpiRainbow,
+            "sell",
+            rainbowValue
+        );
+
+    } else {
+
+        setIndicator(
+            indicatorRainbow,
+            kpiRainbow,
+            "neutral",
+            rainbowValue
+        );
+    }
+}
 
         // =================================================
         // FEAR & GREED
@@ -549,22 +677,11 @@ function calculateIndicators() {
     }
 
 
-    // =================================================
-    // RAINBOW
-    // =================================================
+    // -------------------------------------------------
+   // RAINBOW
+   // -------------------------------------------------
 
-    /*
-     * Le Rainbow Chart officiel nécessite
-     * une méthodologie spécifique.
-     *
-     * On ne fabrique donc pas une fausse
-     * valeur.
-     *
-     * Il sera branché séparément.
-     */
-
-    rainbowValue =
-        null;
+   rainbowValue = null;
 
 
     // =================================================
