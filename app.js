@@ -903,19 +903,45 @@ if (mm350History.length > 7) {
     // =================================================
     // AFFICHAGE RSI
     // =================================================
+if (
+    Number.isFinite(rsiValue) &&
+    rsiElement
+) {
 
-    if (
-        Number.isFinite(rsiValue) &&
-        rsiElement
-    ) {
+    const rsiTrend =
+        calculateKpiTrend(
+            rsiValue,
+            rsiHistory
+        );
+
+
+    if (rsiTrend) {
+
+        const variation =
+            rsiTrend.percentage >= 0
+                ? "+" + rsiTrend.percentage.toFixed(1) + "%"
+                : rsiTrend.percentage.toFixed(1) + "%";
+
+
+        rsiElement.innerHTML =
+            rsiValue.toFixed(1) +
+            " <small>" +
+            variation +
+            "</small>";
+
+    } else {
 
         rsiElement.textContent =
             rsiValue.toFixed(1);
 
-    } else if (rsiElement) {
+    }
 
-        rsiElement.textContent =
-            "-";
+
+} else if (rsiElement) {
+
+    rsiElement.textContent =
+        "-";
+
 
     }
 
@@ -925,39 +951,91 @@ if (mm350History.length > 7) {
     // =================================================
 
     if (
-        Number.isFinite(mm111Value) &&
-        mm111Element
-    ) {
+    Number.isFinite(mm111Value) &&
+    mm111Element
+) {
+
+    const mm111Trend =
+        calculateKpiTrend(
+            mm111Value,
+            mm111History
+        );
+
+
+    if (mm111Trend) {
+
+        const variation =
+            mm111Trend.percentage >= 0
+                ? "+" + mm111Trend.percentage.toFixed(1) + "%"
+                : mm111Trend.percentage.toFixed(1) + "%";
+
+
+        mm111Element.innerHTML =
+            formatPrice(mm111Value) +
+            " <small>" +
+            variation +
+            "</small>";
+
+    } else {
 
         mm111Element.textContent =
             formatPrice(mm111Value);
 
-    } else if (mm111Element) {
-
-        mm111Element.textContent =
-            "-";
-
     }
+
+
+} else if (mm111Element) {
+
+    mm111Element.textContent =
+        "-";
+
+}
 
 
     // =================================================
     // AFFICHAGE MM350
     // =================================================
 
-    if (
-        Number.isFinite(mm350Value) &&
-        mm350Element
-    ) {
+  if (
+    Number.isFinite(mm350Value) &&
+    mm350Element
+) {
+
+    const mm350Trend =
+        calculateKpiTrend(
+            mm350Value,
+            mm350History
+        );
+
+
+    if (mm350Trend) {
+
+        const variation =
+            mm350Trend.percentage >= 0
+                ? "+" + mm350Trend.percentage.toFixed(1) + "%"
+                : mm350Trend.percentage.toFixed(1) + "%";
+
+
+        mm350Element.innerHTML =
+            formatPrice(mm350Value) +
+            " <small>" +
+            variation +
+            "</small>";
+
+    } else {
 
         mm350Element.textContent =
             formatPrice(mm350Value);
 
-    } else if (mm350Element) {
-
-        mm350Element.textContent =
-            "-";
-
     }
+
+
+} else if (mm350Element) {
+
+    mm350Element.textContent =
+        "-";
+
+}
 
 
     // =================================================
