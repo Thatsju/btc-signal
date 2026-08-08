@@ -1832,7 +1832,8 @@ scores.push({
 
 console.log("SCORES UTILISES", scores);
 console.log("SCORE FINAL", finalScore);
-    
+console.log("DETAIL SCORE", scores);
+console.log("SCORE FINAL", finalScore);    
     updateMainSignal(
         finalScore
     );
