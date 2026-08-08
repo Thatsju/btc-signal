@@ -2071,7 +2071,7 @@ function drawBTCChart() {
 
     const points =
         btcPrices
-            .slice(-30)
+            .slice(-7)
             .filter(point =>
                 Number.isFinite(
                     point.price
