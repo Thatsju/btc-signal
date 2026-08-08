@@ -95,6 +95,7 @@ let rsiValue = null;
 let mm111Value = null;
 let mm350Value = null;
 let piCycleValue = null;
+let piCycleAverage7 = null;
 let rainbowValue = null;
 let fearGreedValue = null;
 let rsiHistory = [];
@@ -911,8 +912,6 @@ if (mm350History.length > 7) {
 // CALCUL PI CYCLE - 7 DERNIERS JOURS REELS
 // =================================================
 
-let piCycleAverage7 = null;
-
 
 // =================================================
 // PI CYCLE PRINCIPAL (INCHANGE)
@@ -992,6 +991,36 @@ if (btcPrices.length >= 350) {
         average(
             piHistory.slice(-7)
         );
+
+}
+    // =================================================
+// AFFICHAGE PI CYCLE
+// =================================================
+
+if (
+    Number.isFinite(piCycleValue) &&
+    piCycleElement
+) {
+
+    piCycleElement.textContent =
+        piCycleValue.toFixed(1) + "%";
+
+} else if (piCycleElement) {
+
+    piCycleElement.textContent =
+        "-";
+
+}
+
+if (
+    piCycleAverageElement &&
+    Number.isFinite(piCycleAverage7)
+) {
+
+    piCycleAverageElement.textContent =
+        "Moy. 7j : " +
+        piCycleAverage7.toFixed(1) +
+        "%";
 
 }
     // =================================================
