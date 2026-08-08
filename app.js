@@ -907,49 +907,91 @@ if (mm111History.length > 7) {
 if (mm350History.length > 7) {
     mm350History.shift();
 }
-
-    // =================================================
-// CALCUL PI CYCLE
 // =================================================
-let piCycleAverage7 = 0;
+// CALCUL PI CYCLE - 7 DERNIERS JOURS REELS
+// =================================================
+
+let piCycleAverage7 = null;
+
+
+// =================================================
+// PI CYCLE PRINCIPAL (INCHANGE)
+// =================================================
+
 if (
     Number.isFinite(currentPrice) &&
-    Number.isFinite(mm111Value) &&
     Number.isFinite(mm350Value)
 ) {
-
-    const piTarget =
-        mm350Value * 2;
-
 
     piCycleValue =
         (
             currentPrice /
-            piTarget
+            (mm350Value * 2)
         ) * 100;
 
 
-    piCycleHistory.push(
-        piCycleValue
-    );
-
-
-    if (
-        piCycleHistory.length > 7
-    ) {
-
-        piCycleHistory.shift();
-
-    }
-piCycleAverage7 =
-piCycleHistory.reduce(
-(a, b) => a + b,
-0
-) / piCycleHistory.length;
 } else {
 
-    piCycleValue =
-        null;
+    piCycleValue = null;
+
+}
+
+
+// =================================================
+// HISTORIQUE PI CYCLE 7 JOURS REELS
+// =================================================
+
+if (btcPrices.length >= 350) {
+
+    let piHistory = [];
+
+
+    for (
+        let i = 350;
+        i < btcPrices.length;
+        i++
+    ) {
+
+        const pricesHistory =
+            btcPrices
+                .slice(0, i + 1)
+                .map(item => item.price);
+
+
+        const price =
+            pricesHistory[
+                pricesHistory.length - 1
+            ];
+
+
+        const mm350 =
+            calculateMovingAverage(
+                pricesHistory,
+                350
+            );
+
+
+        if (
+            Number.isFinite(price) &&
+            Number.isFinite(mm350)
+        ) {
+
+            piHistory.push(
+                (
+                    price /
+                    (mm350 * 2)
+                ) * 100
+            );
+
+        }
+
+    }
+
+
+    piCycleAverage7 =
+        average(
+            piHistory.slice(-7)
+        );
 
 }
     // =================================================
