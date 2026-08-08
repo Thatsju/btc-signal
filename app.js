@@ -51,11 +51,7 @@ const rainbowEvolutionElement =
     document.getElementById("rainbow-evolution");
 const piCycleEvolutionElement =
     document.getElementById("picycle-evolution");
-const kpiPiCycle =
-    document.getElementById("kpi-picycle");
 
-const indicatorPiCycle =
-    document.getElementById("indicator-picycle");
 // =====================================================
 // INDICATEURS
 // =====================================================
