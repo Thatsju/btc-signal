@@ -451,7 +451,7 @@ if (
         window.hourlyBTC
     );
 
-}
+
 
 } else {
 
