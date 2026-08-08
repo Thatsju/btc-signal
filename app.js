@@ -908,33 +908,40 @@ if (
     rsiElement
 ) {
 
-    const rsiTrend =
-        calculateKpiTrend(
-            rsiValue,
-            rsiHistory
-        );
+    const rsi7DaysAgo =
+    calculateKpi7DaysAgo(
+        14,
+        calculateRSI
+    );
 
 
-    if (rsiTrend) {
+if (
+    Number.isFinite(rsi7DaysAgo)
+) {
 
-        const variation =
-            rsiTrend.percentage >= 0
-                ? "+" + rsiTrend.percentage.toFixed(1) + "%"
-                : rsiTrend.percentage.toFixed(1) + "%";
+    const variation =
+        (
+            (rsiValue - rsi7DaysAgo) /
+            rsi7DaysAgo
+        ) * 100;
 
 
-        rsiElement.innerHTML =
-            rsiValue.toFixed(1) +
-            " <small>" +
-            variation +
-            "</small>";
+    rsiElement.innerHTML =
+        rsiValue.toFixed(1) +
+        " <small>" +
+        (
+            variation >= 0
+                ? "+" + variation.toFixed(1) + "%"
+                : variation.toFixed(1) + "%"
+        ) +
+        "</small>";
 
-    } else {
+} else {
 
-        rsiElement.textContent =
-            rsiValue.toFixed(1);
+    rsiElement.textContent =
+        rsiValue.toFixed(1);
 
-    }
+}
 
 
 } else if (rsiElement) {
@@ -1195,42 +1202,37 @@ function calculateMovingAverage(
 
 }
 // =================================================
-// TENDANCE KPI 7 JOURS
+// VALEUR KPI IL Y A 7 JOURS
 // =================================================
 
-function calculateKpiTrend(
-    currentValue,
-    history
+function calculateKpi7DaysAgo(
+    period,
+    calculator
 ) {
 
     if (
-        !Number.isFinite(currentValue) ||
-        history.length < 2
+        !btcPrices.length ||
+        btcPrices.length < period + 7
     ) {
         return null;
     }
 
 
-    const average7 =
-        average(history);
+    const oldPrices =
+        btcPrices
+            .slice(
+                0,
+                btcPrices.length - 7
+            )
+            .map(
+                item => item.price
+            );
 
 
-    if (!Number.isFinite(average7)) {
-        return null;
-    }
-
-
-    const percentage =
-        (
-            (currentValue - average7) /
-            average7
-        ) * 100;
-
-
-    return {
-        average: average7,
-        percentage: percentage
-    };
+    return calculator(
+        oldPrices,
+        period
+    );
 
 }
 
