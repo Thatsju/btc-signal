@@ -1709,26 +1709,44 @@ scores.push({
 
 
         if (
-            zone.includes("fire") ||
-            zone.includes("accumulate") ||
-            zone.includes("buy") ||
-            zone.includes("blue") ||
-            zone.includes("green")
-        ) {
+    zone.includes("fire") ||
+    zone.includes("accumulate") ||
+    zone.includes("blue")
+) {
 
-            score = 100;
+    score = 100;
 
-        } else if (
-            zone.includes("fomo") ||
-            zone.includes("sell") ||
-            zone.includes("maximum") ||
-            zone.includes("red")
-        ) {
+} else if (
+    zone.includes("green")
+) {
 
-            score = 0;
+    score = 75;
 
-        }
+} else if (
+    zone.includes("yellow")
+) {
 
+    score = 50;
+
+} else if (
+    zone.includes("orange")
+) {
+
+    score = 25;
+
+} else if (
+    zone.includes("red") ||
+    zone.includes("fomo") ||
+    zone.includes("maximum")
+) {
+
+    score = 0;
+
+} else {
+
+    score = 50;
+
+}
 
 scores.push({
     value: score,
