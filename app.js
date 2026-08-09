@@ -625,11 +625,29 @@ console.log("ZONE RAINBOW COMPLETE", zone);
         "Zone Rainbow introuvable"
     );
 }
-rainbowScore =
-(
-    (currentPrice - zone.lowerBound) /
-    (zone.upperBound - zone.lowerBound)
-) * 100;
+        console.log(
+    "DEBUG RAINBOW CALCUL",
+    currentPrice,
+    zone.lowerBound,
+    zone.upperBound
+);
+if (
+    Number.isFinite(currentPrice) &&
+    Number.isFinite(zone.lowerBound) &&
+    Number.isFinite(zone.upperBound)
+) {
+
+    rainbowScore =
+    (
+        (currentPrice - zone.lowerBound) /
+        (zone.upperBound - zone.lowerBound)
+    ) * 100;
+
+} else {
+
+    rainbowScore = null;
+
+}
 
 if (typeof zone === "object" && zone !== null) {
 
