@@ -2425,7 +2425,12 @@ scores.push({
     // =================================================
     // RAINBOW
     // =================================================
+if (rainbowValue) {
 
+    const zone =
+        rainbowValue.toLowerCase();
+
+    let score = 50;
     if (
     zone.includes("blue") ||
     zone.includes("accumulate")
