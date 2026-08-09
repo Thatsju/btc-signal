@@ -691,7 +691,7 @@ if (rainbowElement) {
     rainbowValue +
     (
         Number.isFinite(rainbowScore)
-            ? " (" + rainbowScore.toFixed(0) + ")"
+            ? " (" + rainbowScore.toFixed(0) + "%)"
             : ""
     );
 
