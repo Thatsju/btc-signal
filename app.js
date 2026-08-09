@@ -626,10 +626,10 @@ console.log("ZONE RAINBOW COMPLETE", zone);
     );
 }
 rainbowScore =
-    zone.value ??
-    zone.percentage ??
-    zone.position ??
-    null;
+(
+    (currentPrice - zone.lowerBound) /
+    (zone.upperBound - zone.lowerBound)
+) * 100;
 
 if (typeof zone === "object" && zone !== null) {
 
@@ -669,12 +669,12 @@ localStorage.setItem(
 if (rainbowElement) {
 
     rainbowElement.textContent =
-        rainbowValue +
-        (
-            Number.isFinite(rainbowScore)
-                ? " (" + rainbowScore + ")"
-                : ""
-        );
+    rainbowValue +
+    (
+        Number.isFinite(rainbowScore)
+            ? " (" + rainbowScore.toFixed(0) + ")"
+            : ""
+    );
 
 }
 
