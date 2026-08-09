@@ -2231,17 +2231,17 @@ console.log("DEBUG SCORE", {
         let score;
 
 
-       if (rsiValue <= 20) {
+      if (rsiValue <= 25) {
 
     score = 100;
 
-} else if (rsiValue >= 80) {
+} else if (rsiValue >= 75) {
 
     score = 0;
 
 } else {
 
-    score = 100 - ((rsiValue - 20) * 1.66);
+    score = 100 - ((rsiValue - 25) * 2);
 
 }
 
