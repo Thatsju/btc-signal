@@ -3807,6 +3807,18 @@ if (phase2025) {
         cycle2025.phase;
 
 }
+    const phaseCurrent =
+    document.getElementById(
+        "cycle-current-phase"
+    );
+
+
+if (phaseCurrent) {
+
+    phaseCurrent.textContent =
+        "🟠 Expansion";
+
+}
     }
 // =====================================================
 // LANCEMENT
