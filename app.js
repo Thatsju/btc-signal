@@ -728,64 +728,81 @@ if (
 
 }
 
-    // =================================================
-    // ACHAT
-    // =================================================
+   // =================================================
+// ACHAT
+// =================================================
 
-    if (
-        zone.includes("fire") ||
-        zone.includes("accumulate") ||
-        zone.includes("buy") ||
-        zone.includes("blue") ||
-        zone.includes("green")
-    ) {
+if (
+    zone.includes("blue") ||
+    zone.includes("accumulate") ||
+    zone.includes("buy") ||
+    zone.includes("green")
+) {
 
-        setIndicator(
-            indicatorRainbow,
-            kpiRainbow,
-            "buy",
-            rainbowValue
-        );
-
-
-    // =================================================
-    // VENTE
-    // =================================================
-
-    } else if (
-
-        zone.includes("fomo") ||
-        zone.includes("sell") ||
-        zone.includes("maximum") ||
-        zone.includes("red")
-
-    ) {
-
-        setIndicator(
-            indicatorRainbow,
-            kpiRainbow,
-            "sell",
-            rainbowValue
-        );
+    setIndicator(
+        indicatorRainbow,
+        kpiRainbow,
+        "buy",
+        rainbowValue
+    );
 
 
-    // =================================================
-    // NEUTRE
-    // =================================================
+// =================================================
+// SURVEILLANCE
+// =================================================
 
-    } else {
+} else if (
 
-        setIndicator(
-            indicatorRainbow,
-            kpiRainbow,
-            "neutral",
-            rainbowValue
-        );
+    zone.includes("yellow") ||
+    zone.includes("orange")
 
-    }
+) {
+
+    setIndicator(
+        indicatorRainbow,
+        kpiRainbow,
+        "neutral",
+        rainbowValue
+    );
+
+
+// =================================================
+// VENTE
+// =================================================
+
+} else if (
+
+    zone.includes("red") ||
+    zone.includes("fomo") ||
+    zone.includes("sell") ||
+    zone.includes("maximum")
+
+) {
+
+    setIndicator(
+        indicatorRainbow,
+        kpiRainbow,
+        "sell",
+        rainbowValue
+    );
+
+
+// =================================================
+// NEUTRE
+// =================================================
+
+} else {
+
+    setIndicator(
+        indicatorRainbow,
+        kpiRainbow,
+        "neutral",
+        rainbowValue
+    );
 
 }
 
+}
 
 // =====================================================
 // AFFICHAGE PRIX
@@ -2409,19 +2426,9 @@ scores.push({
     // RAINBOW
     // =================================================
 
-    if (rainbowValue) {
-
-        const zone =
-            rainbowValue.toLowerCase();
-
-
-        let score = 50;
-
-
-        if (
-    zone.includes("fire") ||
-    zone.includes("accumulate") ||
-    zone.includes("blue")
+    if (
+    zone.includes("blue") ||
+    zone.includes("accumulate")
 ) {
 
     score = 100;
