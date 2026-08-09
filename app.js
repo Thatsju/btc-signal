@@ -2059,14 +2059,25 @@ if (
         );
 
     } else if (
-        mvrvValue > 3
+        mvrvValue >= 3.5
     ) {
 
         setIndicator(
             indicatorMvrv,
             kpiMvrv,
             "sell",
-            "Risque élevé"
+            "Risque de sommet"
+        );
+
+    } else if (
+        mvrvValue >= 2.5
+    ) {
+
+        setIndicator(
+            indicatorMvrv,
+            kpiMvrv,
+            "neutral",
+            "Surveillance"
         );
 
     } else {
