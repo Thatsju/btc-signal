@@ -207,6 +207,54 @@ function average(values) {
     );
 }
 // =====================================================
+// COULEURS TABLEAU CYCLE
+// =====================================================
+
+function setCycleColor(
+    element,
+    state
+) {
+
+    if (!element) {
+        return;
+    }
+
+
+    element.classList.remove(
+        "cycle-buy",
+        "cycle-neutral",
+        "cycle-sell"
+    );
+
+
+    if (state === "buy") {
+
+        element.classList.add(
+            "cycle-buy"
+        );
+
+    }
+
+
+    if (state === "neutral") {
+
+        element.classList.add(
+            "cycle-neutral"
+        );
+
+    }
+
+
+    if (state === "sell") {
+
+        element.classList.add(
+            "cycle-sell"
+        );
+
+    }
+
+}
+// =====================================================
 // SCORE COMPORTEMENT DU CYCLE (30 POINTS)
 // =====================================================
 
@@ -4354,6 +4402,32 @@ if (cycle2025Rsi) {
     cycle2025Indicators.rsi;
 
 }
+// COULEURS RSI
+
+setCycleColor(
+    cycle2021Rsi,
+    cycle2021Indicators.rsi > 70
+    ? "sell"
+    : "neutral"
+);
+
+
+setCycleColor(
+    cycle2025Rsi,
+    cycle2025Indicators.rsi > 70
+    ? "sell"
+    : "neutral"
+);
+
+
+setCycleColor(
+    cycleCurrentRsi,
+    rsiValue > 70
+    ? "sell"
+    : rsiValue < 30
+    ? "buy"
+    : "neutral"
+);
 // =====================================================
 // MM111 TABLEAU CYCLE
 // =====================================================
