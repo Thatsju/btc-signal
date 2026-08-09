@@ -300,7 +300,15 @@ if (
             price90
         ) * 100;
 
-
+console.log(
+    "DEBUG VARIATIONS CYCLE",
+    {
+        variation30: variation30,
+        variation90: variation90,
+        price30: price30,
+        price90: price90
+    }
+);
 
     if (
         variation30 > 10
