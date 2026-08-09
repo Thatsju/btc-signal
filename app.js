@@ -126,7 +126,9 @@ const cycle2021 = {
 
     date: "10/11/2021",
 
-    price: 59000
+    price: 59000,
+
+    phase: "🔴 Euphorie"
 
 };
 
@@ -135,7 +137,9 @@ const cycle2025 = {
 
     date: "06/10/2025",
 
-    price: 106000
+    price: 106000,
+
+    phase: "🔴 Euphorie"
 
 };
 
@@ -3777,8 +3781,33 @@ function updateCycleTable() {
             cycle2025.price
         );
 
+
+const phase2021 =
+    document.getElementById(
+        "cycle-2021-phase"
+    );
+
+const phase2025 =
+    document.getElementById(
+        "cycle-2025-phase"
+    );
+
+
+if (phase2021) {
+
+    phase2021.textContent =
+        cycle2021.phase;
+
 }
 
+
+if (phase2025) {
+
+    phase2025.textContent =
+        cycle2025.phase;
+
+}
+    }
 // =====================================================
 // LANCEMENT
 // =====================================================
