@@ -4435,30 +4435,30 @@ cycle2025Indicators.rsi;
 }
 // COULEURS RSI
 
-setCycleColor(
-    cycle2021Rsi,
-    cycle2021Indicators.rsi > 70
-    ? "sell"
-    : "neutral"
-);
+cycle2021Rsi.innerHTML =
+cycleDot("sell") +
+" " +
+cycle2021Indicators.rsi;
 
 
-setCycleColor(
-    cycle2025Rsi,
-    cycle2025Indicators.rsi > 70
-    ? "sell"
-    : "neutral"
-);
+cycle2025Rsi.innerHTML =
+cycleDot("sell") +
+" " +
+cycle2025Indicators.rsi;
 
 
-setCycleColor(
-    cycleCurrentRsi,
+cycleCurrentRsi.innerHTML =
+cycleDot(
     rsiValue > 70
     ? "sell"
     : rsiValue < 30
     ? "buy"
     : "neutral"
-);
+)
++
+" "
++
+rsiValue.toFixed(1);
 // =====================================================
 // MM111 TABLEAU CYCLE
 // =====================================================
@@ -4510,28 +4510,32 @@ if (cycle2025Mm111) {
 }
     // COULEURS MM111
 
-setCycleColor(
-    cycle2021Mm111,
-    cycle2021.price > cycle2021Indicators.mm111
-    ? "sell"
-    : "neutral"
+cycle2021Mm111.innerHTML =
+cycleDot("sell") +
+" " +
+formatPrice(
+    cycle2021Indicators.mm111
 );
 
 
-setCycleColor(
-    cycle2025Mm111,
-    cycle2025.price > cycle2025Indicators.mm111
-    ? "sell"
-    : "neutral"
+cycle2025Mm111.innerHTML =
+cycleDot("sell") +
+" " +
+formatPrice(
+    cycle2025Indicators.mm111
 );
 
 
-setCycleColor(
-    cycleCurrentMm111,
+cycleCurrentMm111.innerHTML =
+cycleDot(
     currentPrice > mm111Value
     ? "sell"
     : "buy"
-);
+)
++
+" "
++
+formatPrice(mm111Value);
 // =====================================================
 // MM350 TABLEAU CYCLE
 // =====================================================
@@ -4583,28 +4587,32 @@ if (cycle2025Mm350) {
 }
    // COULEURS MM350
 
-setCycleColor(
-    cycle2021Mm350,
-    cycle2021.price > cycle2021Indicators.mm350
-    ? "sell"
-    : "neutral"
+cycle2021Mm350.innerHTML =
+cycleDot("sell") +
+" " +
+formatPrice(
+    cycle2021Indicators.mm350
 );
 
 
-setCycleColor(
-    cycle2025Mm350,
-    cycle2025.price > cycle2025Indicators.mm350
-    ? "sell"
-    : "neutral"
+cycle2025Mm350.innerHTML =
+cycleDot("sell") +
+" " +
+formatPrice(
+    cycle2025Indicators.mm350
 );
 
 
-setCycleColor(
-    cycleCurrentMm350,
+cycleCurrentMm350.innerHTML =
+cycleDot(
     currentPrice > mm350Value
     ? "sell"
     : "buy"
-); 
+)
++
+" "
++
+formatPrice(mm350Value);
     // =====================================================
 // PI CYCLE TABLEAU CYCLE
 // =====================================================
@@ -4652,30 +4660,32 @@ if (cycle2025Pi) {
 }
     // COULEURS PI CYCLE
 
-setCycleColor(
-    cycle2021Pi,
-    cycle2021Indicators.piCycle >= 90
-    ? "sell"
-    : "neutral"
-);
+cycle2021Pi.innerHTML =
+cycleDot("sell") +
+" " +
+cycle2021Indicators.piCycle +
+"%";
 
 
-setCycleColor(
-    cycle2025Pi,
-    cycle2025Indicators.piCycle >= 90
-    ? "sell"
-    : "neutral"
-);
+cycle2025Pi.innerHTML =
+cycleDot("sell") +
+" " +
+cycle2025Indicators.piCycle +
+"%";
 
 
-setCycleColor(
-    cycleCurrentPi,
+cycleCurrentPi.innerHTML =
+cycleDot(
     piCycleValue >= 90
     ? "sell"
-    : piCycleValue < 70
-    ? "buy"
-    : "neutral"
-);
+    : "buy"
+)
++
+" "
++
+piCycleValue.toFixed(1)
++
+"%";
 // =====================================================
 // RAINBOW TABLEAU CYCLE
 // =====================================================
@@ -4727,20 +4737,20 @@ if (cycle2025Rainbow) {
 }
 // COULEURS RAINBOW
 
-setCycleColor(
-    cycle2021Rainbow,
-    "sell"
-);
+cycle2021Rainbow.innerHTML =
+cycleDot("sell") +
+" " +
+cycle2021Indicators.rainbow;
 
 
-setCycleColor(
-    cycle2025Rainbow,
-    "sell"
-);
+cycle2025Rainbow.innerHTML =
+cycleDot("sell") +
+" " +
+cycle2025Indicators.rainbow;
 
 
-setCycleColor(
-    cycleCurrentRainbow,
+cycleCurrentRainbow.innerHTML =
+cycleDot(
     rainbowValue &&
     (
         rainbowValue.includes("Accumulate") ||
@@ -4748,7 +4758,11 @@ setCycleColor(
     )
     ? "buy"
     : "sell"
-);
+)
++
+" "
++
+rainbowValue;
 // =====================================================
 // MVRV TABLEAU CYCLE
 // =====================================================
@@ -4798,30 +4812,30 @@ if (cycle2025Mvrv) {
 }   
   // COULEURS MVRV
 
-setCycleColor(
-    cycle2021Mvrv,
-    cycle2021Indicators.mvrv >= 3
-    ? "sell"
-    : "neutral"
-);
+cycle2021Mvrv.innerHTML =
+cycleDot("sell") +
+" " +
+cycle2021Indicators.mvrv.toFixed(2);
 
 
-setCycleColor(
-    cycle2025Mvrv,
-    cycle2025Indicators.mvrv >= 3
-    ? "sell"
-    : "neutral"
-);
+cycle2025Mvrv.innerHTML =
+cycleDot("sell") +
+" " +
+cycle2025Indicators.mvrv.toFixed(2);
 
 
-setCycleColor(
-    cycleCurrentMvrv,
+cycleCurrentMvrv.innerHTML =
+cycleDot(
     mvrvValue >= 3
     ? "sell"
     : mvrvValue < 1.5
     ? "buy"
     : "neutral"
-);  
+)
++
+" "
++
+mvrvValue.toFixed(2);
   // =====================================================
 // FEAR GREED TABLEAU CYCLE
 // =====================================================
@@ -4869,34 +4883,30 @@ if (cycle2025Fear) {
 }
     // COULEURS FEAR & GREED
 
-setCycleColor(
-    cycle2021Fear,
-    cycle2021Indicators.fearGreed >= 75
-    ? "sell"
-    : cycle2021Indicators.fearGreed <= 25
-    ? "buy"
-    : "neutral"
-);
+cycle2021Fear.innerHTML =
+cycleDot("sell") +
+" " +
+cycle2021Indicators.fearGreed;
 
 
-setCycleColor(
-    cycle2025Fear,
-    cycle2025Indicators.fearGreed >= 75
-    ? "sell"
-    : cycle2025Indicators.fearGreed <= 25
-    ? "buy"
-    : "neutral"
-);
+cycle2025Fear.innerHTML =
+cycleDot("sell") +
+" " +
+cycle2025Indicators.fearGreed;
 
 
-setCycleColor(
-    cycleCurrentFear,
+cycleCurrentFear.innerHTML =
+cycleDot(
     fearGreedValue >= 75
     ? "sell"
     : fearGreedValue <= 25
     ? "buy"
     : "neutral"
-);
+)
++
+" "
++
+fearGreedValue;
     }
 // =====================================================
 // LANCEMENT
