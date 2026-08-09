@@ -485,6 +485,76 @@ function calculateCycleTimeScore() {
 
 }
 // =====================================================
+// CALCUL PHASE DU CYCLE BTC
+// =====================================================
+
+function calculateCyclePhase() {
+
+
+    const timeScore =
+        calculateCycleTimeScore();
+
+
+    const behaviorScore =
+        calculateCycleBehaviorScore();
+
+
+    const marketScore =
+        calculateMarketStructureScore();
+
+
+
+    const cycleScore =
+        timeScore +
+        behaviorScore +
+        marketScore;
+
+
+
+    console.log(
+        "DEBUG CYCLE",
+        {
+            temps: timeScore,
+            comportement: behaviorScore,
+            structure: marketScore,
+            total: cycleScore
+        }
+    );
+
+
+
+    if (
+        cycleScore < 25
+    ) {
+
+        return "🟢 Accumulation";
+
+    }
+
+
+    if (
+        cycleScore < 50
+    ) {
+
+        return "🔵 Reprise";
+
+    }
+
+
+    if (
+        cycleScore < 75
+    ) {
+
+        return "🟠 Expansion";
+
+    }
+
+
+    return "🔴 Euphorie";
+
+
+}
+// =====================================================
 // ETAT COULEUR
 // =====================================================
 
@@ -4119,8 +4189,8 @@ if (phase2025) {
 
 if (phaseCurrent) {
 
-    phaseCurrent.textContent =
-        "🟠 Expansion";
+   phaseCurrent.textContent =
+    calculateCyclePhase();
 
 }
     }
