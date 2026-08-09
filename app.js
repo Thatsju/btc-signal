@@ -685,17 +685,7 @@ localStorage.setItem(
     JSON.stringify(rainbowHistory)
 );
 
-if (rainbowElement) {
 
-    rainbowElement.textContent =
-    rainbowValue +
-    (
-        Number.isFinite(rainbowScore)
-            ? " (" + rainbowScore.toFixed(0) + "%)"
-            : ""
-    );
-
-}
 
 
         updateRainbowState();
@@ -843,7 +833,12 @@ if (
         indicatorRainbow,
         kpiRainbow,
         "neutral",
-        rainbowValue
+        rainbowValue +
+(
+    Number.isFinite(rainbowScore)
+        ? " (" + rainbowScore.toFixed(0) + "%)"
+        : ""
+)
     );
 
 }
