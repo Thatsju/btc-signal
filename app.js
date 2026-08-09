@@ -1179,26 +1179,29 @@ if (
         ) * 100;
 
 
-    mm350Element.innerHTML =
-        formatPrice(mm350Value) +
-        " <small>" +
-        (
-            variation >= 0
-                ? "+" + variation.toFixed(1) + "%"
-                : variation.toFixed(1) + "%"
-        ) +
-        "</small>";
+   const ratioMM350 =
+    (currentPrice / mm350Value) * 100;
+
+
+mm350Element.innerHTML =
+    formatPrice(mm350Value) +
+    " " +
+    ratioMM350.toFixed(1) +
+    "%";
 
 
     // Affichage moyenne 7 jours
     if (mm350AverageElement) {
 
-        mm350AverageElement.textContent =
-            "Moy. 7j : " +
-            formatPrice(mm3507DaysAgo);
-
-    }
-
+      mm350AverageElement.textContent =
+    "Moy. 7j : " +
+    formatPrice(mm3507DaysAgo) +
+    " " +
+    (
+        variation >= 0
+            ? "+" + variation.toFixed(1) + "%"
+            : variation.toFixed(1) + "%"
+    );
 
 } else if (mm350Element) {
 
@@ -1947,54 +1950,52 @@ function updateIndicators() {
     // MM350
     // =================================================
 
-    if (Number.isFinite(mm350Value)) {
+    if (ratio < 0.75) {
 
-        const ratio =
-            currentPrice /
-            mm350Value;
+    setIndicator(
+        indicatorMm350,
+        kpiMm350,
+        "buy",
+        "Achat fort"
+    );
 
+} else if (ratio < 1.00) {
 
-        if (ratio < 0.80) {
+    setIndicator(
+        indicatorMm350,
+        kpiMm350,
+        "buy",
+        "Achat"
+    );
 
-            setIndicator(
-                indicatorMm350,
-                kpiMm350,
-                "buy",
-                "Achat"
-            );
+} else if (ratio < 1.25) {
 
-        } else if (ratio > 1.25) {
+    setIndicator(
+        indicatorMm350,
+        kpiMm350,
+        "neutral",
+        "Neutre"
+    );
 
-            setIndicator(
-                indicatorMm350,
-                kpiMm350,
-                "sell",
-                "Vente"
-            );
+} else if (ratio < 1.50) {
 
-        } else {
+    setIndicator(
+        indicatorMm350,
+        kpiMm350,
+        "neutral",
+        "Surveillance"
+    );
 
-            setIndicator(
-                indicatorMm350,
-                kpiMm350,
-                "neutral",
-                "Neutre"
-            );
+} else {
 
-        }
+    setIndicator(
+        indicatorMm350,
+        kpiMm350,
+        "sell",
+        "Vente"
+    );
 
-    } else {
-
-        setIndicator(
-            indicatorMm350,
-            kpiMm350,
-            "neutral",
-            "En attente"
-        );
-
-    }
-
-
+}
     // =================================================
     // PI CYCLE
     // =================================================
@@ -2326,17 +2327,18 @@ scores.push({
         let score;
 
 
-       if (ratio <= 0.70) {
+       if (ratio <= 0.75) {
 
     score = 100;
 
-} else if (ratio >= 1.40) {
+} else if (ratio >= 1.50) {
 
     score = 0;
 
 } else {
 
-    score = 100 - ((ratio - 0.70) * 143);
+    score = 100 - ((ratio - 0.75) * 133);
+
 }
 
 
