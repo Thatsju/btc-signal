@@ -1878,31 +1878,49 @@ function updateIndicators() {
             mm111Value;
 
 
-        if (ratio < 0.90) {
+       if (ratio < 0.85) {
+
+    setIndicator(
+        indicatorMm111,
+        kpiMm111,
+        "buy",
+        "Achat fort"
+    );
+
+} else if (ratio < 1.00) {
+
+    setIndicator(
+        indicatorMm111,
+        kpiMm111,
+        "buy",
+        "Achat"
+    );
+
+} else if (ratio < 1.15) {
+
+    setIndicator(
+        indicatorMm111,
+        kpiMm111,
+        "neutral",
+        "Neutre"
+    );
+
+} else if (ratio < 1.30) {
+
+    setIndicator(
+        indicatorMm111,
+        kpiMm111,
+        "neutral",
+        "Surveillance"
+    );
+
+} else {
 
             setIndicator(
                 indicatorMm111,
                 kpiMm111,
-                "buy",
-                "Achat"
-            );
-
-        } else if (ratio > 1.15) {
-
-            setIndicator(
-                indicatorMm111,
-                kpiMm111,
-                "sell",
-                "Vente"
-            );
-
-        } else {
-
-            setIndicator(
-                indicatorMm111,
-                kpiMm111,
-                "neutral",
-                "Neutre"
+               "sell",
+"Vente"
             );
 
         }
@@ -2266,7 +2284,7 @@ scores.push({
         let score;
 
 
-       if (ratio <= 0.80) {
+       if (ratio <= 0.85) {
 
     score = 100;
 
@@ -2276,7 +2294,7 @@ scores.push({
 
 } else {
 
-    score = 100 - ((ratio - 0.80) * 200);
+    score = 100 - ((ratio - 0.85) * 222);
 
 }
 
