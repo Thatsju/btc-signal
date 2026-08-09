@@ -2640,6 +2640,7 @@ function setupKpiCards() {
         kpiMm350,
         kpiPiCycle,
         kpiRainbow,
+        kpiMvrv,
         kpiFear
 
     ];
