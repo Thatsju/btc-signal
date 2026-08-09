@@ -554,3 +554,102 @@ body {
         grid-template-columns: 50px 1fr 50px;
     }
 }
+/* =====================================================
+   COMPARAISON DES CYCLES BTC
+===================================================== */
+
+.cycle-card {
+
+    background: #151d2d;
+    border: 1px solid #2a3950;
+    border-radius: 18px;
+
+    padding: 20px;
+    margin-top: 20px;
+
+}
+
+
+.cycle-card h2 {
+
+    margin-top: 0;
+    margin-bottom: 18px;
+
+}
+
+
+.cycle-table-wrapper {
+
+    width: 100%;
+    overflow-x: auto;
+
+}
+
+
+.cycle-table {
+
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 650px;
+
+}
+
+
+.cycle-table th {
+
+    background: #101a29;
+
+    padding: 14px;
+
+    text-align: center;
+
+    font-size: 14px;
+
+}
+
+
+.cycle-table td {
+
+    padding: 13px;
+
+    text-align: center;
+
+    border-bottom: 1px solid #2a3950;
+
+}
+
+
+.cycle-table td:first-child {
+
+    text-align: left;
+    font-weight: bold;
+
+}
+
+
+.cycle-table th:nth-child(2) {
+
+    color: #ffd34d;
+
+}
+
+
+.cycle-table th:nth-child(3) {
+
+    color: #ff5268;
+
+}
+
+
+.cycle-table th:nth-child(4) {
+
+    color: #18d89b;
+
+}
+
+
+.cycle-table tr:last-child td {
+
+    border-bottom: none;
+
+}
