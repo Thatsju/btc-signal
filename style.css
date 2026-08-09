@@ -649,3 +649,21 @@ body {
     border-bottom: none;
 
 }
+/* =====================================================
+   COULEURS TABLEAU CYCLE
+===================================================== */
+
+.cycle-buy {
+    color: #18d89b !important;
+    font-weight: 700;
+}
+
+.cycle-neutral {
+    color: #ffd34d !important;
+    font-weight: 700;
+}
+
+.cycle-sell {
+    color: #ff5268 !important;
+    font-weight: 700;
+}
