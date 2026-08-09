@@ -898,7 +898,11 @@ window.hourlyBTC =
 
         calculateIndicators();
 
+// =================================================
+// TABLEAU CYCLES
+// =================================================
 
+updateCycleTable();
         // =================================================
         // RAINBOW
         // =================================================
@@ -4207,8 +4211,7 @@ if (phaseCurrent) {
 setupKpiCards();
 
 setupChartInteraction();
-// Affichage tableau cycles
-updateCycleTable();
+
 // Chargement initial
 getBTCData();
 
