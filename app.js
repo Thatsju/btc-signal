@@ -2483,7 +2483,7 @@ if (
 
     scores.push({
         value: score,
-        weight: 2
+        weight: 3
     });
 
 }
