@@ -66,6 +66,7 @@ const indicatorMm111 = document.getElementById("indicator-mm111");
 const indicatorMm350 = document.getElementById("indicator-mm350");
 const indicatorPiCycle = document.getElementById("indicator-picycle");
 const indicatorRainbow = document.getElementById("indicator-rainbow");
+const indicatorMvrv = document.getElementById("indicator-mvrv");
 const indicatorFear = document.getElementById("indicator-fear");
 
 
@@ -2038,7 +2039,57 @@ function updateIndicators() {
 
     }
 
+// =================================================
+// MVRV
+// =================================================
 
+if (
+    Number.isFinite(mvrvValue)
+) {
+
+    if (
+        mvrvValue < 1
+    ) {
+
+        setIndicator(
+            indicatorMvrv,
+            kpiMvrv,
+            "buy",
+            "Sous-évalué"
+        );
+
+    } else if (
+        mvrvValue > 3
+    ) {
+
+        setIndicator(
+            indicatorMvrv,
+            kpiMvrv,
+            "sell",
+            "Risque élevé"
+        );
+
+    } else {
+
+        setIndicator(
+            indicatorMvrv,
+            kpiMvrv,
+            "neutral",
+            "Neutre"
+        );
+
+    }
+
+} else {
+
+    setIndicator(
+        indicatorMvrv,
+        kpiMvrv,
+        "neutral",
+        "En attente"
+    );
+
+}
     // =================================================
     // FEAR & GREED
     // =================================================
