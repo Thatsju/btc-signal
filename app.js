@@ -343,7 +343,7 @@ function calculateMarketStructureScore() {
 
 
     // =====================================
-    // 1 - PRIX VS MM111 (10 points)
+    // 1 - POSITION PRIX VS MM111 (10 points)
     // =====================================
 
     if (
@@ -351,11 +351,23 @@ function calculateMarketStructureScore() {
         mm111Value
     ) {
 
+        const ratio111 =
+            currentPrice /
+            mm111Value;
+
+
         if (
-            currentPrice > mm111Value
+            ratio111 >= 1
         ) {
 
             score += 10;
+
+        }
+        else if (
+            ratio111 >= 0.90
+        ) {
+
+            score += 5;
 
         }
 
@@ -364,7 +376,7 @@ function calculateMarketStructureScore() {
 
 
     // =====================================
-    // 2 - PRIX VS MM350 (10 points)
+    // 2 - POSITION PRIX VS MM350 (10 points)
     // =====================================
 
     if (
@@ -372,11 +384,23 @@ function calculateMarketStructureScore() {
         mm350Value
     ) {
 
+        const ratio350 =
+            currentPrice /
+            mm350Value;
+
+
         if (
-            currentPrice > mm350Value
+            ratio350 >= 1
         ) {
 
             score += 10;
+
+        }
+        else if (
+            ratio350 >= 0.80
+        ) {
+
+            score += 5;
 
         }
 
@@ -385,7 +409,7 @@ function calculateMarketStructureScore() {
 
 
     // =====================================
-    // 3 - STRUCTURE MM111 / MM350 (10 points)
+    // 3 - ALIGNEMENT MM111 / MM350 (10 points)
     // =====================================
 
     if (
@@ -393,15 +417,38 @@ function calculateMarketStructureScore() {
         mm350Value
     ) {
 
+        const ratioMM =
+            mm111Value /
+            mm350Value;
+
+
         if (
-            mm111Value > mm350Value
+            ratioMM >= 1
         ) {
 
             score += 10;
 
         }
+        else if (
+            ratioMM >= 0.90
+        ) {
+
+            score += 5;
+
+        }
 
     }
+
+
+    console.log(
+        "DEBUG STRUCTURE MARCHE",
+        {
+            score: score,
+            prix: currentPrice,
+            mm111: mm111Value,
+            mm350: mm350Value
+        }
+    );
 
 
     return score;
