@@ -263,61 +263,61 @@ console.log(
     }
 
 
-
-    // =====================================
-    // 3 - ACCELERATION (10 points)
-    // =====================================
-
-    if (
-        btcPrices.length > 90
-    ) {
-
-
-        const price30 =
-            btcPrices[
-                btcPrices.length - 30
-            ].price;
-
-
-        const price90 =
-            btcPrices[
-                btcPrices.length - 90
-            ].price;
-
-
-
-        const variation30 =
-            (
-                (currentPrice - price30)
-                /
-                price30
-            ) * 100;
-
-
-
-        const variation90 =
-            (
-                (currentPrice - price90)
-                /
-                price90
-            ) * 100;
-
-
-
-       if (
-    variation30 > 10
-) {
-
-    score += 5;
-
-}
-
+// =====================================
+// 3 - ACCELERATION (10 points)
+// =====================================
 
 if (
-    variation90 > 25
+    btcPrices.length > 90
 ) {
 
-    score += 5;
+    const price30 =
+        btcPrices[
+            btcPrices.length - 30
+        ].price;
+
+
+    const price90 =
+        btcPrices[
+            btcPrices.length - 90
+        ].price;
+
+
+
+    const variation30 =
+        (
+            (currentPrice - price30)
+            /
+            price30
+        ) * 100;
+
+
+
+    const variation90 =
+        (
+            (currentPrice - price90)
+            /
+            price90
+        ) * 100;
+
+
+
+    if (
+        variation30 > 10
+    ) {
+
+        score += 5;
+
+    }
+
+
+    if (
+        variation90 > 25
+    ) {
+
+        score += 5;
+
+    }
 
 }
 
@@ -332,8 +332,7 @@ console.log(
 
 
 return score;
-
-}
+    }
 // =====================================================
 // SCORE STRUCTURE DU MARCHE (30 POINTS)
 // =====================================================
