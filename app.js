@@ -219,14 +219,19 @@ console.log(
 
         if (recovery > 50) {
 
-            score += 10;
+    score += 10;
 
-        }
-        else if (recovery > 20) {
+}
+else if (recovery > 20) {
 
-            score += 5;
+    score += 5;
 
-        }
+}
+else if (recovery > 5) {
+
+    score += 2;
+
+}
 
     }
 
