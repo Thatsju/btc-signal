@@ -614,12 +614,10 @@ body {
 
     padding: 13px;
 
-    text-align: center;
+    text-align: left;
 
     border-bottom: 1px solid #2a3950;
-
 }
-
 
 .cycle-table td:first-child {
 
