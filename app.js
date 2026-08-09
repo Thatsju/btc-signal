@@ -185,7 +185,14 @@ function average(values) {
 function calculateCycleBehaviorScore() {
 
     let score = 0;
-
+console.log(
+    "DEBUG COMPORTEMENT CYCLE",
+    {
+        prix: currentPrice,
+        mm111: mm111Value,
+        mm350: mm350Value
+    }
+);
 
     // =====================================
     // 1 - SORTIE DU CREUX (10 points)
