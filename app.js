@@ -4296,9 +4296,105 @@ if (cycleCurrentRsi) {
     rsiValue.toFixed(1);
 
 }
+// =====================================================
+// MM111 TABLEAU CYCLE
+// =====================================================
+
+const cycleCurrentMm111 =
+document.getElementById(
+"cycle-current-mm111"
+);
+
+
+if (cycleCurrentMm111) {
+
+    cycleCurrentMm111.textContent =
+    formatPrice(mm111Value);
+
+}
+
+// =====================================================
+// MM350 TABLEAU CYCLE
+// =====================================================
+
+const cycleCurrentMm350 =
+document.getElementById(
+"cycle-current-mm350"
+);
+
+
+if (cycleCurrentMm350) {
+
+    cycleCurrentMm350.textContent =
+    formatPrice(mm350Value);
+
+}
+    // =====================================================
+// PI CYCLE TABLEAU CYCLE
+// =====================================================
+
+const cycleCurrentPi =
+document.getElementById(
+"cycle-current-pi"
+);
+
+
+if (cycleCurrentPi) {
+
+    cycleCurrentPi.textContent =
+    piCycleValue.toFixed(1) + "%";
+
+}
+// =====================================================
+// RAINBOW TABLEAU CYCLE
+// =====================================================
+
+const cycleCurrentRainbow =
+document.getElementById(
+"cycle-current-rainbow"
+);
+
+
+if (cycleCurrentRainbow) {
+
+    cycleCurrentRainbow.textContent =
+    rainbowValue;
+
+}
+// =====================================================
+// MVRV TABLEAU CYCLE
+// =====================================================
+
+const cycleCurrentMvrv =
+document.getElementById(
+"cycle-current-mvrv"
+);
+
+
+if (cycleCurrentMvrv) {
+
+    cycleCurrentMvrv.textContent =
+    mvrvValue.toFixed(2);
 
 }
     
+  // =====================================================
+// FEAR GREED TABLEAU CYCLE
+// =====================================================
+
+const cycleCurrentFear =
+document.getElementById(
+"cycle-current-fear"
+);
+
+
+if (cycleCurrentFear) {
+
+    cycleCurrentFear.textContent =
+    fearGreedValue;
+
+}
+    }
 // =====================================================
 // LANCEMENT
 // =====================================================
