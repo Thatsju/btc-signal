@@ -2007,53 +2007,61 @@ if (Number.isFinite(mm350Value)) {
 
 }
     // =================================================
-    // PI CYCLE
-    // =================================================
+// PI CYCLE
+// =================================================
 
-    if (
-        Number.isFinite(piCycleValue)
-    ) {
+if (
+    Number.isFinite(piCycleValue)
+) {
 
-        if (piCycleValue >= 95) {
+    if (piCycleValue > 100) {
 
-            setIndicator(
-                indicatorPiCycle,
-                kpiPiCycle,
-                "sell",
-                "Risque de sommet"
-            );
+        setIndicator(
+            indicatorPiCycle,
+            kpiPiCycle,
+            "sell",
+            "Sommet potentiel"
+        );
 
-        } else if (piCycleValue >= 85) {
+    } else if (piCycleValue >= 90) {
 
-            setIndicator(
-                indicatorPiCycle,
-                kpiPiCycle,
-                "neutral",
-                "Surveillance"
-            );
+        setIndicator(
+            indicatorPiCycle,
+            kpiPiCycle,
+            "neutral",
+            "Risque élevé"
+        );
 
-        } else {
+    } else if (piCycleValue >= 75) {
 
-            setIndicator(
-                indicatorPiCycle,
-                kpiPiCycle,
-                "buy",
-                "Favorable"
-            );
-
-        }
+        setIndicator(
+            indicatorPiCycle,
+            kpiPiCycle,
+            "neutral",
+            "Surveillance"
+        );
 
     } else {
 
         setIndicator(
             indicatorPiCycle,
             kpiPiCycle,
-            "neutral",
-            "En attente"
+            "buy",
+            "Favorable"
         );
 
     }
 
+} else {
+
+    setIndicator(
+        indicatorPiCycle,
+        kpiPiCycle,
+        "neutral",
+        "En attente"
+    );
+
+}
 
     // =================================================
     // RAINBOW
@@ -2372,20 +2380,23 @@ scores.push({
         let score;
 
 
-        if (piCycleValue >= 100) {
+     if (piCycleValue > 100) {
 
     score = 0;
 
-} else if (piCycleValue <= 70) {
+} else if (piCycleValue >= 90) {
 
-    score = 100;
+    score = 25;
+
+} else if (piCycleValue >= 75) {
+
+    score = 60;
 
 } else {
 
-    score = 100 - ((piCycleValue - 70) * 3.33);
+    score = 100;
 
 }
-
 
 scores.push({
     value: score,
