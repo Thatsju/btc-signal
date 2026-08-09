@@ -2629,11 +2629,17 @@ finalScore
 
 if (rainbowElement) {
 
+    console.log(
+        "AFFICHAGE RAINBOW",
+        rainbowValue,
+        rainbowScore
+    );
+
     rainbowElement.textContent =
         rainbowValue +
         (
             Number.isFinite(rainbowScore)
-                ? " (" + rainbowScore + ")"
+                ? " (" + rainbowScore.toFixed(0) + ")"
                 : ""
         );
 
