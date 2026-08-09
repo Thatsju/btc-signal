@@ -2161,7 +2161,8 @@ console.log("DEBUG SCORE", {
     mm350Value,
     piCycleValue,
     rainbowValue,
-    fearGreedValue
+    fearGreedValue,
+     mvrvValue
 });
 
     // =================================================
@@ -2393,7 +2394,42 @@ scores.push({
     weight: 1
 });
     }
+// =================================================
+// MVRV
+// =================================================
 
+if (
+    Number.isFinite(
+        mvrvValue
+    )
+) {
+
+    let score;
+
+
+    if (mvrvValue < 1) {
+
+        score = 100;
+
+    } else if (mvrvValue >= 3) {
+
+        score = 0;
+
+    } else {
+
+        score =
+            100 -
+            ((mvrvValue - 1) * 50);
+
+    }
+
+
+    scores.push({
+        value: score,
+        weight: 2
+    });
+
+}
 
     // =================================================
     // SCORE FINAL
