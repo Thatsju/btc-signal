@@ -395,6 +395,96 @@ function calculateMarketStructureScore() {
 
 }
 // =====================================================
+// SCORE TEMPS DEPUIS SOMMET (40 POINTS)
+// =====================================================
+
+function calculateCycleTimeScore() {
+
+    let score = 0;
+
+
+    const cycleTopDate =
+        new Date(
+            "2025-10-06"
+        );
+
+
+    const today =
+        new Date();
+
+
+    const monthsSinceTop =
+        (
+            (today - cycleTopDate)
+            /
+            (
+                1000 *
+                60 *
+                60 *
+                24 *
+                30
+            )
+        );
+
+
+    // =====================================
+    // 0 - 12 mois
+    // Phase post sommet
+    // =====================================
+
+    if (
+        monthsSinceTop < 12
+    ) {
+
+        score = 10;
+
+    }
+
+
+    // =====================================
+    // 12 - 24 mois
+    // Accumulation / reprise
+    // =====================================
+
+    else if (
+        monthsSinceTop < 24
+    ) {
+
+        score = 20;
+
+    }
+
+
+    // =====================================
+    // 24 - 36 mois
+    // Expansion
+    // =====================================
+
+    else if (
+        monthsSinceTop < 36
+    ) {
+
+        score = 30;
+
+    }
+
+
+    // =====================================
+    // 36 mois +
+    // Euphorie possible
+    // =====================================
+
+    else {
+
+        score = 40;
+
+    }
+
+
+    return score;
+
+}
+// =====================================================
 // ETAT COULEUR
 // =====================================================
 
