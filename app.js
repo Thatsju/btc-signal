@@ -4477,6 +4477,30 @@ if (cycle2025Mm111) {
     );
 
 }
+    // COULEURS MM111
+
+setCycleColor(
+    cycle2021Mm111,
+    cycle2021.price > cycle2021Indicators.mm111
+    ? "sell"
+    : "neutral"
+);
+
+
+setCycleColor(
+    cycle2025Mm111,
+    cycle2025.price > cycle2025Indicators.mm111
+    ? "sell"
+    : "neutral"
+);
+
+
+setCycleColor(
+    cycleCurrentMm111,
+    currentPrice > mm111Value
+    ? "sell"
+    : "buy"
+);
 // =====================================================
 // MM350 TABLEAU CYCLE
 // =====================================================
@@ -4526,6 +4550,30 @@ if (cycle2025Mm350) {
     );
 
 }
+   // COULEURS MM350
+
+setCycleColor(
+    cycle2021Mm350,
+    cycle2021.price > cycle2021Indicators.mm350
+    ? "sell"
+    : "neutral"
+);
+
+
+setCycleColor(
+    cycle2025Mm350,
+    cycle2025.price > cycle2025Indicators.mm350
+    ? "sell"
+    : "neutral"
+);
+
+
+setCycleColor(
+    cycleCurrentMm350,
+    currentPrice > mm350Value
+    ? "sell"
+    : "buy"
+); 
     // =====================================================
 // PI CYCLE TABLEAU CYCLE
 // =====================================================
@@ -4571,6 +4619,32 @@ if (cycle2025Pi) {
     cycle2025Indicators.piCycle + "%";
 
 }
+    // COULEURS PI CYCLE
+
+setCycleColor(
+    cycle2021Pi,
+    cycle2021Indicators.piCycle >= 90
+    ? "sell"
+    : "neutral"
+);
+
+
+setCycleColor(
+    cycle2025Pi,
+    cycle2025Indicators.piCycle >= 90
+    ? "sell"
+    : "neutral"
+);
+
+
+setCycleColor(
+    cycleCurrentPi,
+    piCycleValue >= 90
+    ? "sell"
+    : piCycleValue < 70
+    ? "buy"
+    : "neutral"
+);
 // =====================================================
 // RAINBOW TABLEAU CYCLE
 // =====================================================
@@ -4620,7 +4694,30 @@ if (cycle2025Rainbow) {
     cycle2025Indicators.rainbow;
 
 }
+// COULEURS RAINBOW
 
+setCycleColor(
+    cycle2021Rainbow,
+    "sell"
+);
+
+
+setCycleColor(
+    cycle2025Rainbow,
+    "sell"
+);
+
+
+setCycleColor(
+    cycleCurrentRainbow,
+    rainbowValue &&
+    (
+        rainbowValue.includes("Accumulate") ||
+        rainbowValue.includes("Accumulation")
+    )
+    ? "buy"
+    : "sell"
+);
 // =====================================================
 // MVRV TABLEAU CYCLE
 // =====================================================
@@ -4668,6 +4765,32 @@ if (cycle2025Mvrv) {
     cycle2025Indicators.mvrv.toFixed(2);
 
 }   
+  // COULEURS MVRV
+
+setCycleColor(
+    cycle2021Mvrv,
+    cycle2021Indicators.mvrv >= 3
+    ? "sell"
+    : "neutral"
+);
+
+
+setCycleColor(
+    cycle2025Mvrv,
+    cycle2025Indicators.mvrv >= 3
+    ? "sell"
+    : "neutral"
+);
+
+
+setCycleColor(
+    cycleCurrentMvrv,
+    mvrvValue >= 3
+    ? "sell"
+    : mvrvValue < 1.5
+    ? "buy"
+    : "neutral"
+);  
   // =====================================================
 // FEAR GREED TABLEAU CYCLE
 // =====================================================
@@ -4713,6 +4836,36 @@ if (cycle2025Fear) {
     cycle2025Indicators.fearGreed;
 
 }
+    // COULEURS FEAR & GREED
+
+setCycleColor(
+    cycle2021Fear,
+    cycle2021Indicators.fearGreed >= 75
+    ? "sell"
+    : cycle2021Indicators.fearGreed <= 25
+    ? "buy"
+    : "neutral"
+);
+
+
+setCycleColor(
+    cycle2025Fear,
+    cycle2025Indicators.fearGreed >= 75
+    ? "sell"
+    : cycle2025Indicators.fearGreed <= 25
+    ? "buy"
+    : "neutral"
+);
+
+
+setCycleColor(
+    cycleCurrentFear,
+    fearGreedValue >= 75
+    ? "sell"
+    : fearGreedValue <= 25
+    ? "buy"
+    : "neutral"
+);
     }
 // =====================================================
 // LANCEMENT
