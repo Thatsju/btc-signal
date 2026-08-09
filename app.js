@@ -1114,15 +1114,15 @@ const mm1117DaysAgo =
             ) * 100;
 
 
-        mm111Element.innerHTML =
-            formatPrice(mm111Value) +
-            " <small>" +
-            (
-                variation >= 0
-                    ? "+" + variation.toFixed(1) + "%"
-                    : variation.toFixed(1) + "%"
-            ) +
-            "</small>";
+        const ratioMM111 =
+    (currentPrice / mm111Value) * 100;
+
+
+mm111Element.innerHTML =
+    formatPrice(mm111Value) +
+    " <small>" +
+    ratioMM111.toFixed(1) +
+    "%</small>";
 
 
         if (
@@ -1130,8 +1130,14 @@ const mm1117DaysAgo =
         ) {
 
             mm111AverageElement.textContent =
-                "Moy. 7j : " +
-                formatPrice(mm1117DaysAgo);
+    "Moy. 7j : " +
+    formatPrice(mm1117DaysAgo) +
+    " " +
+    (
+        variation >= 0
+            ? "+" + variation.toFixed(1) + "%"
+            : variation.toFixed(1) + "%"
+    );
 
         }
 
