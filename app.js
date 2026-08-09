@@ -616,7 +616,7 @@ data.data?.currentZone ??
 data.currentZone ??
 data.zone ??
 data.data?.zone;
-
+console.log("ZONE RAINBOW COMPLETE", zone);
 
 
        if (!zone) {
