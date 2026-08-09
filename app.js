@@ -310,22 +310,13 @@ console.log(
     }
 );
 
-    if (
-        variation30 > 10
-    ) {
+  if (variation30 > 5) {
+    score += 5;
+}
 
-        score += 5;
-
-    }
-
-
-    if (
-        variation90 > 25
-    ) {
-
-        score += 5;
-
-    }
+if (variation90 > 10) {
+    score += 5;
+}
 
 }
 
