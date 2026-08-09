@@ -178,8 +178,222 @@ function average(values) {
         ) / validValues.length
     );
 }
+// =====================================================
+// SCORE COMPORTEMENT DU CYCLE (30 POINTS)
+// =====================================================
+
+function calculateCycleBehaviorScore() {
+
+    let score = 0;
 
 
+    // =====================================
+    // 1 - SORTIE DU CREUX (10 points)
+    // =====================================
+
+    if (
+        btcPrices.length
+    ) {
+
+        const recentLow =
+            Math.min(
+                ...btcPrices.map(
+                    p => p.price
+                )
+            );
+
+
+        const recovery =
+            (
+                (currentPrice - recentLow) /
+                recentLow
+            ) * 100;
+
+
+        if (recovery > 50) {
+
+            score += 10;
+
+        }
+        else if (recovery > 20) {
+
+            score += 5;
+
+        }
+
+    }
+
+
+
+    // =====================================
+    // 2 - REPRISE DE TENDANCE (10 points)
+    // =====================================
+
+    if (
+        currentPrice &&
+        mm111Value &&
+        mm350Value
+    ) {
+
+
+        if (
+            currentPrice > mm111Value
+        ) {
+
+            score += 5;
+
+        }
+
+
+        if (
+            currentPrice > mm350Value
+        ) {
+
+            score += 5;
+
+        }
+
+    }
+
+
+
+    // =====================================
+    // 3 - ACCELERATION (10 points)
+    // =====================================
+
+    if (
+        btcPrices.length > 90
+    ) {
+
+
+        const price30 =
+            btcPrices[
+                btcPrices.length - 30
+            ].price;
+
+
+        const price90 =
+            btcPrices[
+                btcPrices.length - 90
+            ].price;
+
+
+
+        const variation30 =
+            (
+                (currentPrice - price30)
+                /
+                price30
+            ) * 100;
+
+
+
+        const variation90 =
+            (
+                (currentPrice - price90)
+                /
+                price90
+            ) * 100;
+
+
+
+        if (
+            variation30 > 10
+        ) {
+
+            score += 5;
+
+        }
+
+
+        if (
+            variation90 > 25
+        ) {
+
+            score += 5;
+
+        }
+
+    }
+
+
+    return score;
+
+}
+// =====================================================
+// SCORE STRUCTURE DU MARCHE (30 POINTS)
+// =====================================================
+
+function calculateMarketStructureScore() {
+
+    let score = 0;
+
+
+    // =====================================
+    // 1 - PRIX VS MM111 (10 points)
+    // =====================================
+
+    if (
+        currentPrice &&
+        mm111Value
+    ) {
+
+        if (
+            currentPrice > mm111Value
+        ) {
+
+            score += 10;
+
+        }
+
+    }
+
+
+
+    // =====================================
+    // 2 - PRIX VS MM350 (10 points)
+    // =====================================
+
+    if (
+        currentPrice &&
+        mm350Value
+    ) {
+
+        if (
+            currentPrice > mm350Value
+        ) {
+
+            score += 10;
+
+        }
+
+    }
+
+
+
+    // =====================================
+    // 3 - STRUCTURE MM111 / MM350 (10 points)
+    // =====================================
+
+    if (
+        mm111Value &&
+        mm350Value
+    ) {
+
+        if (
+            mm111Value > mm350Value
+        ) {
+
+            score += 10;
+
+        }
+
+    }
+
+
+    return score;
+
+}
 // =====================================================
 // ETAT COULEUR
 // =====================================================
