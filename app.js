@@ -4417,17 +4417,20 @@ document.getElementById(
 
 
 if (cycle2021Rsi) {
-
-    cycle2021Rsi.textContent =
-    cycle2021Indicators.rsi;
+cycle2021Rsi.innerHTML =
+cycleDot("sell") +
+" " +
+cycle2021Indicators.rsi;
 
 }
 
 
 if (cycle2025Rsi) {
 
-    cycle2025Rsi.textContent =
-    cycle2025Indicators.rsi;
+    cycle2025Rsi.innerHTML =
+cycleDot("sell") +
+" " +
+cycle2025Indicators.rsi;
 
 }
 // COULEURS RSI
