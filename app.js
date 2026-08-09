@@ -326,9 +326,7 @@ console.log(
     "DEBUG DETAIL COMPORTEMENT",
     {
         score: score,
-        prix: currentPrice,
-        variation30: variation30,
-        variation90: variation90
+        prix: currentPrice
     }
 );
 
