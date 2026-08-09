@@ -4249,16 +4249,35 @@ if (phase2025) {
         cycle2025.phase;
 
 }
-    const phaseCurrent =
-    document.getElementById(
-        "cycle-current-phase"
-    );
+   const phaseCurrent =
+document.getElementById(
+"cycle-current-phase"
+);
+
+const cycleScoreElement =
+document.getElementById(
+"cycle-score"
+);
+
+
+const cycleScore =
+    calculateCycleTimeScore() +
+    calculateCycleBehaviorScore() +
+    calculateMarketStructureScore();
 
 
 if (phaseCurrent) {
 
-   phaseCurrent.textContent =
+    phaseCurrent.textContent =
     calculateCyclePhase();
+
+}
+
+
+if (cycleScoreElement) {
+
+    cycleScoreElement.textContent =
+    cycleScore + " / 100";
 
 }
     }
