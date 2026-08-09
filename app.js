@@ -2462,7 +2462,6 @@ if (rainbowValue) {
         rainbowValue.toLowerCase();
 
     let score = 50;
-    rainbowScore = null;
     if (
     zone.includes("blue") ||
     zone.includes("accumulate")
