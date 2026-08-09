@@ -304,16 +304,16 @@ console.log(
 
 
 
-        if (
-            variation30 > 10
-        ) {
+       if (
+    variation30 > 10
+) {
 
-            score += 5;
+    score += 5;
 
-        }
+}
 
 
-      if (
+if (
     variation90 > 25
 ) {
 
