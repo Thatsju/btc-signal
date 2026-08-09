@@ -771,11 +771,16 @@ if (
 ) {
 
     setIndicator(
-        indicatorRainbow,
-        kpiRainbow,
-        "buy",
-        rainbowValue
-    );
+    indicatorRainbow,
+    kpiRainbow,
+    "buy",
+    rainbowValue +
+    (
+        Number.isFinite(rainbowScore)
+            ? " (" + rainbowScore.toFixed(0) + "%)"
+            : ""
+    )
+);
 
 
 // =================================================
@@ -793,7 +798,12 @@ if (
         indicatorRainbow,
         kpiRainbow,
         "neutral",
-        rainbowValue
+        rainbowValue +
+(
+    Number.isFinite(rainbowScore)
+        ? " (" + rainbowScore.toFixed(0) + "%)"
+        : ""
+)
     );
 
 
@@ -814,7 +824,12 @@ if (
         indicatorRainbow,
         kpiRainbow,
         "sell",
-        rainbowValue
+        rainbowValue +
+(
+    Number.isFinite(rainbowScore)
+        ? " (" + rainbowScore.toFixed(0) + "%)"
+        : ""
+)
     );
 
 
