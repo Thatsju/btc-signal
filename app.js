@@ -4381,8 +4381,20 @@ if (phaseCurrent) {
 
 if (cycleScoreElement) {
 
-    cycleScoreElement.textContent =
-    cycleScore + " / 100";
+    cycleScoreElement.innerHTML =
+    cycleDot(
+        cycleScore >= 70
+        ? "sell"
+        : cycleScore <= 30
+        ? "buy"
+        : "neutral"
+    )
+    +
+    " "
+    +
+    cycleScore
+    +
+    " / 100";
 
 }
     // =====================================================
