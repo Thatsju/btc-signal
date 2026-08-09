@@ -1193,16 +1193,17 @@ mm350Element.innerHTML =
     // Affichage moyenne 7 jours
     if (mm350AverageElement) {
 
-      mm350AverageElement.textContent =
-    "Moy. 7j : " +
-    formatPrice(mm3507DaysAgo) +
-    " " +
-    (
-        variation >= 0
-            ? "+" + variation.toFixed(1) + "%"
-            : variation.toFixed(1) + "%"
-    );
+    mm350AverageElement.textContent =
+        "Moy. 7j : " +
+        formatPrice(mm3507DaysAgo) +
+        " " +
+        (
+            variation >= 0
+                ? "+" + variation.toFixed(1) + "%"
+                : variation.toFixed(1) + "%"
+        );
 
+}
 } else if (mm350Element) {
 
     mm350Element.textContent = "-";
