@@ -117,6 +117,7 @@ let rainbowHistory =
 let piCycleHistory = [];
 let mvrvValue = null;
 let mvrvHistory = [];
+let rainbowScore = null;
 // =====================================================
 // OUTILS
 // =====================================================
@@ -662,7 +663,12 @@ localStorage.setItem(
 if (rainbowElement) {
 
     rainbowElement.textContent =
-        rainbowValue;
+        rainbowValue +
+        (
+            Number.isFinite(rainbowScore)
+                ? " (" + rainbowScore + ")"
+                : ""
+        );
 
 }
 
@@ -2431,6 +2437,7 @@ if (rainbowValue) {
         rainbowValue.toLowerCase();
 
     let score = 50;
+    rainbowScore = null;
     if (
     zone.includes("blue") ||
     zone.includes("accumulate")
@@ -2469,7 +2476,7 @@ if (rainbowValue) {
     score = 50;
 
 }
-
+rainbowScore = score;
 scores.push({
     value: score,
     weight: 2
