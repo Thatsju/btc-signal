@@ -313,18 +313,25 @@ console.log(
         }
 
 
-        if (
-            variation90 > 25
-        ) {
+      if (
+    variation90 > 25
+) {
 
-            score += 5;
+    score += 5;
 
-        }
+}
 
+
+console.log(
+    "DEBUG DETAIL COMPORTEMENT",
+    {
+        score: score,
+        prix: currentPrice
     }
+);
 
 
-    return score;
+return score;
 
 }
 // =====================================================
