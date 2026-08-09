@@ -645,9 +645,10 @@ if (
 
 } else {
 
-    rainbowScore = null;
+    console.log("RAINBOW SCORE IMPOSSIBLE");
 
 }
+
 
 if (typeof zone === "object" && zone !== null) {
 
