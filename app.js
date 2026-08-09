@@ -254,6 +254,34 @@ function setCycleColor(
     }
 
 }
+
+// =====================================================
+// PASTILLES TABLEAU CYCLE
+// =====================================================
+
+function cycleDot(state) {
+
+    if (state === "buy") {
+
+        return "🟢";
+
+    }
+
+    if (state === "neutral") {
+
+        return "🟡";
+
+    }
+
+    if (state === "sell") {
+
+        return "🔴";
+
+    }
+
+    return "";
+
+}
 // =====================================================
 // SCORE COMPORTEMENT DU CYCLE (30 POINTS)
 // =====================================================
