@@ -4358,9 +4358,14 @@ document.getElementById(
 if (cycleCurrentRainbow) {
 
     cycleCurrentRainbow.textContent =
-    rainbowValue;
+    rainbowValue || "-";
 
 }
+    console.log(
+    "DEBUG TABLEAU MVRV",
+    mvrvValue
+);
+
 // =====================================================
 // MVRV TABLEAU CYCLE
 // =====================================================
