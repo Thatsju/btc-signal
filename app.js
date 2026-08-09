@@ -1360,42 +1360,37 @@ async function getMVRV() {
             await response.json();
 
 
-        const last =
-            data.data[
-                data.data.length - 1
-            ];
+       const last7 =
+    data.data.slice(-7);
 
 
-        mvrvValue =
-            Number(
-                last.CapMVRVCur
-            );
+mvrvHistory =
+    last7.map(item =>
+        Number(item.CapMVRVCur)
+    );
 
 
-        if (
-            Number.isFinite(mvrvValue)
-        ) {
-
-            mvrvHistory.push(
-                mvrvValue
-            );
+mvrvValue =
+    mvrvHistory[
+        mvrvHistory.length - 1
+    ];
 
 
-            if (
-                mvrvHistory.length > 7
-            ) {
+if (
+    Number.isFinite(mvrvValue)
+) {
 
-                mvrvHistory.shift();
+    console.log(
+        "MVRV actuel :",
+        mvrvValue
+    );
 
-            }
+    console.log(
+        "MVRV historique 7j :",
+        mvrvHistory
+    );
 
-
-            console.log(
-                "MVRV actuel :",
-                mvrvValue
-            );
-
-        }
+}
 
 
         updateMVRVDisplay();
