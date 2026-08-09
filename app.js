@@ -1947,54 +1947,63 @@ function updateIndicators() {
     }
 
 
-    // =================================================
-    // MM350
-    // =================================================
+   // =================================================
+// MM350
+// =================================================
+
+if (Number.isFinite(mm350Value)) {
+
+    const ratio =
+        currentPrice /
+        mm350Value;
+
 
     if (ratio < 0.75) {
 
-    setIndicator(
-        indicatorMm350,
-        kpiMm350,
-        "buy",
-        "Achat fort"
-    );
+        setIndicator(
+            indicatorMm350,
+            kpiMm350,
+            "buy",
+            "Achat fort"
+        );
 
-} else if (ratio < 1.00) {
+    } else if (ratio < 1.00) {
 
-    setIndicator(
-        indicatorMm350,
-        kpiMm350,
-        "buy",
-        "Achat"
-    );
+        setIndicator(
+            indicatorMm350,
+            kpiMm350,
+            "buy",
+            "Achat"
+        );
 
-} else if (ratio < 1.25) {
+    } else if (ratio < 1.25) {
 
-    setIndicator(
-        indicatorMm350,
-        kpiMm350,
-        "neutral",
-        "Neutre"
-    );
+        setIndicator(
+            indicatorMm350,
+            kpiMm350,
+            "neutral",
+            "Neutre"
+        );
 
-} else if (ratio < 1.50) {
+    } else if (ratio < 1.50) {
 
-    setIndicator(
-        indicatorMm350,
-        kpiMm350,
-        "neutral",
-        "Surveillance"
-    );
+        setIndicator(
+            indicatorMm350,
+            kpiMm350,
+            "neutral",
+            "Surveillance"
+        );
 
-} else {
+    } else {
 
-    setIndicator(
-        indicatorMm350,
-        kpiMm350,
-        "sell",
-        "Vente"
-    );
+        setIndicator(
+            indicatorMm350,
+            kpiMm350,
+            "sell",
+            "Vente"
+        );
+
+    }
 
 }
     // =================================================
