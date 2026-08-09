@@ -52,6 +52,11 @@ const rainbowEvolutionElement =
 const piCycleEvolutionElement =
     document.getElementById("picycle-evolution");
 const piCycleAverageElement = document.getElementById("picycle-average");
+const mvrvElement =
+document.getElementById("mvrv");
+
+const mvrvAverageElement =
+document.getElementById("mvrv-average");
 // =====================================================
 // INDICATEURS
 // =====================================================
@@ -74,6 +79,8 @@ const kpiMm350 = document.getElementById("kpi-mm350");
 const kpiPiCycle = document.getElementById("kpi-picycle");
 const kpiRainbow = document.getElementById("kpi-rainbow");
 const kpiFear = document.getElementById("kpi-fear");
+const kpiMvrv =
+document.getElementById("kpi-mvrv");
 
 
 // =====================================================
@@ -107,6 +114,8 @@ let rainbowHistory =
         localStorage.getItem("rainbowHistory")
     ) || [];
 let piCycleHistory = [];
+let mvrvValue = null;
+let mvrvHistory = [];
 // =====================================================
 // OUTILS
 // =====================================================
@@ -494,7 +503,11 @@ window.hourlyBTC =
         // =================================================
 
        await getFearGreed();
+// =================================================
+// MVRV
+// =================================================
 
+await getMVRV();
 
 // =================================================
 // AFFICHAGE DES INDICATEURS
@@ -1288,8 +1301,119 @@ if (
     }
 
 }
+// =====================================================
+// AFFICHAGE MVRV
+// =====================================================
+
+function updateMVRVDisplay() {
 
 
+    if (
+        mvrvElement &&
+        Number.isFinite(mvrvValue)
+    ) {
+
+        mvrvElement.textContent =
+            mvrvValue.toFixed(2);
+
+    }
+
+
+    if (
+        mvrvAverageElement &&
+        mvrvHistory.length
+    ) {
+
+        mvrvAverageElement.textContent =
+            "Moy. 7j : " +
+            average(mvrvHistory).toFixed(2);
+
+    }
+
+}
+// =====================================================
+// MVRV - COINMETRICS
+// =====================================================
+
+async function getMVRV() {
+
+    try {
+
+        const response = await fetch(
+            "https://community-api.coinmetrics.io/v4/timeseries/asset-metrics?assets=btc&metrics=CapMVRVCur",
+            {
+                cache: "no-store"
+            }
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "MVRV API : " + response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const last =
+            data.data[
+                data.data.length - 1
+            ];
+
+
+        mvrvValue =
+            Number(
+                last.CapMVRVCur
+            );
+
+
+        if (
+            Number.isFinite(mvrvValue)
+        ) {
+
+            mvrvHistory.push(
+                mvrvValue
+            );
+
+
+            if (
+                mvrvHistory.length > 7
+            ) {
+
+                mvrvHistory.shift();
+
+            }
+
+
+            console.log(
+                "MVRV actuel :",
+                mvrvValue
+            );
+
+        }
+
+
+        updateMVRVDisplay();
+
+
+    } catch(error) {
+
+        console.error(
+            "Erreur MVRV :",
+            error
+        );
+
+
+        mvrvValue = null;
+
+    }
+
+}
 // =====================================================
 // FEAR & GREED
 // =====================================================
