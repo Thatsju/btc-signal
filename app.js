@@ -3745,7 +3745,39 @@ window.addEventListener(
 
     }
 );
+// =====================================================
+// AFFICHAGE TABLEAU CYCLES
+// =====================================================
+function updateCycleTable() {
 
+    document.getElementById(
+        "cycle-2021-date"
+    ).textContent =
+        cycle2021.date;
+
+
+    document.getElementById(
+        "cycle-2025-date"
+    ).textContent =
+        cycle2025.date;
+
+
+    document.getElementById(
+        "cycle-2021-price"
+    ).textContent =
+        formatPrice(
+            cycle2021.price
+        );
+
+
+    document.getElementById(
+        "cycle-2025-price"
+    ).textContent =
+        formatPrice(
+            cycle2025.price
+        );
+
+}
 
 // =====================================================
 // LANCEMENT
@@ -3753,7 +3785,8 @@ window.addEventListener(
 setupKpiCards();
 
 setupChartInteraction();
-
+// Affichage tableau cycles
+updateCycleTable();
 // Chargement initial
 getBTCData();
 
