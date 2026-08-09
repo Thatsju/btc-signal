@@ -4370,11 +4370,13 @@ document.getElementById(
 "cycle-current-mvrv"
 );
 
-
 if (cycleCurrentMvrv) {
 
     cycleCurrentMvrv.textContent =
-    mvrvValue.toFixed(2);
+    Number.isFinite(mvrvValue)
+    ? mvrvValue.toFixed(2)
+    : "-";
+
 
 }
     
