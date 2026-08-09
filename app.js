@@ -611,11 +611,23 @@ async function getRainbowData() {
         // RECHERCHE ZONE ACTUELLE
         // =================================================
 
-        const zone =
-            data.currentZone ??
-            data.data?.currentZone ??
-            data.zone ??
-            data.data?.zone;
+       const zone =
+data.currentZone ??
+data.data?.currentZone ??
+data.zone ??
+data.data?.zone;
+
+
+rainbowScore =
+    data.value ??
+    data.score ??
+    data.level ??
+    data.percentage ??
+    data.data?.value ??
+    data.data?.score ??
+    data.data?.level ??
+    data.data?.percentage ??
+    null;
 
 
        if (!zone) {
@@ -634,6 +646,7 @@ if (typeof zone === "object" && zone !== null) {
         zone.zone ??
         zone.title ??
         JSON.stringify(zone);
+
 
 } else {
 
@@ -2476,7 +2489,6 @@ if (rainbowValue) {
     score = 50;
 
 }
-rainbowScore = score;
 scores.push({
     value: score,
     weight: 2
