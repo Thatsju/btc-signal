@@ -566,6 +566,8 @@ body {
 
     padding: 20px;
     margin-top: 20px;
+    margin-bottom: 20px;
+
 
 }
 
@@ -627,23 +629,17 @@ body {
 }
 
 
-.cycle-table th:nth-child(2) {
-
-    color: #ffd34d;
-
-}
-
-
+.cycle-table th:nth-child(2),
 .cycle-table th:nth-child(3) {
 
-    color: #ff5268;
+    color: #4da3ff;
 
 }
 
 
 .cycle-table th:nth-child(4) {
 
-    color: #18d89b;
+    color: #b56cff;
 
 }
 
