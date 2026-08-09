@@ -142,6 +142,34 @@ const cycle2025 = {
     phase: "🔴 Euphorie"
 
 };
+// =====================================================
+// INDICATEURS HISTORIQUES DES SOMMETS
+// =====================================================
+
+const cycle2021Indicators = {
+
+    rsi: 74,
+    mm111: 42000,
+    mm350: 30000,
+    piCycle: 96,
+    rainbow: "Surchauffe / risque",
+    mvrv: 3.2,
+    fearGreed: 84
+
+};
+
+
+const cycle2025Indicators = {
+
+    rsi: 78,
+    mm111: 85000,
+    mm350: 60000,
+    piCycle: 94,
+    rainbow: "Surchauffe / risque",
+    mvrv: 3.5,
+    fearGreed: 90
+
+};
 
 // =====================================================
 // OUTILS
@@ -4297,6 +4325,35 @@ if (cycleCurrentRsi) {
     rsiValue.toFixed(1);
 
 }
+    // =====================================================
+// RSI HISTORIQUE CYCLES
+// =====================================================
+
+const cycle2021Rsi =
+document.getElementById(
+"cycle-2021-rsi"
+);
+
+const cycle2025Rsi =
+document.getElementById(
+"cycle-2025-rsi"
+);
+
+
+if (cycle2021Rsi) {
+
+    cycle2021Rsi.textContent =
+    cycle2021Indicators.rsi;
+
+}
+
+
+if (cycle2025Rsi) {
+
+    cycle2025Rsi.textContent =
+    cycle2025Indicators.rsi;
+
+}
 // =====================================================
 // MM111 TABLEAU CYCLE
 // =====================================================
@@ -4313,7 +4370,39 @@ if (cycleCurrentMm111) {
     formatPrice(mm111Value);
 
 }
+// =====================================================
+// MM111 HISTORIQUE CYCLES
+// =====================================================
 
+const cycle2021Mm111 =
+document.getElementById(
+"cycle-2021-mm111"
+);
+
+const cycle2025Mm111 =
+document.getElementById(
+"cycle-2025-mm111"
+);
+
+
+if (cycle2021Mm111) {
+
+    cycle2021Mm111.textContent =
+    formatPrice(
+        cycle2021Indicators.mm111
+    );
+
+}
+
+
+if (cycle2025Mm111) {
+
+    cycle2025Mm111.textContent =
+    formatPrice(
+        cycle2025Indicators.mm111
+    );
+
+}
 // =====================================================
 // MM350 TABLEAU CYCLE
 // =====================================================
@@ -4331,6 +4420,39 @@ if (cycleCurrentMm350) {
 
 }
     // =====================================================
+// MM350 HISTORIQUE CYCLES
+// =====================================================
+
+const cycle2021Mm350 =
+document.getElementById(
+"cycle-2021-mm350"
+);
+
+const cycle2025Mm350 =
+document.getElementById(
+"cycle-2025-mm350"
+);
+
+
+if (cycle2021Mm350) {
+
+    cycle2021Mm350.textContent =
+    formatPrice(
+        cycle2021Indicators.mm350
+    );
+
+}
+
+
+if (cycle2025Mm350) {
+
+    cycle2025Mm350.textContent =
+    formatPrice(
+        cycle2025Indicators.mm350
+    );
+
+}
+    // =====================================================
 // PI CYCLE TABLEAU CYCLE
 // =====================================================
 
@@ -4344,6 +4466,35 @@ if (cycleCurrentPi) {
 
     cycleCurrentPi.textContent =
     piCycleValue.toFixed(1) + "%";
+
+}
+    // =====================================================
+// PI CYCLE HISTORIQUE CYCLES
+// =====================================================
+
+const cycle2021Pi =
+document.getElementById(
+"cycle-2021-pi"
+);
+
+const cycle2025Pi =
+document.getElementById(
+"cycle-2025-pi"
+);
+
+
+if (cycle2021Pi) {
+
+    cycle2021Pi.textContent =
+    cycle2021Indicators.piCycle + "%";
+
+}
+
+
+if (cycle2025Pi) {
+
+    cycle2025Pi.textContent =
+    cycle2025Indicators.piCycle + "%";
 
 }
 // =====================================================
@@ -4366,6 +4517,35 @@ if (cycleCurrentRainbow) {
     "DEBUG TABLEAU MVRV",
     mvrvValue
 );
+    // =====================================================
+// RAINBOW HISTORIQUE CYCLES
+// =====================================================
+
+const cycle2021Rainbow =
+document.getElementById(
+"cycle-2021-rainbow"
+);
+
+const cycle2025Rainbow =
+document.getElementById(
+"cycle-2025-rainbow"
+);
+
+
+if (cycle2021Rainbow) {
+
+    cycle2021Rainbow.textContent =
+    cycle2021Indicators.rainbow;
+
+}
+
+
+if (cycle2025Rainbow) {
+
+    cycle2025Rainbow.textContent =
+    cycle2025Indicators.rainbow;
+
+}
 
 // =====================================================
 // MVRV TABLEAU CYCLE
@@ -4385,7 +4565,35 @@ if (cycleCurrentMvrv) {
 
 
 }
-    
+ // =====================================================
+// MVRV HISTORIQUE CYCLES
+// =====================================================
+
+const cycle2021Mvrv =
+document.getElementById(
+"cycle-2021-mvrv"
+);
+
+const cycle2025Mvrv =
+document.getElementById(
+"cycle-2025-mvrv"
+);
+
+
+if (cycle2021Mvrv) {
+
+    cycle2021Mvrv.textContent =
+    cycle2021Indicators.mvrv.toFixed(2);
+
+}
+
+
+if (cycle2025Mvrv) {
+
+    cycle2025Mvrv.textContent =
+    cycle2025Indicators.mvrv.toFixed(2);
+
+}   
   // =====================================================
 // FEAR GREED TABLEAU CYCLE
 // =====================================================
@@ -4400,6 +4608,35 @@ if (cycleCurrentFear) {
 
     cycleCurrentFear.textContent =
     fearGreedValue;
+
+}
+    // =====================================================
+// FEAR GREED HISTORIQUE CYCLES
+// =====================================================
+
+const cycle2021Fear =
+document.getElementById(
+"cycle-2021-fear"
+);
+
+const cycle2025Fear =
+document.getElementById(
+"cycle-2025-fear"
+);
+
+
+if (cycle2021Fear) {
+
+    cycle2021Fear.textContent =
+    cycle2021Indicators.fearGreed;
+
+}
+
+
+if (cycle2025Fear) {
+
+    cycle2025Fear.textContent =
+    cycle2025Indicators.fearGreed;
 
 }
     }
