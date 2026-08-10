@@ -798,10 +798,15 @@ async function getBTCData() {
             "BTC SIGNAL : récupération des données..."
         );
 
+
         const now = Date.now();
 
-        const oneDay = 86400 * 1000;
-        const oneHour = 3600 * 1000;
+        const oneDay =
+            86400 * 1000;
+
+        const oneHour =
+            3600 * 1000;
+
 
         // =================================================
         // HISTORIQUE KPI : 400 JOURS
@@ -809,6 +814,10 @@ async function getBTCData() {
 
         const start400 =
             now - (400 * oneDay);
+
+        const splitDate =
+            now - (200 * oneDay);
+
 
         // =================================================
         // HISTORIQUE COURBE : 7 JOURS HORAIRES
@@ -819,50 +828,85 @@ async function getBTCData() {
 
 
         // =================================================
+        // HISTORIQUE MOYENNES : 30 JOURS HORAIRES
+        // =================================================
+
+        const start30 =
+            now - (30 * 24 * oneHour);
+
+        const split30a =
+            now - (20 * 24 * oneHour);
+
+        const split30b =
+            now - (10 * 24 * oneHour);
+
+
+        // =================================================
         // URL 1 : 400 JOURS QUOTIDIENS
         // =================================================
-const splitDate =
-    now - (200 * oneDay);
+
+        const urlOld =
+            "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
+            "?granularity=86400" +
+            "&start=" +
+            encodeURIComponent(
+                new Date(start400).toISOString()
+            ) +
+            "&end=" +
+            encodeURIComponent(
+                new Date(splitDate).toISOString()
+            );
 
 
-// Première moitié : -400 jours à -200 jours
-const urlOld =
-    "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
-    "?granularity=86400" +
-    "&start=" +
-    encodeURIComponent(
-        new Date(start400).toISOString()
-    ) +
-    "&end=" +
-    encodeURIComponent(
-        new Date(splitDate).toISOString()
-    );
-
-
-// Deuxième moitié : -200 jours à maintenant
-const urlRecent =
-    "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
-    "?granularity=86400" +
-    "&start=" +
-    encodeURIComponent(
-        new Date(splitDate).toISOString()
-    ) +
-    "&end=" +
-    encodeURIComponent(
-        new Date(now).toISOString()
-    );
+        const urlRecent =
+            "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
+            "?granularity=86400" +
+            "&start=" +
+            encodeURIComponent(
+                new Date(splitDate).toISOString()
+            ) +
+            "&end=" +
+            encodeURIComponent(
+                new Date(now).toISOString()
+            );
 
 
         // =================================================
-        // URL 2 : 7 JOURS HORAIRES
+        // URL 2 : 30 JOURS HORAIRES
         // =================================================
 
-        const url2 =
+        const url30a =
             "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
             "?granularity=3600" +
             "&start=" +
             encodeURIComponent(
-                new Date(start7).toISOString()
+                new Date(start30).toISOString()
+            ) +
+            "&end=" +
+            encodeURIComponent(
+                new Date(split30a).toISOString()
+            );
+
+
+        const url30b =
+            "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
+            "?granularity=3600" +
+            "&start=" +
+            encodeURIComponent(
+                new Date(split30a).toISOString()
+            ) +
+            "&end=" +
+            encodeURIComponent(
+                new Date(split30b).toISOString()
+            );
+
+
+        const url30c =
+            "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
+            "?granularity=3600" +
+            "&start=" +
+            encodeURIComponent(
+                new Date(split30b).toISOString()
             ) +
             "&end=" +
             encodeURIComponent(
@@ -874,134 +918,239 @@ const urlRecent =
         // APPELS API
         // =================================================
 
-       const [
-    responseOld,
-    responseRecent,
-    responseHourly
-] = await Promise.all([
+        const [
+            responseOld,
+            responseRecent,
+            response30a,
+            response30b,
+            response30c
+        ] = await Promise.all([
 
-    fetch(urlOld, {
-        cache: "no-store"
-    }),
+            fetch(
+                urlOld,
+                {
+                    cache: "no-store"
+                }
+            ),
 
-    fetch(urlRecent, {
-        cache: "no-store"
-    }),
+            fetch(
+                urlRecent,
+                {
+                    cache: "no-store"
+                }
+            ),
 
-    fetch(url2, {
-        cache: "no-store"
-    })
+            fetch(
+                url30a,
+                {
+                    cache: "no-store"
+                }
+            ),
 
-]);
+            fetch(
+                url30b,
+                {
+                    cache: "no-store"
+                }
+            ),
 
+            fetch(
+                url30c,
+                {
+                    cache: "no-store"
+                }
+            )
 
-if (!responseOld.ok) {
-
-    throw new Error(
-        "Coinbase historique ancien : " +
-        responseOld.status
-    );
-
-}
-
-
-if (!responseRecent.ok) {
-
-    throw new Error(
-        "Coinbase historique récent : " +
-        responseRecent.status
-    );
-
-}
-
-
-if (!responseHourly.ok) {
-
-    throw new Error(
-        "Coinbase horaire : " +
-        responseHourly.status
-    );
-
-}
-
-
-
-      const oldData =
-    await responseOld.json();
-
-const recentData =
-    await responseRecent.json();
-
-const data2 =
-    await responseHourly.json();
-
-
-// Fusion des 400 jours
-
-const data1 = [
-    ...oldData,
-    ...recentData
-];
+        ]);
 
 
         // =================================================
-        // COMBINAISON
+        // VERIFICATION 400 JOURS
         // =================================================
 
+        if (!responseOld.ok) {
+
+            throw new Error(
+                "Coinbase historique ancien : " +
+                responseOld.status
+            );
+
+        }
+
+
+        if (!responseRecent.ok) {
+
+            throw new Error(
+                "Coinbase historique récent : " +
+                responseRecent.status
+            );
+
+        }
+
+
         // =================================================
-// DONNEES KPI : 400 JOURS QUOTIDIENS
-// =================================================
+        // VERIFICATION 30 JOURS HORAIRES
+        // =================================================
 
-btcPrices =
-    data1
-        .map(item => ({
+        if (!response30a.ok) {
 
-            timestamp:
-                Number(item[0]) * 1000,
+            throw new Error(
+                "Coinbase horaire 30j - bloc 1 : " +
+                response30a.status
+            );
 
-            price:
-                Number(item[4])
-
-        }))
-        .filter(item =>
-
-            Number.isFinite(item.timestamp) &&
-            Number.isFinite(item.price)
-
-        )
-        .sort(
-            (a, b) =>
-                a.timestamp -
-                b.timestamp
-        );
+        }
 
 
-// =================================================
-// DONNEES COURBE : 7 JOURS HORAIRES
-// =================================================
+        if (!response30b.ok) {
 
-window.hourlyBTC =
-    data2
-        .map(item => ({
+            throw new Error(
+                "Coinbase horaire 30j - bloc 2 : " +
+                response30b.status
+            );
 
-            timestamp:
-                Number(item[0]) * 1000,
+        }
 
-            price:
-                Number(item[4])
 
-        }))
-        .filter(item =>
+        if (!response30c.ok) {
 
-            Number.isFinite(item.timestamp) &&
-            Number.isFinite(item.price)
+            throw new Error(
+                "Coinbase horaire 30j - bloc 3 : " +
+                response30c.status
+            );
 
-        )
-        .sort(
-            (a, b) =>
-                a.timestamp -
-                b.timestamp
-        );
+        }
+
+
+        // =================================================
+        // LECTURE DES DONNEES
+        // =================================================
+
+        const oldData =
+            await responseOld.json();
+
+
+        const recentData =
+            await responseRecent.json();
+
+
+        const data30a =
+            await response30a.json();
+
+
+        const data30b =
+            await response30b.json();
+
+
+        const data30c =
+            await response30c.json();
+
+
+        // =================================================
+        // FUSION DES 400 JOURS
+        // =================================================
+
+        const data1 = [
+
+            ...oldData,
+            ...recentData
+
+        ];
+
+
+        // =================================================
+        // FUSION DES 30 JOURS HORAIRES
+        // =================================================
+
+        const data30 = [
+
+            ...data30a,
+            ...data30b,
+            ...data30c
+
+        ];
+
+
+        // =================================================
+        // DONNEES KPI : 400 JOURS QUOTIDIENS
+        // =================================================
+
+        btcPrices =
+            data1
+                .map(item => ({
+
+                    timestamp:
+                        Number(item[0]) * 1000,
+
+                    price:
+                        Number(item[4])
+
+                }))
+                .filter(item =>
+
+                    Number.isFinite(
+                        item.timestamp
+                    ) &&
+
+                    Number.isFinite(
+                        item.price
+                    )
+
+                )
+                .sort(
+                    (a, b) =>
+                        a.timestamp -
+                        b.timestamp
+                );
+
+
+        // =================================================
+        // DONNEES HORAIRES : 30 JOURS
+        // =================================================
+
+        const hourly30 =
+            data30
+                .map(item => ({
+
+                    timestamp:
+                        Number(item[0]) * 1000,
+
+                    price:
+                        Number(item[4])
+
+                }))
+                .filter(item =>
+
+                    Number.isFinite(
+                        item.timestamp
+                    ) &&
+
+                    Number.isFinite(
+                        item.price
+                    )
+
+                )
+                .sort(
+                    (a, b) =>
+                        a.timestamp -
+                        b.timestamp
+                );
+
+
+        // =================================================
+        // DONNEES COURBE : 7 JOURS
+        // =================================================
+
+        window.hourlyBTC =
+            hourly30.filter(
+                item =>
+                    item.timestamp >= start7
+            );
+
+
+        // =================================================
+        // VERIFICATION HISTORIQUE
+        // =================================================
 
         if (btcPrices.length < 350) {
 
@@ -1023,14 +1172,74 @@ window.hourlyBTC =
 
 
         // =================================================
+        // MOYENNES JOURNALIERES
+        // =================================================
+
+        const dailyGroups = {};
+
+
+        hourly30.forEach(
+            item => {
+
+                const day =
+                    new Date(
+                        item.timestamp
+                    )
+                    .toISOString()
+                    .slice(0, 10);
+
+
+                if (!dailyGroups[day]) {
+
+                    dailyGroups[day] = [];
+
+                }
+
+
+                dailyGroups[day].push(
+                    item.price
+                );
+
+            }
+        );
+
+
+        // =================================================
+        // CALCUL MOYENNE DE CHAQUE JOUR
+        // =================================================
+
+        const dailyAverages =
+            Object.keys(dailyGroups)
+                .sort()
+                .map(day => ({
+
+                    date: day,
+
+                    average:
+                        average(
+                            dailyGroups[day]
+                        )
+
+                }))
+                .filter(item =>
+                    Number.isFinite(
+                        item.average
+                    )
+                );
+
+
+        // =================================================
         // MOYENNE 7 JOURS
         // =================================================
 
         average7 =
             average(
-                btcPrices
+                dailyAverages
                     .slice(-7)
-                    .map(item => item.price)
+                    .map(
+                        item =>
+                            item.average
+                    )
             );
 
 
@@ -1040,10 +1249,39 @@ window.hourlyBTC =
 
         average30 =
             average(
-                btcPrices
+                dailyAverages
                     .slice(-30)
-                    .map(item => item.price)
+                    .map(
+                        item =>
+                            item.average
+                    )
             );
+
+
+        // =================================================
+        // DEBUG MOYENNES
+        // =================================================
+
+        console.log(
+            "DEBUG MOYENNES BTC",
+            {
+
+                moyenne7j:
+                    average7,
+
+                moyenne30j:
+                    average30,
+
+                joursDisponibles:
+                    dailyAverages.length,
+
+                dernierJour:
+                    dailyAverages[
+                        dailyAverages.length - 1
+                    ]
+
+            }
+        );
 
 
         // =================================================
@@ -1071,52 +1309,58 @@ window.hourlyBTC =
         // FEAR & GREED
         // =================================================
 
-       await getFearGreed();
-// =================================================
-// MVRV
-// =================================================
-
-await getMVRV();
-
-// =================================================
-// AFFICHAGE DES INDICATEURS
-// =================================================
-
-updateIndicators();
-
-
-// =================================================
-// SCORE
-// =================================================
-
-calculateScore();
-        // =================================================
-// TABLEAU CYCLES
-// =================================================
-
-updateCycleTable();
+        await getFearGreed();
 
 
         // =================================================
-// GRAPHIQUE 7 JOURS HORAIRES
-// =================================================
+        // MVRV
+        // =================================================
 
-if (
-    window.hourlyBTC &&
-    window.hourlyBTC.length
-) {
-
-    drawBTCChart(
-        window.hourlyBTC
-    );
+        await getMVRV();
 
 
+        // =================================================
+        // AFFICHAGE DES INDICATEURS
+        // =================================================
 
-} else {
+        updateIndicators();
 
-    drawBTCChart(window.hourlyBTC);
 
-}
+        // =================================================
+        // SCORE
+        // =================================================
+
+        calculateScore();
+
+
+        // =================================================
+        // TABLEAU CYCLES
+        // =================================================
+
+        updateCycleTable();
+
+
+        // =================================================
+        // GRAPHIQUE 7 JOURS HORAIRES
+        // =================================================
+
+        if (
+            window.hourlyBTC &&
+            window.hourlyBTC.length
+        ) {
+
+            drawBTCChart(
+                window.hourlyBTC
+            );
+
+        } else {
+
+            drawBTCChart(
+                window.hourlyBTC
+            );
+
+        }
+
 
         console.log(
             "BTC SIGNAL : données récupérées",
@@ -1142,7 +1386,6 @@ if (
     }
 
 }
-
 // =====================================================
 // RAINBOW CHART
 // =====================================================
