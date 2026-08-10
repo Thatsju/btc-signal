@@ -486,9 +486,8 @@ async function getHistoricalCycleData(dateString) {
 
 async function loadHistoricalCycleData() {
 
-   const [
+  const [
     data2021,
-    data2021Pi,
     data2025
 ] = await Promise.all([
 
@@ -497,12 +496,10 @@ async function loadHistoricalCycleData() {
         "2021-11-10"
     ),
 
-    // Pi Cycle 2021 = avril
-    getHistoricalCycleData(
-        "2021-04-12"
+      getHistoricalCycleData(
+        "2021-11-10"
     ),
 
-    // Tous les KPI 2025 = octobre
     getHistoricalCycleData(
         "2025-10-06"
     )
@@ -514,7 +511,7 @@ async function loadHistoricalCycleData() {
     // TOP 2021
     // =================================================
 
-  if (data2021) {
+ if (data2021) {
 
     cycle2021.price =
         data2021.price;
@@ -525,19 +522,11 @@ async function loadHistoricalCycleData() {
     cycle2021Indicators.mm350 =
         data2021.mm350;
 
-}
-
-
-// =================================================
-// PI CYCLE 2021 = AVRIL
-// =================================================
-
-if (data2021Pi) {
-
     cycle2021Indicators.piCycle =
-        data2021Pi.piCycle;
+        data2021.piCycle;
 
 }
+
 
 
     // =================================================
@@ -5332,33 +5321,32 @@ if (cycle2025Pi) {
     // COULEURS PI CYCLE
 
 cycle2021Pi.innerHTML =
-cycleDot("sell") +
-" " +
-cycle2021Indicators.piCycle.toFixed(1) +
-"%" +
-"<br>" +
-"<small>Signal Pi Top Cycle : avril 2021 — 94 %</small>";
+    cycleDot("sell") +
+    " " +
+    cycle2021Indicators.piCycle.toFixed(1) +
+    "%" +
+    "<br>" +
+    "<small>Signal Pi Top Cycle : avril 2021 — 94 %</small>";
 
 
 cycle2025Pi.innerHTML =
-cycleDot("sell") +
-" " +
-cycle2025Indicators.piCycle +
-"%";
+    cycleDot("sell") +
+    " " +
+    cycle2025Indicators.piCycle.toFixed(1) +
+    "%";
 
 
 cycleCurrentPi.innerHTML =
-cycleDot(
-    piCycleValue >= 90
-    ? "sell"
-    : "buy"
-)
-+
-" "
-+
-piCycleValue.toFixed(1)
-+
-"%";
+    cycleDot(
+        piCycleValue >= 90
+            ? "sell"
+            : piCycleValue < 70
+            ? "buy"
+            : "neutral"
+    ) +
+    " " +
+    piCycleValue.toFixed(1) +
+    "%";
 // =====================================================
 // RAINBOW TABLEAU CYCLE
 // =====================================================
