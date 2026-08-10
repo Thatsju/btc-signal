@@ -5571,6 +5571,8 @@ setupChartInteraction();
 
 // Chargement initial
 getBTCData();
+// Chargement des données historiques des tops
+loadHistoricalCycleData();
 
 // Prix BTC toutes les 30 secondes
 setInterval(() => {
