@@ -156,7 +156,7 @@ const cycle2021Indicators = {
 
     mm350: null,
 
-    piCycle: null,
+    piCycle: 85,
 
     rainbow: "Surchauffe / risque",
 
@@ -175,7 +175,7 @@ const cycle2025Indicators = {
 
     mm350: null,
 
-    piCycle: null,
+    piCycle: 94,
 
     rainbow: "Surchauffe / risque",
 
@@ -486,47 +486,42 @@ async function getHistoricalCycleData(dateString) {
 
 async function loadHistoricalCycleData() {
 
-  const [
-    data2021,
-    data2025
-] = await Promise.all([
+    const [
+        data2021,
+        data2025
+    ] = await Promise.all([
 
-    // Tous les KPI 2021 = novembre
-    getHistoricalCycleData(
-        "2021-11-10"
-    ),
+        // Top 2021 = novembre 2021
+        getHistoricalCycleData(
+            "2021-11-10"
+        ),
 
-      getHistoricalCycleData(
-        "2021-11-10"
-    ),
+        // Top 2025 = octobre 2025
+        getHistoricalCycleData(
+            "2025-10-06"
+        )
 
-    getHistoricalCycleData(
-        "2025-10-06"
-    )
-
-]);
+    ]);
 
 
     // =================================================
     // TOP 2021
     // =================================================
 
- if (data2021) {
+    if (data2021) {
 
-    cycle2021.price =
-        data2021.price;
+        cycle2021.price =
+            data2021.price;
 
-    cycle2021Indicators.mm111 =
-        data2021.mm111;
+        cycle2021Indicators.mm111 =
+            data2021.mm111;
 
-    cycle2021Indicators.mm350 =
-        data2021.mm350;
+        cycle2021Indicators.mm350 =
+            data2021.mm350;
 
-    cycle2021Indicators.piCycle =
-        data2021.piCycle;
-
-}
-
+        // PI CYCLE :
+        // on garde la valeur historique manuelle = 85 %
+    }
 
 
     // =================================================
@@ -544,9 +539,8 @@ async function loadHistoricalCycleData() {
         cycle2025Indicators.mm350 =
             data2025.mm350;
 
-        cycle2025Indicators.piCycle =
-            data2025.piCycle;
-
+        // PI CYCLE :
+        // on garde la valeur historique manuelle = 94 %
     }
 
 
@@ -562,7 +556,13 @@ async function loadHistoricalCycleData() {
                 data2021,
 
             "TOP 2025":
-                data2025
+                data2025,
+
+            "PI CYCLE 2021":
+                cycle2021Indicators.piCycle,
+
+            "PI CYCLE 2025":
+                cycle2025Indicators.piCycle
 
         }
     );
