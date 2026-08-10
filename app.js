@@ -142,6 +142,8 @@ const cycle2025 = {
     phase: "🔴 Euphorie"
 
 };
+
+
 // =====================================================
 // INDICATEURS HISTORIQUES DES SOMMETS
 // =====================================================
@@ -149,11 +151,17 @@ const cycle2025 = {
 const cycle2021Indicators = {
 
     rsi: 74,
-    mm111: 42000,
-    mm350: 30000,
-    piCycle: 96,
+
+    mm111: null,
+
+    mm350: null,
+
+    piCycle: null,
+
     rainbow: "Surchauffe / risque",
+
     mvrv: 3.2,
+
     fearGreed: 84
 
 };
@@ -162,14 +170,405 @@ const cycle2021Indicators = {
 const cycle2025Indicators = {
 
     rsi: 78,
-    mm111: 85000,
-    mm350: 60000,
-    piCycle: 94,
+
+    mm111: null,
+
+    mm350: null,
+
+    piCycle: null,
+
     rainbow: "Surchauffe / risque",
+
     mvrv: 3.5,
+
     fearGreed: 90
 
 };
+// =====================================================
+// CALCUL DES DONNEES HISTORIQUES DES TOPS
+// =====================================================
+
+async function getHistoricalCycleData(dateString) {
+
+    try {
+
+        const targetDate =
+            new Date(
+                dateString + "T00:00:00Z"
+            );
+
+        const oneDay =
+            86400 * 1000;
+
+        const targetEnd =
+            targetDate.getTime() +
+            oneDay;
+
+        const targetStart =
+            targetEnd -
+            (400 * oneDay);
+
+        const splitDate =
+            targetEnd -
+            (200 * oneDay);
+
+
+        // =================================================
+        // HISTORIQUE 400 JOURS AVANT LE TOP
+        // =================================================
+
+        const urlOld =
+            "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
+            "?granularity=86400" +
+            "&start=" +
+            encodeURIComponent(
+                new Date(
+                    targetStart
+                ).toISOString()
+            ) +
+            "&end=" +
+            encodeURIComponent(
+                new Date(
+                    splitDate
+                ).toISOString()
+            );
+
+
+        const urlRecent =
+            "https://api.exchange.coinbase.com/products/BTC-EUR/candles" +
+            "?granularity=86400" +
+            "&start=" +
+            encodeURIComponent(
+                new Date(
+                    splitDate
+                ).toISOString()
+            ) +
+            "&end=" +
+            encodeURIComponent(
+                new Date(
+                    targetEnd
+                ).toISOString()
+            );
+
+
+        // =================================================
+        // APPELS COINBASE
+        // =================================================
+
+        const [
+            responseOld,
+            responseRecent
+        ] = await Promise.all([
+
+            fetch(
+                urlOld,
+                {
+                    cache: "no-store"
+                }
+            ),
+
+            fetch(
+                urlRecent,
+                {
+                    cache: "no-store"
+                }
+            )
+
+        ]);
+
+
+        if (!responseOld.ok) {
+
+            throw new Error(
+                "Coinbase historique cycle ancien : " +
+                responseOld.status
+            );
+
+        }
+
+
+        if (!responseRecent.ok) {
+
+            throw new Error(
+                "Coinbase historique cycle récent : " +
+                responseRecent.status
+            );
+
+        }
+
+
+        const oldData =
+            await responseOld.json();
+
+        const recentData =
+            await responseRecent.json();
+
+
+        // =================================================
+        // FUSION
+        // =================================================
+
+        const data = [
+
+            ...oldData,
+            ...recentData
+
+        ];
+
+
+        const prices =
+            data
+                .map(item => ({
+
+                    timestamp:
+                        Number(item[0]) * 1000,
+
+                    price:
+                        Number(item[4])
+
+                }))
+                .filter(item =>
+
+                    Number.isFinite(
+                        item.timestamp
+                    ) &&
+
+                    Number.isFinite(
+                        item.price
+                    )
+
+                )
+                .sort(
+                    (a, b) =>
+                        a.timestamp -
+                        b.timestamp
+                );
+
+
+        if (prices.length < 350) {
+
+            throw new Error(
+                "Historique insuffisant pour " +
+                dateString +
+                " : " +
+                prices.length +
+                " jours"
+            );
+
+        }
+
+
+        // =================================================
+        // DONNEES JUSQU'AU TOP
+        // =================================================
+
+        const pricesUntilTop =
+            prices.filter(
+                item =>
+                    item.timestamp <
+                    targetEnd
+            );
+
+
+        // =================================================
+        // PRIX DU TOP
+        // =================================================
+
+        const topPrice =
+            pricesUntilTop[
+                pricesUntilTop.length - 1
+            ]?.price;
+
+
+        // =================================================
+        // MM111 HISTORIQUE
+        // =================================================
+
+        const mm111 =
+            calculateMovingAverage(
+                pricesUntilTop.map(
+                    item =>
+                        item.price
+                ),
+                111
+            );
+
+
+        // =================================================
+        // MM350 HISTORIQUE
+        // =================================================
+
+        const mm350 =
+            calculateMovingAverage(
+                pricesUntilTop.map(
+                    item =>
+                        item.price
+                ),
+                350
+            );
+
+
+        // =================================================
+        // PI CYCLE HISTORIQUE
+        // =================================================
+
+        const piCycle =
+            Number.isFinite(topPrice) &&
+            Number.isFinite(mm350)
+
+                ? (
+                    topPrice /
+                    (mm350 * 2)
+                ) * 100
+
+                : null;
+
+
+        console.log(
+            "DEBUG TOP HISTORIQUE",
+            {
+
+                date:
+                    dateString,
+
+                prix:
+                    topPrice,
+
+                mm111:
+                    mm111,
+
+                mm350:
+                    mm350,
+
+                piCycle:
+                    piCycle
+
+            }
+        );
+
+
+        return {
+
+            price:
+                topPrice,
+
+            mm111:
+                mm111,
+
+            mm350:
+                mm350,
+
+            piCycle:
+                piCycle
+
+        };
+
+
+    } catch (error) {
+
+        console.error(
+            "Erreur historique " +
+            dateString +
+            " :",
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+// =====================================================
+// CHARGEMENT DES TOPS HISTORIQUES
+// =====================================================
+
+async function loadHistoricalCycleData() {
+
+    const [
+        data2021,
+        data2025
+    ] = await Promise.all([
+
+        getHistoricalCycleData(
+            "2021-11-10"
+        ),
+
+        getHistoricalCycleData(
+            "2025-10-06"
+        )
+
+    ]);
+
+
+    // =================================================
+    // TOP 2021
+    // =================================================
+
+    if (data2021) {
+
+        cycle2021.price =
+            data2021.price;
+
+        cycle2021Indicators.mm111 =
+            data2021.mm111;
+
+        cycle2021Indicators.mm350 =
+            data2021.mm350;
+
+        cycle2021Indicators.piCycle =
+            data2021.piCycle;
+
+    }
+
+
+    // =================================================
+    // TOP 2025
+    // =================================================
+
+    if (data2025) {
+
+        cycle2025.price =
+            data2025.price;
+
+        cycle2025Indicators.mm111 =
+            data2025.mm111;
+
+        cycle2025Indicators.mm350 =
+            data2025.mm350;
+
+        cycle2025Indicators.piCycle =
+            data2025.piCycle;
+
+    }
+
+
+    // =================================================
+    // DEBUG FINAL
+    // =================================================
+
+    console.log(
+        "DEBUG CYCLES BTC",
+        {
+
+            "TOP 2021":
+                data2021,
+
+            "TOP 2025":
+                data2025
+
+        }
+    );
+
+
+    // =================================================
+    // ACTUALISATION DU TABLEAU
+    // =================================================
+
+    updateCycleTable();
+
+}
 
 // =====================================================
 // OUTILS
