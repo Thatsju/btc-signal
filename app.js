@@ -5326,7 +5326,7 @@ cycle2021Pi.innerHTML =
     cycle2021Indicators.piCycle.toFixed(1) +
     "%" +
     "<br>" +
-    "<small>Signal Pi Top Cycle : avril 2021 — 94 %</small>";
+    "<small>Signal Pi Top Cycle : avril 2021 — 100,8 %</small>";
 
 
 cycle2025Pi.innerHTML =
