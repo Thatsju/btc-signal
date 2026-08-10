@@ -126,7 +126,7 @@ const cycle2021 = {
 
     date: "10/11/2021",
 
-    price: 59000,
+    price: null,
 
     phase: "🔴 Euphorie"
 
@@ -413,15 +413,15 @@ async function getHistoricalCycleData(dateString) {
         // =================================================
 
         const piCycle =
-            Number.isFinite(topPrice) &&
-            Number.isFinite(mm350)
+    Number.isFinite(mm111) &&
+    Number.isFinite(mm350)
 
-                ? (
-                    topPrice /
-                    (mm350 * 2)
-                ) * 100
+        ? (
+            mm111 /
+            (mm350 * 2)
+        ) * 100
 
-                : null;
+        : null;
 
 
         console.log(
@@ -486,41 +486,58 @@ async function getHistoricalCycleData(dateString) {
 
 async function loadHistoricalCycleData() {
 
-    const [
-        data2021,
-        data2025
-    ] = await Promise.all([
+   const [
+    data2021,
+    data2021Pi,
+    data2025
+] = await Promise.all([
 
-        getHistoricalCycleData(
-            "2021-11-10"
-        ),
+    // Tous les KPI 2021 = novembre
+    getHistoricalCycleData(
+        "2021-11-10"
+    ),
 
-        getHistoricalCycleData(
-            "2025-10-06"
-        )
+    // Pi Cycle 2021 = avril
+    getHistoricalCycleData(
+        "2021-04-12"
+    ),
 
-    ]);
+    // Tous les KPI 2025 = octobre
+    getHistoricalCycleData(
+        "2025-10-06"
+    )
+
+]);
 
 
     // =================================================
     // TOP 2021
     // =================================================
 
-    if (data2021) {
+  if (data2021) {
 
-        cycle2021.price =
-            data2021.price;
+    cycle2021.price =
+        data2021.price;
 
-        cycle2021Indicators.mm111 =
-            data2021.mm111;
+    cycle2021Indicators.mm111 =
+        data2021.mm111;
 
-        cycle2021Indicators.mm350 =
-            data2021.mm350;
+    cycle2021Indicators.mm350 =
+        data2021.mm350;
 
-        cycle2021Indicators.piCycle =
-            data2021.piCycle;
+}
 
-    }
+
+// =================================================
+// PI CYCLE 2021 = AVRIL
+// =================================================
+
+if (data2021Pi) {
+
+    cycle2021Indicators.piCycle =
+        data2021Pi.piCycle;
+
+}
 
 
     // =================================================
