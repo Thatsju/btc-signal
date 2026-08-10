@@ -5334,8 +5334,8 @@ if (cycle2025Pi) {
 cycle2021Pi.innerHTML =
 cycleDot("sell") +
 " " +
-cycle2021Indicators.piCycle +
-"%";
+cycle2021Indicators.piCycle.toFixed(1) +
+"% (avril)";
 
 
 cycle2025Pi.innerHTML =
