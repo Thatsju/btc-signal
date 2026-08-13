@@ -1821,6 +1821,11 @@ async function getRainbowData() {
         const data =
             await response.json();
 
+        console.log(
+    "RAINBOW DATA KEYS",
+    Object.keys(data.data || {})
+);
+
 console.log(
     "RAINBOW DATA COMPLETE",
     JSON.stringify(data, null, 2)
