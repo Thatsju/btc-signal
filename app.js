@@ -1821,7 +1821,10 @@ async function getRainbowData() {
         const data =
             await response.json();
 
-
+console.log(
+    "RAINBOW DATA COMPLETE",
+    JSON.stringify(data, null, 2)
+);
         console.log(
             "BTC SIGNAL : Rainbow",
             data
