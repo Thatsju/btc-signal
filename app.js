@@ -5157,15 +5157,16 @@ if (cycleScoreElement) {
 // =====================================================
 
 const cycleCurrentRsi =
-document.getElementById(
-    "cycle-current-rsi"
-);
-
+    document.getElementById(
+        "cycle-current-rsi"
+    );
 
 if (cycleCurrentRsi) {
 
     cycleCurrentRsi.textContent =
-    rsiValue.toFixed(1);
+        Number.isFinite(rsiValue)
+            ? rsiValue.toFixed(1)
+            : "-";
 
 }
     // =====================================================
