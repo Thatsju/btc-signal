@@ -5544,7 +5544,7 @@ if (cycleCurrentMvrv) {
 
 
 }
- // =====================================================
+// =====================================================
 // MVRV HISTORIQUE CYCLES
 // =====================================================
 
@@ -5556,11 +5556,6 @@ const cycle2021Mvrv =
 const cycle2025Mvrv =
     document.getElementById(
         "cycle-2025-mvrv"
-    );
-
-const cycleCurrentMvrv =
-    document.getElementById(
-        "cycle-current-mvrv"
     );
 
 
