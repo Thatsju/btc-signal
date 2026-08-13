@@ -1889,7 +1889,7 @@ console.log(
     data.data?.zones
 );
 
-        // =================================================
+     // =================================================
 // SCORE RAINBOW GLOBAL 0 → 100
 // =================================================
 
@@ -1904,65 +1904,113 @@ if (
     Number.isFinite(currentPrice)
 ) {
 
-    const firstZone =
-        rainbowZones[0];
+    // =================================================
+    // RECHERCHE DES BORNES SUR TOUT LE RAINBOW
+    // =================================================
 
-    const lastZone =
-        rainbowZones[rainbowZones.length - 1];
+    const allLowerBounds =
+        rainbowZones
+            .map(
+                zone =>
+                    Number(zone.lowerBound)
+            )
+            .filter(
+                value =>
+                    Number.isFinite(value)
+            );
 
-    const minBound =
-        Number(firstZone.lowerBound);
+    const allUpperBounds =
+        rainbowZones
+            .map(
+                zone =>
+                    Number(zone.upperBound)
+            )
+            .filter(
+                value =>
+                    Number.isFinite(value)
+            );
 
-    const maxBound =
-        Number(lastZone.upperBound);
 
     if (
-        Number.isFinite(minBound) &&
-        Number.isFinite(maxBound) &&
-        maxBound > minBound
+        allLowerBounds.length &&
+        allUpperBounds.length
     ) {
 
-        // =================================================
-        // SCORE GLOBAL SUR TOUT LE RAINBOW
-        // =================================================
-
-        const logPrice =
-            Math.log(currentPrice);
-
-        const logMin =
-            Math.log(minBound);
-
-        const logMax =
-            Math.log(maxBound);
-
-        rainbowScore =
-            (
-                (logPrice - logMin) /
-                (logMax - logMin)
-            ) * 100;
-
-        rainbowScore =
-            Math.max(
-                0,
-                Math.min(
-                    100,
-                    rainbowScore
-                )
+        const minBound =
+            Math.min(
+                ...allLowerBounds
             );
+
+        const maxBound =
+            Math.max(
+                ...allUpperBounds
+            );
+
+
+        if (
+            maxBound > minBound
+        ) {
+
+            // =================================================
+            // SCORE GLOBAL LOGARITHMIQUE
+            // =================================================
+
+            const logPrice =
+                Math.log(
+                    currentPrice
+                );
+
+            const logMin =
+                Math.log(
+                    minBound
+                );
+
+            const logMax =
+                Math.log(
+                    maxBound
+                );
+
+
+            rainbowScore =
+                (
+                    (logPrice - logMin) /
+                    (logMax - logMin)
+                ) * 100;
+
+
+            // =================================================
+            // LIMITATION 0 → 100
+            // =================================================
+
+            rainbowScore =
+                Math.max(
+                    0,
+                    Math.min(
+                        100,
+                        rainbowScore
+                    )
+                );
+
+        }
 
     }
 
 }
 
+
 console.log(
     "DEBUG RAINBOW SCORE GLOBAL",
     {
-        prix: currentPrice,
-        score: rainbowScore,
-        zones: rainbowZones
+        prix:
+            currentPrice,
+
+        score:
+            rainbowScore,
+
+        zones:
+            rainbowZones
     }
 );
-
 
         // =================================================
         // HISTORIQUE RAINBOW
