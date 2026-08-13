@@ -1857,20 +1857,104 @@ if (
     Number.isFinite(zone.upperBound)
 ) {
 
-    rainbowScore =
-    (
-        (currentPrice - zone.lowerBound) /
-        (zone.upperBound - zone.lowerBound)
-    ) * 100;
+   rainbowScore = null;
+
+if (typeof zone === "object" && zone !== null) {
+
+    const zoneName =
+        (
+            zone.name ??
+            zone.label ??
+            zone.zone ??
+            zone.title ??
+            ""
+        ).toString().toLowerCase();
+
+
+    // =================================================
+// SCORE RAINBOW GLOBAL 0 → 100
+// =================================================
+
+if (
+    typeof zone === "object" &&
+    zone !== null
+) {
+
+    const zoneName =
+        (
+            zone.name ??
+            zone.label ??
+            zone.zone ??
+            zone.title ??
+            ""
+        )
+        .toString()
+        .toLowerCase();
+
+
+    // =================================================
+    // SCORE GLOBAL PAR ZONE
+    // =================================================
+
+    if (
+        zoneName.includes("blue") ||
+        zoneName.includes("accumulate") ||
+        zoneName.includes("buy")
+    ) {
+
+        rainbowScore = 10;
+
+    } else if (
+        zoneName.includes("green")
+    ) {
+
+        rainbowScore = 30;
+
+    } else if (
+        zoneName.includes("yellow")
+    ) {
+
+        rainbowScore = 50;
+
+    } else if (
+        zoneName.includes("orange")
+    ) {
+
+        rainbowScore = 70;
+
+    } else if (
+        zoneName.includes("red") ||
+        zoneName.includes("fomo") ||
+        zoneName.includes("maximum") ||
+        zoneName.includes("sell")
+    ) {
+
+        rainbowScore = 100;
+
+    } else {
+
+        rainbowScore = 50;
+
+    }
+
 
 } else {
 
-    console.log("RAINBOW SCORE IMPOSSIBLE");
+    console.log(
+        "RAINBOW SCORE IMPOSSIBLE"
+    );
 
 }
 
 
-if (typeof zone === "object" && zone !== null) {
+// =================================================
+// VALEUR / NOM DE LA ZONE RAINBOW
+// =================================================
+
+if (
+    typeof zone === "object" &&
+    zone !== null
+) {
 
     rainbowValue =
         zone.name ??
@@ -1879,13 +1963,18 @@ if (typeof zone === "object" && zone !== null) {
         zone.title ??
         JSON.stringify(zone);
 
-
 } else {
 
     rainbowValue =
         String(zone);
 
 }
+
+
+// =================================================
+// HISTORIQUE RAINBOW
+// =================================================
+
 rainbowHistory.push(
     rainbowValue
 );
@@ -1902,47 +1991,50 @@ if (
 
 localStorage.setItem(
     "rainbowHistory",
-    JSON.stringify(rainbowHistory)
+    JSON.stringify(
+        rainbowHistory
+    )
 );
 
 
+// =================================================
+// MISE A JOUR ETAT RAINBOW
+// =================================================
+
+updateRainbowState();
 
 
-        updateRainbowState();
+} catch (error) {
+
+    console.error(
+        "Erreur Rainbow :",
+        error
+    );
 
 
-    } catch (error) {
+    rainbowValue =
+        null;
 
-        console.error(
-            "Erreur Rainbow :",
-            error
-        );
-
-
-        rainbowValue =
-            null;
+    rainbowScore =
+        null;
 
 
-        if (rainbowElement) {
+    if (rainbowElement) {
 
-            rainbowElement.textContent =
-                "-";
-
-        }
-
-
-        setIndicator(
-            indicatorRainbow,
-            kpiRainbow,
-            "neutral",
-            "En attente"
-        );
+        rainbowElement.textContent =
+            "-";
 
     }
 
+
+    setIndicator(
+        indicatorRainbow,
+        kpiRainbow,
+        "neutral",
+        "En attente"
+    );
+
 }
-
-
 // =====================================================
 // ETAT RAINBOW
 // =====================================================
