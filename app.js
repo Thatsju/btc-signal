@@ -5378,20 +5378,21 @@ cycleDot(
 " "
 +
 formatPrice(mm350Value);
-    // =====================================================
+   // =====================================================
 // PI CYCLE TABLEAU CYCLE
 // =====================================================
 
 const cycleCurrentPi =
-document.getElementById(
-"cycle-current-pi"
-);
-
+    document.getElementById(
+        "cycle-current-pi"
+    );
 
 if (cycleCurrentPi) {
 
     cycleCurrentPi.textContent =
-    piCycleValue.toFixed(1) + "%";
+        Number.isFinite(piCycleValue)
+            ? piCycleValue.toFixed(1) + "%"
+            : "-";
 
 }
     // =====================================================
