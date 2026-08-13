@@ -3865,14 +3865,22 @@ if (rainbowElement) {
         rainbowScore
     );
 
-    rainbowElement.textContent =
-        rainbowValue +
-        (
-            Number.isFinite(rainbowScore)
-                ? " (" + rainbowScore.toFixed(0) + "%)"
-                : ""
-        );
+    console.log(
+    "RAINBOW AVANT AFFICHAGE :",
+    rainbowScore,
+    rainbowScore.toFixed(1)
+);
 
+rainbowElement.textContent =
+    rainbowValue +
+    " (" +
+    rainbowScore.toFixed(1) +
+    "%)";
+
+console.log(
+    "RAINBOW APRES AFFICHAGE :",
+    rainbowElement.textContent
+);
 }
 
 
