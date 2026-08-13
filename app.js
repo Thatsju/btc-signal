@@ -1884,80 +1884,84 @@ console.log(
                 String(zone);
 
         }
-
+console.log(
+    "RAINBOW ZONES",
+    data.data?.zones
+);
 
         // =================================================
-        // SCORE RAINBOW GLOBAL 0 → 100
+// SCORE RAINBOW GLOBAL 0 → 100
+// =================================================
+
+rainbowScore = null;
+
+const rainbowZones =
+    data.data?.zones;
+
+if (
+    Array.isArray(rainbowZones) &&
+    rainbowZones.length > 1 &&
+    Number.isFinite(currentPrice)
+) {
+
+    const firstZone =
+        rainbowZones[0];
+
+    const lastZone =
+        rainbowZones[rainbowZones.length - 1];
+
+    const minBound =
+        Number(firstZone.lowerBound);
+
+    const maxBound =
+        Number(lastZone.upperBound);
+
+    if (
+        Number.isFinite(minBound) &&
+        Number.isFinite(maxBound) &&
+        maxBound > minBound
+    ) {
+
         // =================================================
+        // SCORE GLOBAL SUR TOUT LE RAINBOW
+        // =================================================
+
+        const logPrice =
+            Math.log(currentPrice);
+
+        const logMin =
+            Math.log(minBound);
+
+        const logMax =
+            Math.log(maxBound);
 
         rainbowScore =
-            null;
+            (
+                (logPrice - logMin) /
+                (logMax - logMin)
+            ) * 100;
 
-
-        const zoneName =
-            String(
-                rainbowValue
-            ).toLowerCase();
-
-
-        if (
-            zoneName.includes("blue") ||
-            zoneName.includes("accumulate") ||
-            zoneName.includes("buy")
-        ) {
-
-            rainbowScore =
-                10;
-
-        } else if (
-            zoneName.includes("green")
-        ) {
-
-            rainbowScore =
-                30;
-
-        } else if (
-            zoneName.includes("yellow")
-        ) {
-
-            rainbowScore =
-                50;
-
-        } else if (
-            zoneName.includes("orange")
-        ) {
-
-            rainbowScore =
-                70;
-
-        } else if (
-            zoneName.includes("red") ||
-            zoneName.includes("fomo") ||
-            zoneName.includes("maximum") ||
-            zoneName.includes("sell")
-        ) {
-
-            rainbowScore =
-                100;
-
-        } else {
-
-            rainbowScore =
-                50;
-
-        }
-
-
-        console.log(
-            "DEBUG RAINBOW SCORE",
-            {
-                zone:
-                    rainbowValue,
-
-                score:
+        rainbowScore =
+            Math.max(
+                0,
+                Math.min(
+                    100,
                     rainbowScore
-            }
-        );
+                )
+            );
+
+    }
+
+}
+
+console.log(
+    "DEBUG RAINBOW SCORE GLOBAL",
+    {
+        prix: currentPrice,
+        score: rainbowScore,
+        zones: rainbowZones
+    }
+);
 
 
         // =================================================
