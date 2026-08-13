@@ -5424,35 +5424,68 @@ if (cycle2025Pi) {
     cycle2025Indicators.piCycle + "%";
 
 }
-    // COULEURS PI CYCLE
+    // =====================================================
+// COULEURS PI CYCLE
+// =====================================================
 
-cycle2021Pi.innerHTML =
-    cycleDot("sell") +
-    " " +
-    cycle2021Indicators.piCycle.toFixed(1) +
-    "%" +
-    "<br>" +
-    "<small>Signal Pi Top Cycle : avril 2021 — 100,8 %</small>";
+if (cycle2021Pi) {
+
+    cycle2021Pi.innerHTML =
+        Number.isFinite(
+            cycle2021Indicators.piCycle
+        )
+            ? cycleDot("sell") +
+              " " +
+              cycle2021Indicators.piCycle.toFixed(1) +
+              "%" +
+              "<br>" +
+              "<small>Signal Pi Top Cycle : avril 2021 — 100,8 %</small>"
+            : "-";
+
+}
 
 
-cycle2025Pi.innerHTML =
-    cycleDot("sell") +
-    " " +
-    cycle2025Indicators.piCycle.toFixed(1) +
-    "%";
+if (cycle2025Pi) {
+
+    cycle2025Pi.innerHTML =
+        Number.isFinite(
+            cycle2025Indicators.piCycle
+        )
+            ? cycleDot("sell") +
+              " " +
+              cycle2025Indicators.piCycle.toFixed(1) +
+              "%"
+            : "-";
+
+}
 
 
-cycleCurrentPi.innerHTML =
-    cycleDot(
-        piCycleValue >= 90
-            ? "sell"
-            : piCycleValue < 70
-            ? "buy"
-            : "neutral"
-    ) +
-    " " +
-    piCycleValue.toFixed(1) +
-    "%";
+if (cycleCurrentPi) {
+
+    if (
+        Number.isFinite(piCycleValue)
+    ) {
+
+        cycleCurrentPi.innerHTML =
+            cycleDot(
+                piCycleValue >= 90
+                    ? "sell"
+                    : piCycleValue < 70
+                    ? "buy"
+                    : "neutral"
+            ) +
+            " " +
+            piCycleValue.toFixed(1) +
+            "%";
+
+    } else {
+
+        cycleCurrentPi.textContent =
+            "-";
+
+    }
+
+}
 // =====================================================
 // RAINBOW TABLEAU CYCLE
 // =====================================================
