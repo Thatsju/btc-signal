@@ -5549,56 +5549,78 @@ if (cycleCurrentMvrv) {
 // =====================================================
 
 const cycle2021Mvrv =
-document.getElementById(
-"cycle-2021-mvrv"
-);
+    document.getElementById(
+        "cycle-2021-mvrv"
+    );
 
 const cycle2025Mvrv =
-document.getElementById(
-"cycle-2025-mvrv"
-);
+    document.getElementById(
+        "cycle-2025-mvrv"
+    );
+
+const cycleCurrentMvrv =
+    document.getElementById(
+        "cycle-current-mvrv"
+    );
 
 
 if (cycle2021Mvrv) {
 
-    cycle2021Mvrv.textContent =
-    cycle2021Indicators.mvrv.toFixed(2);
+    cycle2021Mvrv.innerHTML =
+        Number.isFinite(
+            cycle2021Indicators.mvrv
+        )
+            ? cycleDot("sell") +
+              " " +
+              cycle2021Indicators.mvrv.toFixed(2)
+            : "-";
 
 }
 
 
 if (cycle2025Mvrv) {
 
-    cycle2025Mvrv.textContent =
-    cycle2025Indicators.mvrv.toFixed(2);
+    cycle2025Mvrv.innerHTML =
+        Number.isFinite(
+            cycle2025Indicators.mvrv
+        )
+            ? cycleDot("sell") +
+              " " +
+              cycle2025Indicators.mvrv.toFixed(2)
+            : "-";
 
-}   
-  // COULEURS MVRV
-
-cycle2021Mvrv.innerHTML =
-cycleDot("sell") +
-" " +
-cycle2021Indicators.mvrv.toFixed(2);
-
-
-cycle2025Mvrv.innerHTML =
-cycleDot("sell") +
-" " +
-cycle2025Indicators.mvrv.toFixed(2);
+}
 
 
-cycleCurrentMvrv.innerHTML =
-cycleDot(
-    mvrvValue >= 3
-    ? "sell"
-    : mvrvValue < 1.5
-    ? "buy"
-    : "neutral"
-)
-+
-" "
-+
-mvrvValue.toFixed(2);
+// =====================================================
+// MVRV ACTUEL
+// =====================================================
+
+if (cycleCurrentMvrv) {
+
+    if (
+        Number.isFinite(mvrvValue)
+    ) {
+
+        cycleCurrentMvrv.innerHTML =
+            cycleDot(
+                mvrvValue >= 3
+                    ? "sell"
+                    : mvrvValue < 1.5
+                    ? "buy"
+                    : "neutral"
+            ) +
+            " " +
+            mvrvValue.toFixed(2);
+
+    } else {
+
+        cycleCurrentMvrv.textContent =
+            "-";
+
+    }
+
+}
   // =====================================================
 // FEAR GREED TABLEAU CYCLE
 // =====================================================
