@@ -3978,15 +3978,24 @@ if (rainbowElement) {
 
     console.log(
     "RAINBOW AVANT AFFICHAGE :",
-    rainbowScore,
-    rainbowScore.toFixed(1)
+    rainbowScore
 );
 
-rainbowElement.textContent =
-    rainbowValue +
-    " (" +
-    rainbowScore.toFixed(1) +
-    "%)";
+if (
+    rainbowElement
+) {
+
+    rainbowElement.textContent =
+        rainbowValue +
+        (
+            Number.isFinite(rainbowScore)
+                ? " (" +
+                  rainbowScore.toFixed(1) +
+                  "%)"
+                : ""
+        );
+
+}
 
 console.log(
     "RAINBOW APRES AFFICHAGE :",
