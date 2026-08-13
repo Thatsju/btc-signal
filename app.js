@@ -5153,23 +5153,6 @@ if (cycleScoreElement) {
 
 }
     // =====================================================
-// RSI TABLEAU CYCLE
-// =====================================================
-
-const cycleCurrentRsi =
-    document.getElementById(
-        "cycle-current-rsi"
-    );
-
-if (cycleCurrentRsi) {
-
-    cycleCurrentRsi.textContent =
-        Number.isFinite(rsiValue)
-            ? rsiValue.toFixed(1)
-            : "-";
-
-}
-    // =====================================================
 // RSI HISTORIQUE CYCLES
 // =====================================================
 
