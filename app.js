@@ -5174,21 +5174,27 @@ if (cycleCurrentRsi) {
 // =====================================================
 
 const cycle2021Rsi =
-document.getElementById(
-"cycle-2021-rsi"
-);
+    document.getElementById(
+        "cycle-2021-rsi"
+    );
 
 const cycle2025Rsi =
-document.getElementById(
-"cycle-2025-rsi"
-);
+    document.getElementById(
+        "cycle-2025-rsi"
+    );
+
+const cycleCurrentRsi =
+    document.getElementById(
+        "cycle-current-rsi"
+    );
 
 
 if (cycle2021Rsi) {
-cycle2021Rsi.innerHTML =
-cycleDot("sell") +
-" " +
-cycle2021Indicators.rsi;
+
+    cycle2021Rsi.innerHTML =
+        cycleDot("sell") +
+        " " +
+        cycle2021Indicators.rsi;
 
 }
 
@@ -5196,37 +5202,42 @@ cycle2021Indicators.rsi;
 if (cycle2025Rsi) {
 
     cycle2025Rsi.innerHTML =
-cycleDot("sell") +
-" " +
-cycle2025Indicators.rsi;
+        cycleDot("sell") +
+        " " +
+        cycle2025Indicators.rsi;
 
 }
-// COULEURS RSI
-
-cycle2021Rsi.innerHTML =
-cycleDot("sell") +
-" " +
-cycle2021Indicators.rsi;
 
 
-cycle2025Rsi.innerHTML =
-cycleDot("sell") +
-" " +
-cycle2025Indicators.rsi;
+// =====================================================
+// RSI ACTUEL
+// =====================================================
 
+if (cycleCurrentRsi) {
 
-cycleCurrentRsi.innerHTML =
-cycleDot(
-    rsiValue > 70
-    ? "sell"
-    : rsiValue < 30
-    ? "buy"
-    : "neutral"
-)
-+
-" "
-+
-rsiValue.toFixed(1);
+    if (
+        Number.isFinite(rsiValue)
+    ) {
+
+        cycleCurrentRsi.innerHTML =
+            cycleDot(
+                rsiValue > 70
+                    ? "sell"
+                    : rsiValue < 30
+                    ? "buy"
+                    : "neutral"
+            ) +
+            " " +
+            rsiValue.toFixed(1);
+
+    } else {
+
+        cycleCurrentRsi.textContent =
+            "-";
+
+    }
+
+}
 // =====================================================
 // MM111 TABLEAU CYCLE
 // =====================================================
