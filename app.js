@@ -1814,6 +1814,7 @@ async function getRainbowData() {
                 "Rainbow API : " +
                 response.status
             );
+
         }
 
 
@@ -1831,210 +1832,195 @@ async function getRainbowData() {
         // RECHERCHE ZONE ACTUELLE
         // =================================================
 
-       const zone =
-data.data?.currentZone ??
-data.currentZone ??
-data.zone ??
-data.data?.zone;
-console.log("ZONE RAINBOW COMPLETE", zone);
+        const zone =
+            data.data?.currentZone ??
+            data.currentZone ??
+            data.zone ??
+            data.data?.zone;
 
 
-       if (!zone) {
-
-    throw new Error(
-        "Zone Rainbow introuvable"
-    );
-}
         console.log(
-    "DEBUG RAINBOW CALCUL",
-    currentPrice,
-    zone.lowerBound,
-    zone.upperBound
-);
-if (
-    Number.isFinite(currentPrice) &&
-    Number.isFinite(zone.lowerBound) &&
-    Number.isFinite(zone.upperBound)
-) {
-
-   rainbowScore = null;
-
-if (typeof zone === "object" && zone !== null) {
-
-    const zoneName =
-        (
-            zone.name ??
-            zone.label ??
-            zone.zone ??
-            zone.title ??
-            ""
-        ).toString().toLowerCase();
+            "ZONE RAINBOW COMPLETE",
+            zone
+        );
 
 
-    // =================================================
-// SCORE RAINBOW GLOBAL 0 → 100
-// =================================================
+        if (!zone) {
 
-if (
-    typeof zone === "object" &&
-    zone !== null
-) {
+            throw new Error(
+                "Zone Rainbow introuvable"
+            );
 
-    const zoneName =
-        (
-            zone.name ??
-            zone.label ??
-            zone.zone ??
-            zone.title ??
-            ""
-        )
-        .toString()
-        .toLowerCase();
+        }
 
 
-    // =================================================
-    // SCORE GLOBAL PAR ZONE
-    // =================================================
+        // =================================================
+        // NOM DE LA ZONE
+        // =================================================
 
-    if (
-        zoneName.includes("blue") ||
-        zoneName.includes("accumulate") ||
-        zoneName.includes("buy")
-    ) {
+        if (
+            typeof zone === "object" &&
+            zone !== null
+        ) {
 
-        rainbowScore = 10;
+            rainbowValue =
+                zone.name ??
+                zone.label ??
+                zone.zone ??
+                zone.title ??
+                JSON.stringify(zone);
 
-    } else if (
-        zoneName.includes("green")
-    ) {
+        } else {
 
-        rainbowScore = 30;
+            rainbowValue =
+                String(zone);
 
-    } else if (
-        zoneName.includes("yellow")
-    ) {
-
-        rainbowScore = 50;
-
-    } else if (
-        zoneName.includes("orange")
-    ) {
-
-        rainbowScore = 70;
-
-    } else if (
-        zoneName.includes("red") ||
-        zoneName.includes("fomo") ||
-        zoneName.includes("maximum") ||
-        zoneName.includes("sell")
-    ) {
-
-        rainbowScore = 100;
-
-    } else {
-
-        rainbowScore = 50;
-
-    }
+        }
 
 
-} else {
+        // =================================================
+        // SCORE RAINBOW GLOBAL 0 → 100
+        // =================================================
 
-    console.log(
-        "RAINBOW SCORE IMPOSSIBLE"
-    );
-
-}
-
-
-// =================================================
-// VALEUR / NOM DE LA ZONE RAINBOW
-// =================================================
-
-if (
-    typeof zone === "object" &&
-    zone !== null
-) {
-
-    rainbowValue =
-        zone.name ??
-        zone.label ??
-        zone.zone ??
-        zone.title ??
-        JSON.stringify(zone);
-
-} else {
-
-    rainbowValue =
-        String(zone);
-
-}
+        rainbowScore =
+            null;
 
 
-// =================================================
-// HISTORIQUE RAINBOW
-// =================================================
-
-rainbowHistory.push(
-    rainbowValue
-);
+        const zoneName =
+            String(
+                rainbowValue
+            ).toLowerCase();
 
 
-if (
-    rainbowHistory.length > 7
-) {
+        if (
+            zoneName.includes("blue") ||
+            zoneName.includes("accumulate") ||
+            zoneName.includes("buy")
+        ) {
 
-    rainbowHistory.shift();
+            rainbowScore =
+                10;
 
-}
+        } else if (
+            zoneName.includes("green")
+        ) {
+
+            rainbowScore =
+                30;
+
+        } else if (
+            zoneName.includes("yellow")
+        ) {
+
+            rainbowScore =
+                50;
+
+        } else if (
+            zoneName.includes("orange")
+        ) {
+
+            rainbowScore =
+                70;
+
+        } else if (
+            zoneName.includes("red") ||
+            zoneName.includes("fomo") ||
+            zoneName.includes("maximum") ||
+            zoneName.includes("sell")
+        ) {
+
+            rainbowScore =
+                100;
+
+        } else {
+
+            rainbowScore =
+                50;
+
+        }
 
 
-localStorage.setItem(
-    "rainbowHistory",
-    JSON.stringify(
-        rainbowHistory
-    )
-);
+        console.log(
+            "DEBUG RAINBOW SCORE",
+            {
+                zone:
+                    rainbowValue,
+
+                score:
+                    rainbowScore
+            }
+        );
 
 
-// =================================================
-// MISE A JOUR ETAT RAINBOW
-// =================================================
+        // =================================================
+        // HISTORIQUE RAINBOW
+        // =================================================
 
-updateRainbowState();
-
-
-} catch (error) {
-
-    console.error(
-        "Erreur Rainbow :",
-        error
-    );
+        rainbowHistory.push(
+            rainbowValue
+        );
 
 
-    rainbowValue =
-        null;
+        if (
+            rainbowHistory.length > 7
+        ) {
 
-    rainbowScore =
-        null;
+            rainbowHistory.shift();
+
+        }
 
 
-    if (rainbowElement) {
+        localStorage.setItem(
+            "rainbowHistory",
+            JSON.stringify(
+                rainbowHistory
+            )
+        );
 
-        rainbowElement.textContent =
-            "-";
+
+        // =================================================
+        // MISE A JOUR ETAT RAINBOW
+        // =================================================
+
+        updateRainbowState();
+
+
+    } catch (error) {
+
+        console.error(
+            "Erreur Rainbow :",
+            error
+        );
+
+
+        rainbowValue =
+            null;
+
+
+        rainbowScore =
+            null;
+
+
+        if (rainbowElement) {
+
+            rainbowElement.textContent =
+                "-";
+
+        }
+
+
+        setIndicator(
+            indicatorRainbow,
+            kpiRainbow,
+            "neutral",
+            "En attente"
+        );
 
     }
 
-
-    setIndicator(
-        indicatorRainbow,
-        kpiRainbow,
-        "neutral",
-        "En attente"
-    );
-
 }
+
+
 // =====================================================
 // ETAT RAINBOW
 // =====================================================
@@ -2042,118 +2028,139 @@ updateRainbowState();
 function updateRainbowState() {
 
     if (!rainbowValue) {
+
         return;
+
     }
 
 
     const zone =
         rainbowValue.toLowerCase();
-if (
-    rainbowHistory.length >= 2 &&
-    rainbowEvolutionElement
-) {
-
-    rainbowEvolutionElement.textContent =
-        "Evolution 7j : " +
-        rainbowHistory[0] +
-        " → " +
-        rainbowValue;
-
-}
-
-   // =================================================
-// ACHAT
-// =================================================
-
-if (
-    zone.includes("blue") ||
-    zone.includes("accumulate") ||
-    zone.includes("buy") ||
-    zone.includes("green")
-) {
-
-    setIndicator(
-    indicatorRainbow,
-    kpiRainbow,
-    "buy",
-    rainbowValue +
-    (
-        Number.isFinite(rainbowScore)
-            ? " (" + rainbowScore.toFixed(0) + "%)"
-            : ""
-    )
-);
 
 
-// =================================================
-// SURVEILLANCE
-// =================================================
+    if (
+        rainbowHistory.length >= 2 &&
+        rainbowEvolutionElement
+    ) {
 
-} else if (
+        rainbowEvolutionElement.textContent =
+            "Evolution 7j : " +
+            rainbowHistory[0] +
+            " → " +
+            rainbowValue;
 
-    zone.includes("yellow") ||
-    zone.includes("orange")
-
-) {
-
-    setIndicator(
-        indicatorRainbow,
-        kpiRainbow,
-        "neutral",
-        rainbowValue +
-(
-    Number.isFinite(rainbowScore)
-        ? " (" + rainbowScore.toFixed(0) + "%)"
-        : ""
-)
-    );
+    }
 
 
-// =================================================
-// VENTE
-// =================================================
+    // =================================================
+    // ACHAT
+    // =================================================
 
-} else if (
+    if (
+        zone.includes("blue") ||
+        zone.includes("accumulate") ||
+        zone.includes("buy") ||
+        zone.includes("green")
+    ) {
 
-    zone.includes("red") ||
-    zone.includes("fomo") ||
-    zone.includes("sell") ||
-    zone.includes("maximum")
-
-) {
-
-    setIndicator(
-        indicatorRainbow,
-        kpiRainbow,
-        "sell",
-        rainbowValue +
-(
-    Number.isFinite(rainbowScore)
-        ? " (" + rainbowScore.toFixed(0) + "%)"
-        : ""
-)
-    );
+        setIndicator(
+            indicatorRainbow,
+            kpiRainbow,
+            "buy",
+            rainbowValue +
+            (
+                Number.isFinite(
+                    rainbowScore
+                )
+                    ? " (" +
+                      rainbowScore.toFixed(0) +
+                      "%)"
+                    : ""
+            )
+        );
 
 
-// =================================================
-// NEUTRE
-// =================================================
+    // =================================================
+    // SURVEILLANCE
+    // =================================================
 
-} else {
+    } else if (
 
-    setIndicator(
-        indicatorRainbow,
-        kpiRainbow,
-        "neutral",
-        rainbowValue +
-(
-    Number.isFinite(rainbowScore)
-        ? " (" + rainbowScore.toFixed(0) + "%)"
-        : ""
-)
-    );
+        zone.includes("yellow") ||
+        zone.includes("orange")
 
-}
+    ) {
+
+        setIndicator(
+            indicatorRainbow,
+            kpiRainbow,
+            "neutral",
+            rainbowValue +
+            (
+                Number.isFinite(
+                    rainbowScore
+                )
+                    ? " (" +
+                      rainbowScore.toFixed(0) +
+                      "%)"
+                    : ""
+            )
+        );
+
+
+    // =================================================
+    // VENTE
+    // =================================================
+
+    } else if (
+
+        zone.includes("red") ||
+        zone.includes("fomo") ||
+        zone.includes("sell") ||
+        zone.includes("maximum")
+
+    ) {
+
+        setIndicator(
+            indicatorRainbow,
+            kpiRainbow,
+            "sell",
+            rainbowValue +
+            (
+                Number.isFinite(
+                    rainbowScore
+                )
+                    ? " (" +
+                      rainbowScore.toFixed(0) +
+                      "%)"
+                    : ""
+            )
+        );
+
+
+    // =================================================
+    // NEUTRE
+    // =================================================
+
+    } else {
+
+        setIndicator(
+            indicatorRainbow,
+            kpiRainbow,
+            "neutral",
+            rainbowValue +
+            (
+                Number.isFinite(
+                    rainbowScore
+                )
+                    ? " (" +
+                      rainbowScore.toFixed(0) +
+                      "%)"
+                    : ""
+            )
+        );
+
+    }
 
 }
 
